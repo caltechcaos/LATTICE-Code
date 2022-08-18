@@ -1,9 +1,9 @@
 # LATTICE Codebase
-This is the codebase for Caltech's 2022 Big Idea Challenge LATTICE.
+This is the codebase for Caltech's 2022 Big Idea Challenge Proposal LATTICE.
 
 # Running Code
 
-To support a more expansive set of files, the [Platform.io](https://docs.platformio.org/en/latest/what-is-platformio.html) wil be used. It supports several IDE's (e.g. having an [extension for VSCode](https://docs.platformio.org/en/latest/integration/ide/index.html#desktop-ides)) which makes installation simple.
+To support a more expansive set of files, the [PlatformIO](https://docs.platformio.org/en/latest/what-is-platformio.html) will be used. It supports several IDE's (e.g. having an [extension for VSCode](https://docs.platformio.org/en/latest/integration/ide/index.html#desktop-ides)) which makes installation simple.
 
 To support the running of multiple files and unit testing, the setup is slightly less straightforward than pressing the build or deploy buttons. The Platform IO commandline will have to be used.
 
@@ -24,5 +24,5 @@ Run: `pio run -e envname`
 Run: `pio run -t upload -e envname`
 
 ## Testing Code
-Run: `pio test -e native`
+Run: `pio test -e native`  
 This requires gcc to be installed. Follow these [instructions](https://docs.platformio.org/en/latest/platforms/native.html) to get that setup. Note that we won't be able to support actual hardware unit tests without alot more work so only write unit tests for non-hardware dependent things like math functions. 
