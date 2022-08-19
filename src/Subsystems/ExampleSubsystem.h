@@ -1,6 +1,6 @@
 #include "ExampleDriver.h"
 
 class ExampleSubsystem {
-    public:
+   public:
     int ReturnTestFunc();
 };

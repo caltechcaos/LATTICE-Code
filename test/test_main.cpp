@@ -12,16 +12,15 @@
 **/
 
 #include <gtest/gtest.h>
+
 #include "TestUtil.h"
 
-TEST(DummyTest, ShouldPass) {
-    EXPECT_EQ(TestFunc(), 1);
-}
+TEST(DummyTest, ShouldPass) { EXPECT_EQ(TestFunc(), 1); }
 
 int main(int argc, char **argv) {
     ::testing::InitGoogleTest(&argc, argv);
-	if (RUN_ALL_TESTS())
-	;
-	// Always return zero-code and allow PlatformIO to parse results
-	return 0;
+    if (RUN_ALL_TESTS())
+        ;
+    // Always return zero-code and allow PlatformIO to parse results
+    return 0;
 }

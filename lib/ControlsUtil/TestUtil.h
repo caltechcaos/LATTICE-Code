@@ -1,1 +1,1 @@
-double TestFunc() {return 1;}
+double TestFunc() { return 1; }

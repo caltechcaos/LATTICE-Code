@@ -1,5 +1,3 @@
 #include "ExampleDriver.h"
 
-int TestFunction() {
-    return 1;
-}
+int TestFunction() { return 1; }

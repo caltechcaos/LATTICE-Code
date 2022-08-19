@@ -2,8 +2,8 @@
 
 using namespace lattice;
 
-CTREEncoder::CTREEncoder(int encoderForwardPort, int encoderBackwardPort): m_encoder(encoderForwardPort, encoderBackwardPort){
-}
+CTREEncoder::CTREEncoder(int encoderForwardPort, int encoderBackwardPort)
+    : m_encoder(encoderForwardPort, encoderBackwardPort) {}
 
 long CTREEncoder::GetRawEncoderPosition() {
     return m_encoder.read();

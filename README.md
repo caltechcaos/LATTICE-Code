@@ -26,3 +26,6 @@ Run: `pio run -t upload -e envname`
 ## Testing Code
 Run: `pio test -e native`  
 This requires gcc to be installed. Follow these [instructions](https://docs.platformio.org/en/latest/platforms/native.html) to get that setup. Note that we won't be able to support actual hardware unit tests without alot more work so only write unit tests for non-hardware dependent things like math functions. 
+
+# Code Formatting
+VSCode Supports code formatting through the C++ extension. You can run it on a file with `Shit-Alt-F`. You can even configure it to format on file save. Note that you probably want to configure the formatter to use the Google Standard as denoted in this [stack-overflow post](https://stackoverflow.com/a/50489812).
