@@ -3,16 +3,16 @@
 using namespace lattice;
 
 CTREEncoder::CTREEncoder(int encoderForwardPort, int encoderBackwardPort)
-    : m_encoder(encoderForwardPort, encoderBackwardPort) {}
+    : mEncoder(encoderForwardPort, encoderBackwardPort) {}
 
 long CTREEncoder::GetRawEncoderPosition() {
-    return m_encoder.read();
+    return mEncoder.read();
 }
 
 double CTREEncoder::GetEncoderRotation() {
-    return m_encoder.read() / kCPR;
+    return mEncoder.read() / kCPR;
 }
 
 void CTREEncoder::ResetEncoderPosition() {
-    m_encoder.write(0);
+    mEncoder.write(0);
 }
