@@ -3,6 +3,7 @@
 #include <array>
 #include <functional>
 #include <tuple>
+
 #include "CircularBuffer.h"
 
 namespace lattice {
