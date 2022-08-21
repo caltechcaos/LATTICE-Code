@@ -28,8 +28,6 @@ jobs:
         pip install --upgrade platformio
     - name: Build all environments
       run: pio run
-    - name: Run native environment unit tests
-      run: pio test -e native
   test:
     runs-on: ubuntu-latest
 
