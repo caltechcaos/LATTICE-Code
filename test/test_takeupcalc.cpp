@@ -1,6 +1,6 @@
 #include <gtest/gtest.h>
 
-#include "MathUtil.h"
+#include "TakeupUtil.h"
 
 TEST(GetTakeup, One) { ASSERT_NEAR(lattice::GetTakeup(0.702827, 0.702827, 0.25, 0.2, 0.1542), 0.475, 0.0001); }
 TEST(GetTakeup, Two) { ASSERT_NEAR(lattice::GetTakeup(0.505545, 0.505545, 0.25, 0.2, 0.1542), 0.3, 0.0001); }
