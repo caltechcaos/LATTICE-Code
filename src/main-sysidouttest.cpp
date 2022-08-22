@@ -1,4 +1,5 @@
 #include <Arduino.h>
+#include "Util.h"
 
 constexpr double rampRate = 0.25;       // V/s
 constexpr double dynamicVoltage = 6.0;  // V
@@ -11,7 +12,7 @@ bool quasistatic = true;
 bool enabled = false;
 
 void setup() {
-    Serial.begin(115200);
+    lattice::GenericSetup();
 }
 
 void printTestStart(bool quasistatic, int dir) {

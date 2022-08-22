@@ -1,11 +1,11 @@
 #include <Arduino.h>
-
 #include "CTREEncoder.h"
+#include "Util.h"
 
 lattice::CTREEncoder m_encoder{26, 27};
 void setup() {
     // put your setup code here, to run once:
-    Serial.begin(9600);
+    lattice::GenericSetup();
 }
 
 void loop() {

@@ -1,4 +1,5 @@
 #include "Thermistor.h"
+
 #include <Arduino.h>
 
 using namespace lattice;
@@ -6,7 +7,7 @@ using namespace lattice;
 // cf. https://github.com/panStamp/thermistor
 // cf. https://www.digikey.com/en/products/detail/vishay-beyschlag-draloric-bc-components/NTCLE350E4103FHB0/12608841
 
-Thermistor::Thermistor(const int PIN) : M_PIN(PIN) { }
+Thermistor::Thermistor(const int PIN) : M_PIN(PIN) {}
 
 double Thermistor::Get() {
     double resistance = GetResistance();

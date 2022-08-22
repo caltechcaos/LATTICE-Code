@@ -1,14 +1,12 @@
 #include <Arduino.h>
-
 #include "MotionMotor.h"
+#include "Util.h"
 
 lattice::MotionMotor testMotor{50, 2, 0};
 double RPMCommand = 0;
 int direction = 1;
 void setup() {
-    analogWriteResolution(12);
-    analogReadResolution(12);
-    Serial.begin(115200);
+    lattice::GenericSetup();
     testMotor.Setup();
 }
 
