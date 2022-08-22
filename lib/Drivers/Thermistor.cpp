@@ -1,4 +1,5 @@
 #include "Thermistor.h"
+#include "Constants.h"
 
 #include <Arduino.h>
 
@@ -26,5 +27,5 @@ double Thermistor::GetResistance() {
     avg = avg / NUM_READINGS;
 
     // convert to resistance
-    return SERIES_RESISTANCE * (MAX_VAL / avg - 1);
+    return SERIES_RESISTANCE * (MAX_ANALOG / avg - 1);
 }

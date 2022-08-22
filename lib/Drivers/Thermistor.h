@@ -19,7 +19,6 @@ class Thermistor {
     // When averaging results from the thermistor
     static constexpr double NUM_READINGS = 10.0;
     static const int DELAY = 10;  // In milliseconds
-    static constexpr double MAX_VAL = 1023.0;
 
     /**
      * Known properties of our circuitry
