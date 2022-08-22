@@ -13,9 +13,7 @@
 
 #include <gtest/gtest.h>
 
-#include "TestUtil.h"
-
-TEST(DummyTest, ShouldPass) { EXPECT_EQ(TestFunc(), 1); }
+TEST(DummyTest, ShouldPass) { EXPECT_EQ(1, 1); }
 
 int main(int argc, char **argv) {
     ::testing::InitGoogleTest(&argc, argv);
