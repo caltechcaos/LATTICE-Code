@@ -16,24 +16,26 @@ class Digipot {
 
     /**
      * Sets the resistance of the first digipot
-     * @param resistance Must be between 0-255, inclusive
+     * @param resistance Must be between 0 and DIGIPOT_MAX, inclusive
      * @return True on success, false otherwise
      */
     bool Set1(int resistance);
 
     /**
      * Sets the resistance of the second digipot
-     * @param resistance Must be between 0-255, inclusive
+     * @param resistance Must be between 0 and DIGIPOT_MAX, inclusive
      * @return True on success, false otherwise
      */
     bool Set2(int resistance);
 
     /**
      * Sets the resistance of both digipots
-     * @param resistance Must be between 0-255, inclusive
+     * @param resistance Must be between 0 and DIGIPOT_MAX, inclusive
      * @return True on success, false otherwise
      */
     bool SetBoth(int resistance);
+
+    static const int DIGIPOT_MAX = 255;
 
    private:
     /**
