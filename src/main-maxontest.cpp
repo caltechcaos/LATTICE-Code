@@ -9,6 +9,7 @@ void setup() {
     analogWriteResolution(12);
     analogReadResolution(12);
     Serial.begin(115200);
+    testMotor.Setup();
 }
 
 void loop() {
