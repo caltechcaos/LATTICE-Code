@@ -17,6 +17,10 @@ class MotionMotor {
     MotionMotor(int enablePort, int pwmPort, int analogInPort, double maxRPM = 6000, double resolution = 12, double deadband = 0.1);
 
     /**
+     * Sets up the motion motor by configuring the enable port and setting it to be disabled
+     */
+    void Setup();
+    /**
      * Enables the motor to be controlled
      */
     void EnableMotor();

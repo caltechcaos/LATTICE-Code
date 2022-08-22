@@ -4,10 +4,15 @@ namespace lattice {
 class LimitSwitch {
    public:
     /**
+     * Initializes the limit switch
+     */
+    LimitSwitch(const int pin);
+
+    /**
      * Sets up to read a limit switch input from the given pin
      * (pulled high)
      */
-    LimitSwitch(const int pin);
+    void Setup();
 
     /**
      * Updates the limit switch. Must be called EVERY loop cycle.
