@@ -7,10 +7,13 @@
 using namespace lattice;
 
 MotionMotor::MotionMotor(int enablePort, int pwmPort, int analogInPort, double maxRPM, double resolution, double deadband)
-    : kEnablePort(enablePort), kPWMPort(pwmPort), kAnalogInputPort(analogInPort), kMaxRPM(maxRPM), kBitResolution(pow(2, resolution) - 1), kDeadband(deadband) {
+    : kEnablePort(enablePort), kPWMPort(pwmPort), kAnalogInputPort(analogInPort), kMaxRPM(maxRPM), kBitResolution(pow(2, resolution) - 1), kDeadband(deadband) {}
+
+void MotionMotor::Setup() {
     pinMode(kEnablePort, OUTPUT);
     digitalWrite(kEnablePort, LOW);
 }
+
 void MotionMotor::EnableMotor() {
     digitalWrite(kEnablePort, HIGH);
 }
