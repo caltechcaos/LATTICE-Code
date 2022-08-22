@@ -1,4 +1,5 @@
 #include "Digipot.h"
+
 #include <Arduino.h>
 #include <SPI.h>
 
@@ -6,12 +7,12 @@ using namespace lattice;
 
 // cf. https://wiki.dfrobot.com/Dual_Digital_Pot__100K__SKU__DFR0520
 
-Digipot::Digipot() { }
+Digipot::Digipot() {}
 
 void Digipot::Setup() {
     // Required for the SS pin
     pinMode(SS_PIN, OUTPUT);
-    
+
     SPI.begin();
 }
 
