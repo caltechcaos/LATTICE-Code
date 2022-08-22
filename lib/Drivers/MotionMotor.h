@@ -1,3 +1,4 @@
+#pragma once
 namespace lattice {
 /**
  * Class to control the ESCON Motor Controllers intended to power the motion motors for the shuttle.

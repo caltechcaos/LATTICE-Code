@@ -1,1 +1,0 @@
-double TestFunc() { return 1; }
