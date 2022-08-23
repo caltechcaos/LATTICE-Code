@@ -14,7 +14,7 @@ class MotionMotor {
      * @param maxRPM The maximum RPM to run on the motor (determines output scaling)
      * @param resolution The bit resolution of the PWM port
      */
-    MotionMotor(int enablePort, int pwmPort, int analogInPort, double maxRPM = 6000, double resolution = 12, double deadband = 0.1);
+    MotionMotor(int enablePort, int pwmPort, int analogInPortRPM, int analogInPortTemp, double maxRPM = 6000, double maxTemp = 150, double resolution = 12, double deadband = 0.1);
 
     /**
      * Sets up the motion motor by configuring the enable port and setting it to be disabled
@@ -42,11 +42,20 @@ class MotionMotor {
      */
     double GetVelocity();
 
+    /**
+     * Returns the motor temperature in celsius
+     *
+     * @return Motor Temperature Celsius
+     */
+    double GetTemp();
+
    private:
     const int kEnablePort;
     const int kPWMPort;
-    const int kAnalogInputPort;
+    const int kAnalogInputPortRPM;
+    const int kAnalogInputPortTemp;
     const double kMaxRPM;
+    const double kMaxTemp;
     const int kBitResolution;
     const int kDeadband;
 
