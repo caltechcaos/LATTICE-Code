@@ -13,9 +13,8 @@ class Clifford {
    public:
     /**
      * Creates controls for Clifford
-     * @param kButtonPin The pin connected to the joystick back trigger input
      */
-    Clifford(const int kButtonPin);
+    Clifford();
 
     /**
      * Sets up Clifford for control. Must be called before other use.

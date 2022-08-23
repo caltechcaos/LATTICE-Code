@@ -6,10 +6,9 @@ namespace lattice {
         public:
         /**
          * Sets up to control the handoff motor off the given pins
-         * @param steps The number of steps per revolution in the handoff motor
          * @param pin1, pin2, pin3, pin4 The four pins connected to the motor
          */
-        HandoffMotor(const int steps, const int pin1, const int pin2,
+        HandoffMotor(const int pin1, const int pin2,
             const int pin3, const int pin4);
 
         /**
@@ -24,10 +23,20 @@ namespace lattice {
          * number of steps
          * @param steps The steps to move: positive for forwards, negative
          *      for reverse
+         * @return True on successful movement, false otherwise
          */
-        void Move(int steps);
+        bool Move(int steps);
+
+        /**
+         * Sets the brake to the given value, overriding any movement
+         * @param brake True to stop, false to go
+         * @return True on success, false otherwise
+         */
+        bool SetBrake(bool brake);
 
         private:
+        static const int STEPS_PER_REV = 200;
         Stepper mMotor;
+        bool brake;
     };
 }

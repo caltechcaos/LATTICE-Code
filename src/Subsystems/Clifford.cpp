@@ -1,9 +1,10 @@
 #include "Clifford.h"
+#include "Util.h"
 
 using namespace lattice;
 
-Clifford::Clifford(const int kButtonPin)
-    : brake(false), joystick(), trigger(kButtonPin) {}
+Clifford::Clifford()
+    : brake(false), joystick(), trigger(kJoystickTriggerPin) {}
 
 void Clifford::Setup() {
     joystick.Setup();
