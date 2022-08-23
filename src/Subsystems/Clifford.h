@@ -1,11 +1,11 @@
 #pragma once
-#include "Digipot.h"
 #include "ButtonOut.h"
+#include "Digipot.h"
 
 namespace lattice {
 /**
  * A class for controlling Clifford.
- * 
+ *
  * Assumes the digipot is wired to digital 10, MOSI, and SCK as required, with
  * pot 1 as joystick x, and pot 2 as joystick y.
  */

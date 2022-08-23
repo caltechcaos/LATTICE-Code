@@ -3,12 +3,12 @@
 using namespace lattice;
 
 Clifford::Clifford(const int kButtonPin)
-    : brake(false), joystick(), trigger(kButtonPin) { }
+    : brake(false), joystick(), trigger(kButtonPin) {}
 
 void Clifford::Setup() {
     joystick.Setup();
     trigger.Setup();
-    
+
     Zero();
     trigger.Set(true);
 }
@@ -19,10 +19,9 @@ bool Clifford::SetBrake(bool brake) {
     }
 
     if (brake) {
-        Zero(); // stop movement
+        Zero();  // stop movement
         trigger.Set(false);
-    }
-    else {
+    } else {
         trigger.Set(true);
     }
     Clifford::brake = brake;
