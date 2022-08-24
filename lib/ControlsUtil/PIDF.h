@@ -1,5 +1,7 @@
 #pragma once
 
+#undef max
+#undef min
 #include <array>
 #include <functional>
 #include <tuple>

@@ -4,6 +4,7 @@
 #include "HandoffMotor.h"
 #include "LimitSwitch.h"
 #include "Thermistor.h"
+#include "PIDF.h"
 
 namespace lattice {
 class Driver {
@@ -35,20 +36,27 @@ class Driver {
     // HytorcMotor actuator;
     HandoffMotor handoff;
 
-    // RCInput rc_input;
-    // Logger rc_output;
+    // RCInput rcInput;
+    // Logger rcOutput;
 
-    LimitSwitch first_stake;
-    LimitSwitch second_stake;
-    LimitSwitch third_stake;
+    LimitSwitch firstStake;
+    LimitSwitch secondStake;
+    LimitSwitch thirdStake;
 
-    LimitSwitch elevator_zero;  // top
-    LimitSwitch elevator_end;   // bottom
+    LimitSwitch elevatorZero;  // top
+    LimitSwitch elevatorEnd;   // bottom
 
-    Thermistor actuator_temp;
-    CurrentSensor actuator_current;
-    CurrentSensor elevator_current;
+    Thermistor actuatorTemp;
+    CurrentSensor actuatorCurrent;
+    CurrentSensor elevatorCurrent;
 
-    // PWM??
+    PIDF elevatorController;
+    PIDF actuatorController;
+
+    /**
+     * Runs the elevator controller one tick (using PIDF current control)
+     * @param setpoint The target current, in amps
+     */
+    void RunElevatorController(double setpoint);
 };
 }  // namespace lattice

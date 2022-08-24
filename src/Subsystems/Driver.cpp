@@ -1,6 +1,7 @@
 #include "Driver.h"
 
 #include "Util.h"
+#include "FeedforwardUtil.h"
 
 using namespace lattice;
 
@@ -8,34 +9,43 @@ Driver::Driver() : elevator(kElevatorMotorPin, kElevatorEncoderFwdPin, kElevator
                    /* actuator(), */
                    handoff(kHandoffMotorPin1, kHandoffMotorPin2, kHandoffMotorPin3, kHandoffMotorPin4),
                    /* rc_input(), rc_output(), */
-                   first_stake(kHandoffLimitSwitch1Pin),
-                   second_stake(kHandoffLimitSwitch2Pin),
-                   third_stake(kHandoffLimitSwitch3Pin),
-                   elevator_zero(kElevatorTopLimitSwitchPin),
-                   elevator_end(kElevatorBottomLimitSwitchPin),
-                   actuator_temp(kDriverHytorcThermistorPin),
-                   actuator_current(kDriverHytorcCurrentPin),
-                   elevator_current(kElevatorCurrentPin) {}
+                   firstStake(kHandoffLimitSwitch1Pin),
+                   secondStake(kHandoffLimitSwitch2Pin),
+                   thirdStake(kHandoffLimitSwitch3Pin),
+                   elevatorZero(kElevatorTopLimitSwitchPin),
+                   elevatorEnd(kElevatorBottomLimitSwitchPin),
+                   actuatorTemp(kDriverHytorcThermistorPin),
+                   actuatorCurrent(kDriverHytorcCurrentPin),
+                   elevatorCurrent(kElevatorCurrentPin),
+                   elevatorController(kPElevator, kIElevator, kDElevator,
+                        GetElevatorFeedforward(kSElevator, kVElevator, kAElevator, kGElevator, 0, 0)),
+                   actuatorController(kPDriver, kIDriver, kDDriver,
+                        GetSimpleFeedforward(kSDriver, kVDriver, kADriver, 0, 0)) {}
 
 void Driver::Setup() {
     elevator.Setup();
 
-    first_stake.Setup();
-    second_stake.Setup();
-    third_stake.Setup();
-    elevator_zero.Setup();
-    elevator_end.Setup();
+    firstStake.Setup();
+    secondStake.Setup();
+    thirdStake.Setup();
+    elevatorZero.Setup();
+    elevatorEnd.Setup();
 }
 
 void Driver::UpdateSensors() {
-    first_stake.Update();
-    second_stake.Update();
-    third_stake.Update();
-    elevator_zero.Update();
-    elevator_end.Update();
+    firstStake.Update();
+    secondStake.Update();
+    thirdStake.Update();
+    elevatorZero.Update();
+    elevatorEnd.Update();
 }
 
 void Driver::EStop() {
     elevator.SetBrake(true);
+    // actuator.SetBrake(true);
     handoff.SetBrake(true);
+}
+
+void RunElevatorController(double setpoint) {
+
 }

@@ -36,4 +36,22 @@ namespace lattice {
     const int kDriverHytorcThermistorPin = 0;
     const int kDriverHytorcCurrentPin = 0;
     const int kElevatorCurrentPin = 0;
+
+    // PIDF
+    constexpr double kPElevator = 0;
+    constexpr double kIElevator = 0;
+    constexpr double kDElevator = 0;
+
+    constexpr double kSElevator = 0;
+    constexpr double kVElevator = 0;
+    constexpr double kAElevator = 0;
+    constexpr double kGElevator = 0;
+
+    constexpr double kPDriver = 0;
+    constexpr double kIDriver = 0;
+    constexpr double kDDriver = 0;
+
+    constexpr double kSDriver = 0;
+    constexpr double kVDriver = 0;
+    constexpr double kADriver = 0;
 }
