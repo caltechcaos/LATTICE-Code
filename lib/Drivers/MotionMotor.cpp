@@ -6,8 +6,8 @@
 
 using namespace lattice;
 
-MotionMotor::MotionMotor(int enablePort, int pwmPort, int analogInPort, double maxRPM, double resolution, double deadband)
-    : kEnablePort(enablePort), kPWMPort(pwmPort), kAnalogInputPort(analogInPort), kMaxRPM(maxRPM), kBitResolution(pow(2, resolution) - 1), kDeadband(deadband) {}
+MotionMotor::MotionMotor(int enablePort, int pwmPort, int analogInPortRPM, int analogInPortTemp, double maxRPM, double maxTemp, double resolution, double deadband)
+    : kEnablePort(enablePort), kPWMPort(pwmPort), kAnalogInputPortRPM(analogInPortRPM), kAnalogInputPortTemp(analogInPortTemp), kMaxRPM(maxRPM), kMaxTemp(maxTemp), kBitResolution(pow(2, resolution) - 1), kDeadband(deadband) {}
 
 void MotionMotor::Setup() {
     pinMode(kEnablePort, OUTPUT);
@@ -25,7 +25,11 @@ void MotionMotor::SetVelocity(double rpm) {
     analogWrite(kPWMPort, PWMOutput);
 }
 double MotionMotor::GetVelocity() {
-    return ScaleInput((double)analogRead(kAnalogInputPort) / kBitResolution);
+    return ScaleInput((double)analogRead(kAnalogInputPortRPM) / kBitResolution);
+}
+
+double MotionMotor::GetTemp() {
+    return kMaxTemp * (double)analogRead(kAnalogInputPortTemp) / kBitResolution;
 }
 
 double MotionMotor::ScalePercentOutput(double rpm) {

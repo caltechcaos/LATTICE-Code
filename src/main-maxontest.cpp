@@ -1,8 +1,9 @@
 #include <Arduino.h>
+
 #include "MotionMotor.h"
 #include "Util.h"
 
-lattice::MotionMotor testMotor{50, 2, 0};
+lattice::MotionMotor testMotor{50, 2, 0, 1};
 double RPMCommand = 0;
 int direction = 1;
 void setup() {
@@ -27,7 +28,7 @@ void loop() {
             RPMCommand = 3000;
         }
         if (input == 'e') {
-            RPMCommand = 6000;
+            RPMCommand = 5900;
         }
         if (input == 'f') {
             RPMCommand = 0;
@@ -37,5 +38,7 @@ void loop() {
         }
     }
     testMotor.SetVelocity(direction * RPMCommand);
+    Serial.print(testMotor.GetTemp());
+    Serial.print(", ");
     Serial.println(testMotor.GetVelocity());
 }
