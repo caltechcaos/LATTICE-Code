@@ -14,6 +14,10 @@ void Digipot::Setup() {
     pinMode(SS_PIN, OUTPUT);
 
     SPI.begin();
+
+    // If they're not zeroed to begin with, the resistance readings aren't consistent
+    // between trials
+    SetBoth(0);
 }
 
 bool Digipot::Set1(int resistance) {

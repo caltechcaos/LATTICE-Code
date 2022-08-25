@@ -3,8 +3,8 @@
 #include "ElevatorMotor.h"
 #include "HandoffMotor.h"
 #include "LimitSwitch.h"
-#include "Thermistor.h"
 #include "PIDF.h"
+#include "Thermistor.h"
 
 namespace lattice {
 class Driver {

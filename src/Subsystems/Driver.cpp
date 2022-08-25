@@ -1,7 +1,7 @@
 #include "Driver.h"
 
-#include "Util.h"
 #include "FeedforwardUtil.h"
+#include "Util.h"
 
 using namespace lattice;
 
@@ -18,9 +18,9 @@ Driver::Driver() : elevator(kElevatorMotorPin, kElevatorEncoderFwdPin, kElevator
                    actuatorCurrent(kDriverHytorcCurrentPin),
                    elevatorCurrent(kElevatorCurrentPin),
                    elevatorController(kPElevator, kIElevator, kDElevator,
-                        GetElevatorFeedforward(kSElevator, kVElevator, kAElevator, kGElevator, 0, 0)),
+                                      GetElevatorFeedforward(kSElevator, kVElevator, kAElevator, kGElevator, 0, 0)),
                    actuatorController(kPDriver, kIDriver, kDDriver,
-                        GetSimpleFeedforward(kSDriver, kVDriver, kADriver, 0, 0)) {}
+                                      GetSimpleFeedforward(kSDriver, kVDriver, kADriver, 0, 0)) {}
 
 void Driver::Setup() {
     elevator.Setup();
@@ -47,5 +47,4 @@ void Driver::EStop() {
 }
 
 void RunElevatorController(double setpoint) {
-
 }
