@@ -1,4 +1,5 @@
 #pragma once
+#include "Clifford.h"
 #include "CurrentSensor.h"
 #include "ElevatorMotor.h"
 #include "HandoffMotor.h"
@@ -10,9 +11,13 @@ namespace lattice {
 class Driver {
    public:
     /**
-     * Creates the driver subsystem, using the pins in Util.h
+     * Singleton to ensure we only have one driver subsystem floating around
+     * @returns The single instance of the driver
      */
-    Driver();
+    static Driver& driver() {
+        static Driver driver;
+        return driver;
+    }
 
     /**
      * Sets up to use the driver subsystem. Must be called before
@@ -30,6 +35,10 @@ class Driver {
      * Flips the emergency stop and freezes all actuators
      */
     void EStop();
+
+    // Guarantee the singleton
+    Driver(Driver const&) = delete;
+    void operator=(Driver const&) = delete;
 
    private:
     ElevatorMotor elevator;
@@ -54,9 +63,15 @@ class Driver {
     PIDF actuatorController;
 
     /**
+     * Creates the driver subsystem, using the pins in Util.h
+     */
+    Driver();
+
+    /**
      * Runs the elevator controller one tick (using PIDF current control)
      * @param setpoint The target current, in amps
      */
-    void RunElevatorController(double setpoint);
+    void RunElevatorOneTick(double setpoint);
 };
+
 }  // namespace lattice

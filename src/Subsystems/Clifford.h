@@ -12,9 +12,13 @@ namespace lattice {
 class Clifford {
    public:
     /**
-     * Creates controls for Clifford
+     * Singleton to ensure we only have one Clifford subsystem floating around
+     * @returns The single instance of Clifford
      */
-    Clifford();
+    static Clifford& clifford() {
+        static Clifford clifford;
+        return clifford;
+    }
 
     /**
      * Sets up Clifford for control. Must be called before other use.
@@ -37,14 +41,24 @@ class Clifford {
      */
     bool SetBrake(bool brake);
 
+    // Guarantee the singleton
+    Clifford(Clifford const&) = delete;
+    void operator=(Clifford const&) = delete;
+
    private:
     bool brake;
     Digipot joystick;
     ButtonOut trigger;
 
     /**
+     * Creates controls for Clifford
+     */
+    Clifford();
+
+    /**
      * Sets the joystick to its zero position
      */
     void Zero();
 };
+
 }  // namespace lattice

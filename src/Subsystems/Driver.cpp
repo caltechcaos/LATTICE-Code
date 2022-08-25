@@ -5,22 +5,24 @@
 
 using namespace lattice;
 
-Driver::Driver() : elevator(kElevatorMotorPin, kElevatorEncoderFwdPin, kElevatorEncoderBckPin),
-                   /* actuator(), */
-                   handoff(kHandoffMotorPin1, kHandoffMotorPin2, kHandoffMotorPin3, kHandoffMotorPin4),
-                   /* rc_input(), rc_output(), */
-                   firstStake(kHandoffLimitSwitch1Pin),
-                   secondStake(kHandoffLimitSwitch2Pin),
-                   thirdStake(kHandoffLimitSwitch3Pin),
-                   elevatorZero(kElevatorTopLimitSwitchPin),
-                   elevatorEnd(kElevatorBottomLimitSwitchPin),
-                   actuatorTemp(kDriverHytorcThermistorPin),
-                   actuatorCurrent(kDriverHytorcCurrentPin),
-                   elevatorCurrent(kElevatorCurrentPin),
-                   elevatorController(kPElevator, kIElevator, kDElevator,
-                                      GetElevatorFeedforward(kSElevator, kVElevator, kAElevator, kGElevator, 0, 0)),
-                   actuatorController(kPDriver, kIDriver, kDDriver,
-                                      GetSimpleFeedforward(kSDriver, kVDriver, kADriver, 0, 0)) {}
+Driver::Driver()
+    : elevator(kElevatorMotorPin, kElevatorEncoderFwdPin, kElevatorEncoderBckPin),
+      /* actuator(), */
+      handoff(kHandoffMotorPin1, kHandoffMotorPin2, kHandoffMotorPin3, kHandoffMotorPin4),
+      /* rc_input(), rc_output(), */
+      firstStake(kHandoffLimitSwitch1Pin),
+      secondStake(kHandoffLimitSwitch2Pin),
+      thirdStake(kHandoffLimitSwitch3Pin),
+      elevatorZero(kElevatorTopLimitSwitchPin),
+      elevatorEnd(kElevatorBottomLimitSwitchPin),
+      actuatorTemp(kDriverHytorcThermistorPin),
+      actuatorCurrent(kDriverHytorcCurrentPin),
+      elevatorCurrent(kElevatorCurrentPin),
+      elevatorController(kPElevator, kIElevator, kDElevator,
+                         GetElevatorFeedforward(kSElevator, kVElevator, kAElevator, kGElevator, 0, 0)),
+      actuatorController(kPDriver, kIDriver, kDDriver,
+                         GetSimpleFeedforward(kSDriver, kVDriver, kADriver, 0, 0))
+      {}
 
 void Driver::Setup() {
     elevator.Setup();
@@ -46,5 +48,6 @@ void Driver::EStop() {
     handoff.SetBrake(true);
 }
 
-void RunElevatorController(double setpoint) {
+void Driver::RunElevatorOneTick(double setpoint) {
+    
 }
