@@ -16,6 +16,29 @@ TEST(CircularBufferTest, ManageItems) {
     EXPECT_EQ(buffer[1], 4);
 }
 
+TEST(CircularBufferTest, ManageThreeItems) {
+    lattice::CircularBuffer<int, 3> buffer;
+    ASSERT_TRUE(buffer.Add(1));
+    EXPECT_EQ(buffer.Get(0), 1);
+    EXPECT_EQ(buffer.Get(1), 0);
+    EXPECT_EQ(buffer.Get(2), 0);
+
+    ASSERT_TRUE(buffer.Add(2));
+    EXPECT_EQ(buffer.Get(0), 2);
+    EXPECT_EQ(buffer.Get(1), 1);
+    EXPECT_EQ(buffer.Get(2), 0);
+
+    ASSERT_TRUE(buffer.Add(3));
+    EXPECT_EQ(buffer.Get(0), 3);
+    EXPECT_EQ(buffer.Get(1), 2);
+    EXPECT_EQ(buffer.Get(2), 1);
+
+    ASSERT_TRUE(buffer.Add(4));
+    EXPECT_EQ(buffer.Get(0), 4);
+    EXPECT_EQ(buffer.Get(1), 3);
+    EXPECT_EQ(buffer.Get(2), 2);
+}
+
 TEST(CircularBufferTest, ManageItemsAlot) {
     lattice::CircularBuffer<int, 2> buffer;
     for (int i = 0; i < 100; i++) {
