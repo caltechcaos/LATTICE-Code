@@ -13,13 +13,21 @@ void ElevatorMotor::Setup() {
 }
 
 bool ElevatorMotor::Run(double power) {
-    if (brake || power < -1 || power > 1) {
+    if (brake) {
         return false;
+    } 
+    bool success = true;
+    if (power < -1) {
+        power = -1;
+        success = false;
+    } else if(power > 1) {
+        power = 1;
+        success = false;
     }
 
     // Map from [-1, 1] to [1000, 2000] microseconds
     motor.writeMicroseconds(power * 500 + 1500);
-    return true;
+    return success;
 }
 
 bool ElevatorMotor::SetBrake(bool brake) {

@@ -26,15 +26,21 @@ class Driver {
     void Setup();
 
     /**
-     * Updates all sensors which require an update. Must be called
-     * each loop cycle, before using the driver.
+     * Advances the subsystem by one tick
      */
-    void UpdateSensors();
+    void Run();
 
     /**
      * Flips the emergency stop and freezes all actuators
      */
     void EStop();
+
+    /**
+     * Runs the zero-elevator process by one tick
+     * (should be called every loop cycle until it's done)
+     * @returns True when it's done, false otherwise
+     */
+    bool ZeroElevator();
 
     // Guarantee the singleton
     Driver(Driver const&) = delete;
@@ -62,16 +68,37 @@ class Driver {
     PIDF elevatorController;
     PIDF actuatorController;
 
+    enum class State {
+        Idle, ZeroElevator
+    };
+
+    State state;
+
+    // If the voltage for the elvator drops below this threshold, assume we're
+    // stuck (ie: drawing a very high current)
+    static constexpr double kElevatorMinVoltage = 0.01;
+    // In milliseconds
+    static const int kElevatorLoopDelay = 50;
+    // Out of 1
+    static constexpr double kElevatorZeroSpeed = 1;
+
     /**
      * Creates the driver subsystem, using the pins in Util.h
      */
     Driver();
 
     /**
+     * Updates all sensors which require an update. Must be called
+     * each loop cycle, before using the driver.
+     */
+    void UpdateSensors();
+
+    /**
      * Runs the elevator controller one tick (using PIDF current control)
      * @param setpoint The target current, in amps
+     * @returns True if the controller is done, false otherwise
      */
-    void RunElevatorOneTick(double setpoint);
+    bool RunElevatorOneTick(double setpoint);
 };
 
 }  // namespace lattice

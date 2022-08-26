@@ -33,13 +33,18 @@ bool Digipot::SetBoth(int resistance) {
 }
 
 bool Digipot::SetPot(const int POT, int resistance) {
-    if (resistance < 0 || resistance > DIGIPOT_MAX) {
-        return false;
+    bool success = true;
+    if (resistance < 0) {
+        resistance = 0;
+        success = false;
+    } else if (resistance > DIGIPOT_MAX) {
+        resistance = DIGIPOT_MAX;
+        success = false;
     }
 
     digitalWrite(SS_PIN, LOW);
     SPI.transfer(POT);
     SPI.transfer(resistance);
     digitalWrite(SS_PIN, HIGH);
-    return true;
+    return success;
 }

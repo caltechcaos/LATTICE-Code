@@ -2,6 +2,7 @@
 
 #include "FeedforwardUtil.h"
 #include "Util.h"
+#include <tuple>
 
 using namespace lattice;
 
@@ -21,7 +22,8 @@ Driver::Driver()
       elevatorController(kPElevator, kIElevator, kDElevator,
                          GetElevatorFeedforward(kSElevator, kVElevator, kAElevator, kGElevator, 0, 0)),
       actuatorController(kPDriver, kIDriver, kDDriver,
-                         GetSimpleFeedforward(kSDriver, kVDriver, kADriver, 0, 0))
+                         GetSimpleFeedforward(kSDriver, kVDriver, kADriver, 0, 0)),
+      state(State::Idle)
       {}
 
 void Driver::Setup() {
@@ -42,12 +44,59 @@ void Driver::UpdateSensors() {
     elevatorEnd.Update();
 }
 
+void Driver::Run() {
+    UpdateSensors();
+    // TODO: state machine stuff
+}
+
 void Driver::EStop() {
     elevator.SetBrake(true);
     // actuator.SetBrake(true);
     handoff.SetBrake(true);
 }
 
-void Driver::RunElevatorOneTick(double setpoint) {
-    
+bool Driver::RunElevatorOneTick(double setpoint) {
+    double feedback = elevatorCurrent.Get();
+    double input; bool success; std::tie(input, success) = actuatorController.Run(feedback, setpoint);
+
+    if (success) {
+        if (input < kElevatorMinVoltage) { // voltage drop
+            // TODO: throw a warning that we might be stuck
+        }
+        if (!elevator.Run(input)) {
+            // TODO: throw a warning for elevator input out of bounds
+        } 
+
+        delay(kElevatorLoopDelay);
+        if (elevatorEnd.Pushed()) {
+            return true;
+        }
+        // TODO: calculate velocity, if it's zero, throw a warning that we might be stuck
+    }
+    else {
+        // TODO: throw a warning for elevator controller not evaluating?
+    }
+
+    return false;
+}
+
+bool Driver::ZeroElevator() {
+    if (state == State::ZeroElevator) {
+        if (elevatorZero.Get()) {
+            elevator.Run(0); // stop
+            state = State::Idle;
+            return true;
+        }
+    } else if (state == State::Idle) {
+        if (elevatorZero.Get()) {
+            // TODO: throw warning of trying to zero elevator when already zeroed
+            return true;
+        }
+        state = State::ZeroElevator;
+        elevator.Run(-kElevatorZeroSpeed);
+    } else {
+        // TODO: throw warning that we can't zero the elevator right now
+        // add way to override it?
+    }
+    return false;
 }
