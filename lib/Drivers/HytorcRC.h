@@ -12,9 +12,10 @@ class HytorcRC {
      * @param pwmPort The PWM port that the PWM signal to the motor controller is plugged into
      * @param forwardPort The Hall 1 port of the hall effect (acts as forward signal of a quadrature)
      * @param backwardPort The Hall 2 port of the hall effect (acts as backward signal of a quadrature)
+     * @param invert True to invert the motor output and sensor reading
      * @param gearing The gearing of the motor. (50:1 -> 50, 50:2 -> 25, etc)
      */
-    HytorcRC(int pwmPort, int forwardPort, int backwardPort, double gearing = 5049);
+    HytorcRC(int pwmPort, int forwardPort, int backwardPort, bool invert = false, double gearing = 5049);
 
     /**
      * Setup method for the Hytorc
@@ -51,6 +52,7 @@ class HytorcRC {
    private:
     const int kPWMPort;
     const double kGearing;
+    const bool kInvert;
     static constexpr double kCPR = 16.0;  // Counts Per Revolution
     Servo mMotor;
     Encoder mMotorEncoder;
