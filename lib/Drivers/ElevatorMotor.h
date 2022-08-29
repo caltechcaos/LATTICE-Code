@@ -40,7 +40,7 @@ class ElevatorMotor {
      * Returns the encoder's position
      * @return The encoder's position, in number of rotations
      */
-    double GetEncoder();
+    double GetPosition();
 
    private:
     CTREEncoder encoder;

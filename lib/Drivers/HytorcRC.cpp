@@ -6,7 +6,7 @@
 #include "Constants.h"
 using namespace lattice;
 
-HytorcRC::HytorcRC(int pwmPort, int forwardPort, int backwardPort) : kPWMPort(pwmPort), mMotorEncoder(forwardPort, backwardPort) {}
+HytorcRC::HytorcRC(int pwmPort, int forwardPort, int backwardPort, double gearing) : kPWMPort(pwmPort), mMotorEncoder(forwardPort, backwardPort), kGearing(gearing) {}
 void HytorcRC::Setup() {
     mMotor.attach(kPWMPort);
 }
@@ -17,6 +17,10 @@ void HytorcRC::SetVoltage(double desiredVoltage, double batteryVoltage) {
     SetPercentOutput(desiredVoltage / batteryVoltage);
 }
 
-double HytorcRC::GetEncoderRotation() {
+double HytorcRC::GetPosition() {
     return -mMotorEncoder.read() / kCPR;
+}
+
+void HytorcRC::ResetEncoderPosition() {
+    mMotorEncoder.write(0);
 }

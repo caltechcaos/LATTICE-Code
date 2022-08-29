@@ -1,4 +1,5 @@
 #include <Arduino.h>
+
 #include "CTREEncoder.h"
 #include "Util.h"
 
@@ -10,5 +11,5 @@ void setup() {
 
 void loop() {
     // put your main code here, to run repeatedly:
-    Serial.println(m_encoder.GetEncoderRotation());
+    Serial.println(m_encoder.GetPosition());
 }

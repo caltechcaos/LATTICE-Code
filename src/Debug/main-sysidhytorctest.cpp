@@ -87,7 +87,7 @@ void loop() {
     }
     // Do something with voltage and read position
 
-    measuredPos = mMotor.GetEncoderRotation();
+    measuredPos = mMotor.GetPosition();
 
     printTelemetry(currTime, targetVoltage / 18.0, measuredPos);
 

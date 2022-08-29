@@ -28,7 +28,7 @@ void loop() {
             power = 0;
         }
     }
-    Serial.println(testMotor.GetEncoderRotation());
+    Serial.println(testMotor.GetPosition());
 
     testMotor.SetPercentOutput(power);
 }

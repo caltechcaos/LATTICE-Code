@@ -5,22 +5,22 @@ using namespace lattice;
 // cf. https://docs.revrobotics.com/sparkmax/operating-modes/control-interfaces#pwm-interface
 
 ElevatorMotor::ElevatorMotor(const int kElevatorPin, const int kEncoderFwdPin, const int kEncoderBckPin)
-    : encoder(kEncoderFwdPin, kEncoderBckPin), motor(), kPin(kElevatorPin), brake(false) { }
+    : encoder(kEncoderFwdPin, kEncoderBckPin), motor(), kPin(kElevatorPin), brake(false) {}
 
 void ElevatorMotor::Setup() {
     motor.attach(kPin);
-    Run(0); // Stop it
+    Run(0);  // Stop it
 }
 
 bool ElevatorMotor::Run(double power) {
     if (brake) {
         return false;
-    } 
+    }
     bool success = true;
     if (power < -1) {
         power = -1;
         success = false;
-    } else if(power > 1) {
+    } else if (power > 1) {
         power = 1;
         success = false;
     }
@@ -46,6 +46,6 @@ void ElevatorMotor::Zero() {
     encoder.ResetEncoderPosition();
 }
 
-double ElevatorMotor::GetEncoder() {
-    return encoder.GetEncoderRotation();
+double ElevatorMotor::GetPosition() {
+    return encoder.GetPosition();
 }
