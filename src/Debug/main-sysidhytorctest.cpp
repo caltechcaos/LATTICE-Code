@@ -1,9 +1,9 @@
 #include <Arduino.h>
 
-#include "HytorcRC.h"
+#include "HytorcSimple.h"
 #include "Util.h"
 
-lattice::HytorcRC mMotor{9, 5, 6};
+lattice::HytorcSimple mMotor{9, 5, 6};
 
 constexpr double rampRate = 0.25;       // V/s
 constexpr double dynamicVoltage = 6.0;  // V

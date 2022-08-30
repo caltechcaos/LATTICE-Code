@@ -58,6 +58,7 @@ void Driver::EStop() {
 
 bool Driver::RunElevatorOneTick(double setpoint) {
     double feedback = elevatorCurrent.Get();
+    
     double input;
     bool success;
     std::tie(input, success) = actuatorController.Run(feedback, setpoint);

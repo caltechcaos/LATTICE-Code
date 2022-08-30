@@ -1,9 +1,9 @@
 #include <Arduino.h>
 
-#include "HytorcRC.h"
+#include "HytorcSimple.h"
 #include "Util.h"
 
-lattice::HytorcRC testMotor{9, 5, 6};
+lattice::HytorcSimple testMotor{9, 5, 6};
 void setup() {
     lattice::GenericSetup();
     testMotor.Setup();

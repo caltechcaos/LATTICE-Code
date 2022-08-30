@@ -4,7 +4,7 @@ namespace lattice {
 /**
  * Class for interfacing with the Hytorc BLDC through the Hobby Star RC Motor Controller
  */
-class HytorcRC {
+class HytorcSimple {
    public:
     /**
      * Constructor for the Hytorc Class
@@ -15,7 +15,7 @@ class HytorcRC {
      * @param invert True to invert the motor output and sensor reading
      * @param gearing The gearing of the motor. (50:1 -> 50, 50:2 -> 25, etc)
      */
-    HytorcRC(int pwmPort, int forwardPort, int backwardPort, bool invert = false, double gearing = 5049);
+    HytorcSimple(int pwmPort, int forwardPort, int backwardPort, bool invert = false, double gearing = 5049);
 
     /**
      * Setup method for the Hytorc
