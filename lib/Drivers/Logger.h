@@ -33,6 +33,14 @@ class Logger {
     };
 
     /**
+     * Codes for errors, for display on RC telemetry output
+     * Higher numbers should be assigned to those of higher priority
+     */
+    enum class ErrorCode {
+        Message = 0
+    };
+
+    /**
      * Sets up to use this logger. Must be called before logging to it.
      * Prefer to use a name whenever possible.
      * @param name The name of the current program. Appended to the
@@ -52,10 +60,10 @@ class Logger {
     /**
      * Writes something to the logs.
      * @param priority The priority to write it with
-     * @param messageCode The code for this message, to be displayed on RC telemetry
+     * @param errorCode The code for this message, to be displayed on RC telemetry
      * @param message The message to log
      */
-    void Log(Priority priority, size_t messageCode, std::string message);
+    void Log(Priority priority, ErrorCode errorCode, std::string message);
 
     // Guarantee the singleton
     Logger(Logger const&) = delete;

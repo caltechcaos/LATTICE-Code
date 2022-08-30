@@ -20,8 +20,9 @@ void Logger::SetThresholds(Priority serialMonitorThreshold,
     Logger::rcTelemetryThreshold = rcTelemetryThreshold;
 }
 
-void Logger::Log(Priority priority, size_t messageCode, std::string message) {
-    message = "[" + std::to_string(messageCode) + "] " + GetPriorityString(priority) + message;
+void Logger::Log(Priority priority, ErrorCode errorCode, std::string message) {
+    message = "[" + std::to_string(static_cast<int>(errorCode)) + "] " +
+        GetPriorityString(priority) + message;
     if (priority >= serialMonitorThreshold) {
         serialOut.print(message.c_str());
     }
