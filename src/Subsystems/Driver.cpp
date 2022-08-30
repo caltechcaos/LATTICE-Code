@@ -1,30 +1,30 @@
 #include "Driver.h"
 
+#include <tuple>
+
 #include "FeedforwardUtil.h"
 #include "Util.h"
-#include <tuple>
 
 using namespace lattice;
 
 Driver::Driver()
-    : elevator(kElevatorMotorPin, kElevatorEncoderFwdPin, kElevatorEncoderBckPin),
+    : elevator(ElevatorConstants::kMotorPin, ElevatorConstants::kEncoderFwdPin, ElevatorConstants::kEncoderBckPin),
       /* actuator(), */
-      handoff(kHandoffMotorPin1, kHandoffMotorPin2, kHandoffMotorPin3, kHandoffMotorPin4),
+      handoff(HandoffConstants::kMotorPin1, HandoffConstants::kMotorPin2, HandoffConstants::kMotorPin3, HandoffConstants::kMotorPin4),
       /* rc_input(), rc_output(), */
-      firstStake(kHandoffLimitSwitch1Pin),
-      secondStake(kHandoffLimitSwitch2Pin),
-      thirdStake(kHandoffLimitSwitch3Pin),
-      elevatorZero(kElevatorTopLimitSwitchPin),
-      elevatorEnd(kElevatorBottomLimitSwitchPin),
-      actuatorTemp(kDriverHytorcThermistorPin),
-      actuatorCurrent(kDriverHytorcCurrentPin),
-      elevatorCurrent(kElevatorCurrentPin),
-      elevatorController(kPElevator, kIElevator, kDElevator,
-                         GetElevatorFeedforward(kSElevator, kVElevator, kAElevator, kGElevator, 0, 0)),
-      actuatorController(kPDriver, kIDriver, kDDriver,
-                         GetSimpleFeedforward(kSDriver, kVDriver, kADriver, 0, 0)),
-      state(State::Idle)
-      {}
+      firstStake(HandoffConstants::kLimitSwitch1Pin),
+      secondStake(HandoffConstants::kLimitSwitch2Pin),
+      thirdStake(HandoffConstants::kLimitSwitch3Pin),
+      elevatorZero(ElevatorConstants::kTopLimitSwitchPin),
+      elevatorEnd(ElevatorConstants::kBottomLimitSwitchPin),
+      actuatorTemp(DriverConstants::kHytorcThermistorPin),
+      actuatorCurrent(DriverConstants::kHytorcCurrentPin),
+      elevatorCurrent(ElevatorConstants::kCurrentPin),
+      elevatorController(ElevatorConstants::kP, ElevatorConstants::kI, ElevatorConstants::kD,
+                         GetElevatorFeedforward(ElevatorConstants::kS, ElevatorConstants::kV, ElevatorConstants::kA, ElevatorConstants::kG, 0, 0)),
+      actuatorController(DriverConstants::kP, DriverConstants::kI, DriverConstants::kD,
+                         GetSimpleFeedforward(DriverConstants::kS, DriverConstants::kV, DriverConstants::kA, 0, 0)),
+      state(State::Idle) {}
 
 void Driver::Setup() {
     elevator.Setup();
@@ -57,23 +57,24 @@ void Driver::EStop() {
 
 bool Driver::RunElevatorOneTick(double setpoint) {
     double feedback = elevatorCurrent.Get();
-    double input; bool success; std::tie(input, success) = actuatorController.Run(feedback, setpoint);
+    double input;
+    bool success;
+    std::tie(input, success) = actuatorController.Run(feedback, setpoint);
 
     if (success) {
-        if (input < kElevatorMinVoltage) { // voltage drop
+        if (input < kElevatorMinVoltage) {  // voltage drop
             // TODO: throw a warning that we might be stuck
         }
         if (!elevator.Run(input)) {
             // TODO: throw a warning for elevator input out of bounds
-        } 
+        }
 
         delay(kElevatorLoopDelay);
         if (elevatorEnd.Pushed()) {
             return true;
         }
         // TODO: calculate velocity, if it's zero, throw a warning that we might be stuck
-    }
-    else {
+    } else {
         // TODO: throw a warning for elevator controller not evaluating?
     }
 
@@ -83,7 +84,7 @@ bool Driver::RunElevatorOneTick(double setpoint) {
 bool Driver::ZeroElevator() {
     if (state == State::ZeroElevator) {
         if (elevatorZero.Get()) {
-            elevator.Run(0); // stop
+            elevator.Run(0);  // stop
             state = State::Idle;
             return true;
         }

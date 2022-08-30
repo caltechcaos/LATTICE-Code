@@ -6,52 +6,63 @@
  */
 
 namespace lattice {
-    const int SERIAL_RATE = 115200; // baud
-    const int ANALOG_BITS = 12; // resolution
+constexpr int SERIAL_RATE = 115200;  // baud
+constexpr int ANALOG_BITS = 12;      // resolution
 
-    /**
-     * Sets all parameters. Every main should call this.
-     */
-    void GenericSetup();
+/**
+ * Sets all parameters. Every main should call this.
+ */
+void GenericSetup();
 
-    // PINS
-    const int kJoystickTriggerPin = 0;
-
-    const int kElevatorMotorPin = 0;
-    const int kElevatorEncoderFwdPin = 0;
-    const int kElevatorEncoderBckPin = 0;
-
-    const int kHandoffMotorPin1 = 0;
-    const int kHandoffMotorPin2 = 0;
-    const int kHandoffMotorPin3 = 0;
-    const int kHandoffMotorPin4 = 0;
-
-    const int kHandoffLimitSwitch1Pin = 0;
-    const int kHandoffLimitSwitch2Pin = 0;
-    const int kHandoffLimitSwitch3Pin = 0;
-
-    const int kElevatorTopLimitSwitchPin = 0;
-    const int kElevatorBottomLimitSwitchPin = 0;
-
-    const int kDriverHytorcThermistorPin = 0;
-    const int kDriverHytorcCurrentPin = 0;
-    const int kElevatorCurrentPin = 0;
-
-    // PIDF
-    constexpr double kPElevator = 0;
-    constexpr double kIElevator = 0;
-    constexpr double kDElevator = 0;
-
-    constexpr double kSElevator = 0;
-    constexpr double kVElevator = 0;
-    constexpr double kAElevator = 0;
-    constexpr double kGElevator = 0;
-
-    constexpr double kPDriver = 0;
-    constexpr double kIDriver = 0;
-    constexpr double kDDriver = 0;
-
-    constexpr double kSDriver = 0;
-    constexpr double kVDriver = 0;
-    constexpr double kADriver = 0;
+namespace CliffordConstants {
+constexpr int kJoystickTriggerPin = 0;
 }
+
+namespace ElevatorConstants {
+constexpr int kMotorPin = 0;
+constexpr int kEncoderFwdPin = 0;
+constexpr int kEncoderBckPin = 0;
+
+constexpr int kTopLimitSwitchPin = 0;
+constexpr int kBottomLimitSwitchPin = 0;
+
+constexpr int kCurrentPin = 0;
+
+constexpr double kP = 0;
+constexpr double kI = 0;
+constexpr double kD = 0;
+
+constexpr double kS = 0;
+constexpr double kV = 0;
+constexpr double kA = 0;
+constexpr double kG = 0;
+}  // namespace ElevatorConstants
+
+namespace HandoffConstants {
+constexpr int kMotorPin1 = 0;
+constexpr int kMotorPin2 = 0;
+constexpr int kMotorPin3 = 0;
+constexpr int kMotorPin4 = 0;
+
+constexpr int kLimitSwitch1Pin = 0;
+constexpr int kLimitSwitch2Pin = 0;
+constexpr int kLimitSwitch3Pin = 0;
+
+}  // namespace HandoffConstants
+
+namespace DriverConstants {
+
+constexpr int kHytorcThermistorPin = 0;
+constexpr int kHytorcCurrentPin = 0;
+
+constexpr double kP = 0;
+constexpr double kI = 0;
+constexpr double kD = 0;
+
+constexpr double kS = 0;
+constexpr double kV = 0;
+constexpr double kA = 0;
+
+}  // namespace DriverConstants
+
+}  // namespace lattice
