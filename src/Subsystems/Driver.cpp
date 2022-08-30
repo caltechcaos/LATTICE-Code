@@ -1,8 +1,9 @@
 #include "Driver.h"
 
+#include <tuple>
+
 #include "FeedforwardUtil.h"
 #include "Util.h"
-#include <tuple>
 
 using namespace lattice;
 
@@ -23,8 +24,7 @@ Driver::Driver()
                          GetElevatorFeedforward(kSElevator, kVElevator, kAElevator, kGElevator, 0, 0)),
       actuatorController(kPDriver, kIDriver, kDDriver,
                          GetSimpleFeedforward(kSDriver, kVDriver, kADriver, 0, 0)),
-      state(State::Idle)
-      {}
+      state(State::Idle) {}
 
 void Driver::Setup() {
     elevator.Setup();
@@ -57,23 +57,24 @@ void Driver::EStop() {
 
 bool Driver::RunElevatorOneTick(double setpoint) {
     double feedback = elevatorCurrent.Get();
-    double input; bool success; std::tie(input, success) = actuatorController.Run(feedback, setpoint);
+    double input;
+    bool success;
+    std::tie(input, success) = actuatorController.Run(feedback, setpoint);
 
     if (success) {
-        if (input < kElevatorMinVoltage) { // voltage drop
+        if (input < kElevatorMinVoltage) {  // voltage drop
             // TODO: throw a warning that we might be stuck
         }
         if (!elevator.Run(input)) {
             // TODO: throw a warning for elevator input out of bounds
-        } 
+        }
 
         delay(kElevatorLoopDelay);
         if (elevatorEnd.Pushed()) {
             return true;
         }
         // TODO: calculate velocity, if it's zero, throw a warning that we might be stuck
-    }
-    else {
+    } else {
         // TODO: throw a warning for elevator controller not evaluating?
     }
 
@@ -83,7 +84,7 @@ bool Driver::RunElevatorOneTick(double setpoint) {
 bool Driver::ZeroElevator() {
     if (state == State::ZeroElevator) {
         if (elevatorZero.Get()) {
-            elevator.Run(0); // stop
+            elevator.Run(0);  // stop
             state = State::Idle;
             return true;
         }

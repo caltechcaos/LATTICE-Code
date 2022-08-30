@@ -69,7 +69,8 @@ class Driver {
     PIDF actuatorController;
 
     enum class State {
-        Idle, ZeroElevator
+        Idle,
+        ZeroElevator
     };
 
     State state;
