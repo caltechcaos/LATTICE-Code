@@ -2,27 +2,31 @@
 
 using namespace lattice;
 
-Logger::Logger() : serialMonitorThreshold(Priority::Log),
-                   rcTelemetryThreshold(Priority::Warning),
-                   fileThreshold(Priority::Verbose) {}
+Logger::Logger() : serialMonitorThreshold(Priority::Verbose),
+                   rcTelemetryThreshold(Priority::Warning) {}
+
+bool Logger::Setup(std::string name) {
+    if (name != "") {
+        serialOut.print("===== ");
+        serialOut.print(name.c_str());
+        serialOut.println(" =====");
+    }
+    return true;
+}
 
 void Logger::SetThresholds(Priority serialMonitorThreshold,
-                           Priority rcTelemetryThreshold, Priority fileThreshold) {
+                           Priority rcTelemetryThreshold) {
     Logger::serialMonitorThreshold = serialMonitorThreshold;
     Logger::rcTelemetryThreshold = rcTelemetryThreshold;
-    Logger::fileThreshold = fileThreshold;
 }
 
 void Logger::Log(Priority priority, size_t messageCode, std::string message) {
-    message = GetPriorityString(priority) + "[" + std::to_string(messageCode) + "] " + message;
+    message = "[" + std::to_string(messageCode) + "] " + GetPriorityString(priority) + message;
     if (priority >= serialMonitorThreshold) {
         serialOut.print(message.c_str());
     }
-    if (priority >= fileThreshold) {
-        //
-    }
     if (priority >= rcTelemetryThreshold) {
-        //
+        // TODO: implement rc telemetry output
     }
 }
 

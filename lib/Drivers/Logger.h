@@ -1,6 +1,8 @@
 #pragma once
 #include <Arduino.h>
 
+#undef min
+#undef max
 #include <string>
 
 namespace lattice {
@@ -24,21 +26,28 @@ class Logger {
      * Priority levels for each message logged
      */
     enum class Priority {
-        Verbose,
-        Log,
-        Warning,
-        Error
+        Verbose,    // Not necessary for normal operation
+        Log,        // Normal operation
+        Warning,    // Shouldn't occur, but not a deal-breaker
+        Error       // Code cannot meaningfully continue after this
     };
+
+    /**
+     * Sets up to use this logger. Must be called before logging to it.
+     * Prefer to use a name whenever possible.
+     * @param name The name of the current program. Appended to the
+     *      start of the new log file
+     * @returns True on success, false otherwise
+     */
+    bool Setup(std::string name = "");
 
     /**
      * Sets the thresholds at which point something should
      * appear in the respective outputs, inclusive
-     * @param serialMonitorThreshold Threshold for Serial Monitor (default: Log)
+     * @param serialMonitorThreshold Threshold for Serial Monitor and file (default: Verbose)
      * @param rcTelemetryThreshold Threshold for RC telemetry (default: Warning)
-     * @param fileThreshold Threshold for file logging (default: Verbose)
      */
-    void SetThresholds(Priority serialMonitorThreshold, Priority rcTelemetryThreshold,
-                       Priority fileThreshold);
+    void SetThresholds(Priority serialMonitorThreshold, Priority rcTelemetryThreshold);
 
     /**
      * Writes something to the logs.
@@ -61,7 +70,6 @@ class Logger {
     // At what priority level should something be logged in each
     Priority serialMonitorThreshold;
     Priority rcTelemetryThreshold;
-    Priority fileThreshold;
 
     // The Serial Monitor output to print to. Don't change unless
     // you have very good reason to
