@@ -8,22 +8,23 @@
 using namespace lattice;
 
 Driver::Driver()
-    : elevator(kElevatorMotorPin, kElevatorEncoderFwdPin, kElevatorEncoderBckPin),
+    : elevator(ElevatorConstants::kMotorPin, ElevatorConstants::kEncoderFwdPin, ElevatorConstants::kEncoderBckPin),
       /* actuator(), */
-      handoff(kHandoffMotorPin1, kHandoffMotorPin2, kHandoffMotorPin3, kHandoffMotorPin4),
+      handoff(HandoffConstants::kMotorPin1, HandoffConstants::kMotorPin2, HandoffConstants::kMotorPin3, HandoffConstants::kMotorPin4),
       /* rc_input(), rc_output(), */
-      firstStake(kHandoffLimitSwitch1Pin),
-      secondStake(kHandoffLimitSwitch2Pin),
-      thirdStake(kHandoffLimitSwitch3Pin),
-      elevatorZero(kElevatorTopLimitSwitchPin),
-      elevatorEnd(kElevatorBottomLimitSwitchPin),
-      actuatorTemp(kDriverHytorcThermistorPin),
-      actuatorCurrent(kDriverHytorcCurrentPin),
-      elevatorCurrent(kElevatorCurrentPin),
-      elevatorController(kPElevator, kIElevator, kDElevator,
-                         GetElevatorFeedforward(kSElevator, kVElevator, kAElevator, kGElevator, 0, 0)),
-      actuatorController(kPDriver, kIDriver, kDDriver,
-                         GetSimpleFeedforward(kSDriver, kVDriver, kADriver, 0, 0)),
+      firstStake(HandoffConstants::kLimitSwitch1Pin),
+      secondStake(HandoffConstants::kLimitSwitch2Pin),
+      thirdStake(HandoffConstants::kLimitSwitch3Pin),
+      elevatorZero(ElevatorConstants::kTopLimitSwitchPin),
+      elevatorEnd(ElevatorConstants::kBottomLimitSwitchPin),
+      actuatorTemp(DriverConstants::kHytorcThermistorPin),
+      actuatorCurrent(DriverConstants::kHytorcCurrentPin),
+      elevatorCurrent(ElevatorConstants::kCurrentPin),
+      // TODO: these shouldn't be called with 0s, I think
+      elevatorController(ElevatorConstants::kP, ElevatorConstants::kI, ElevatorConstants::kD,
+                         GetElevatorFeedforward(ElevatorConstants::kS, ElevatorConstants::kV, ElevatorConstants::kA, ElevatorConstants::kG, 0, 0)),
+      actuatorController(DriverConstants::kP, DriverConstants::kI, DriverConstants::kD,
+                         GetSimpleFeedforward(DriverConstants::kS, DriverConstants::kV, DriverConstants::kA, 0, 0)),
       state(State::Idle) {}
 
 void Driver::Setup() {

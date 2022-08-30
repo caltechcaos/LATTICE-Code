@@ -1,6 +1,9 @@
 #include <Arduino.h>
 
+#include "HytorcRC.h"
 #include "Util.h"
+
+lattice::HytorcRC mMotor{9, 5, 6};
 
 constexpr double rampRate = 0.25;       // V/s
 constexpr double dynamicVoltage = 6.0;  // V
@@ -14,6 +17,7 @@ bool enabled = false;
 
 void setup() {
     lattice::GenericSetup();
+    mMotor.Setup();
 }
 
 void printTestStart(bool quasistatic, int dir) {
@@ -76,13 +80,16 @@ void loop() {
     long currTime = millis();
     if (enabled) {
         targetVoltage = dir * getVoltageCommand(quasistatic, rampRate, dynamicVoltage, startTime, currTime);
+        mMotor.SetPercentOutput(targetVoltage / 18.0);
     } else {
         targetVoltage = 0.0;
+        mMotor.SetPercentOutput(0);
     }
     // Do something with voltage and read position
-    measuredPos = targetVoltage;
 
-    printTelemetry(currTime, targetVoltage, measuredPos);
+    measuredPos = mMotor.GetPosition();
+
+    printTelemetry(currTime, targetVoltage / 18.0, measuredPos);
 
     // 5 ms dt
     delay(5);

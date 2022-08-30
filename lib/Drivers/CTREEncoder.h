@@ -12,8 +12,9 @@ class CTREEncoder {
      *
      * @param encoderForwardPort The A channel of the CTRE Mag Encoder
      * @param encoderBackwardPort The B channel of the CTRE Mag Encoder
+     * @param gearing The gearing of the motor. (50:1 -> 50, 50:2 -> 25, etc)
      */
-    CTREEncoder(int encoderForwardPort, int encoderBackwardPort);
+    CTREEncoder(int encoderForwardPort, int encoderBackwardPort, double gearing = 1.0);
 
     /**
      * Gets the raw encoder position in counts
@@ -27,7 +28,7 @@ class CTREEncoder {
      *
      * @return The encoder position in rotations
      */
-    double GetEncoderRotation();
+    double GetPosition();
 
     /**
      * Sets the encoder position to zero
@@ -36,6 +37,7 @@ class CTREEncoder {
 
    private:
     Encoder mEncoder;
-    const double kCPR = 4096.0;  // counts per rotation
+    const double kGearing;
+    static constexpr double kCPR = 4096.0;  // counts per rotation
 };
 }  // namespace lattice

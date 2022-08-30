@@ -3,7 +3,7 @@
 #include "Lidar.h"
 
 lattice::Lidar lidar1{};
-lattice::Lidar lidar2{lattice::Lidar::kOne};
+lattice::Lidar lidar2{lattice::WireType::kOne};
 void setup() {
     Serial.begin(115200);
     lidar1.Setup();

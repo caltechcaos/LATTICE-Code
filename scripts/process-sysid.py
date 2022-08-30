@@ -1,12 +1,14 @@
 import json
 import re
 import numpy as np
+import matplotlib.pyplot as plt
 from scipy.signal import medfilt
 
-filename = "scripts/loggingtest.txt"
-outfile = "test.json"
 
-rotational_conversion_factor = 0.5
+filename = "sysid-in/hytorc-test.txt"
+outfile = "sysid-out/hytorc-test.json"
+
+rotational_conversion_factor = -1/16 / 5000
 rotation_to_measurement_factor = 1
 test_type = "Simple"
 unit = "Rotations"
@@ -35,6 +37,7 @@ with open(filename, "r") as f:
         elif test_start:  # data
             if "," in line:
                 data = [float(x) for x in line.split(", ")]
+                data[0] /= 1000
                 data_dict[test_name].append(data)
 
 
@@ -55,7 +58,8 @@ def process_velocity(testdata):
     ).reshape(-1, 1)
     data[:, pos_col] *= rotational_conversion_factor
     data[:, pos_col + 1] *= rotational_conversion_factor
-
+    plt.plot(data[:, 0], data[:, pos_col], marker = "o")
+    plt.show()
     return data.tolist()
 
 

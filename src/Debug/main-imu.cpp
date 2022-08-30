@@ -4,7 +4,7 @@
 #include "Util.h"
 
 lattice::IMU imu1;
-lattice::IMU imu2{lattice::IMU::WireType::kOne};
+lattice::IMU imu2{lattice::WireType::kOne};
 
 void setup() {
     lattice::GenericSetup();
