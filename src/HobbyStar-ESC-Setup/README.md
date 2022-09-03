@@ -13,6 +13,6 @@ The following code is meant to set up the HobbyStar 120 A ESC.
 10) Download the StarLink USB Software using the link above.
 11) Open the software, set the motor to forward/backward mode, and set backwards throttle to 100% (the motor is configured by default to run backwards at slower speeds so we set backwards to also be able to hit full speed)
 12) See the following for more information:
-The ESC we have: https://hobbystarlabs.com/hobbystar-120a-brushless-sensored-esc-2-6s.html#.YxKdTnbMIuW
-Interfacing with the ESC: https://lattice22.atlassian.net/wiki/spaces/L/pages/56983583/RC+ESC
-ESCs in general: https://lattice22.atlassian.net/wiki/spaces/L/pages/47054873/ESCs+for+BLDCs
+- The ESC we have: https://hobbystarlabs.com/hobbystar-120a-brushless-sensored-esc-2-6s.html#.YxKdTnbMIuW
+- Interfacing with the ESC: https://lattice22.atlassian.net/wiki/spaces/L/pages/56983583/RC+ESC
+- ESCs in general: https://lattice22.atlassian.net/wiki/spaces/L/pages/47054873/ESCs+for+BLDCs
