@@ -1,7 +1,7 @@
 The following code is meant to set up the HobbyStar 120 A ESC.
 
 1) Wire the following circuit (will be linked when I put images in folder), **but** keep the Arduino signal wire *disconnected*.
-![alt text](https://github.com/KPulungan/LATTICE-Code/blob/patch-1/src/HobbyStar-ESC-Setup/HobbyStar-ESC-Setup.ino)
+![alt text](https://github.com/KPulungan/LATTICE-Code/blob/patch-1/src/HobbyStar-ESC-Setup/ESC%20calibration_schem.png)
 2) With the ESC switched off, attach the ESC to 18 V from the benchtop power supply, and power on the Arduino.
 3) Press the button attached to pin 2 (activates fastest forwards PWM signal).
 4) Hold the small "set" button down and turn on ESC while still holding the "set" button. After about 4 seconds the LED will turn SOLID BLUE.
