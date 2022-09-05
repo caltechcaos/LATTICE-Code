@@ -14,5 +14,10 @@ void setup() {
 
 void loop() {
     controller.Update();
-    atrv.Move((double)(controller.GetRudder()) / 2, controller.GetThrottle());
+    double x = (double)(controller.GetRudder()) / 2;
+    double y = controller.GetThrottle();
+    Serial.print(x);
+    Serial.print(", ");
+    Serial.println(y);
+    atrv.Move(x, y);
 }
