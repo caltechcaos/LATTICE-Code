@@ -9,8 +9,10 @@ auto& atrv = lattice::Clifford::clifford();
 void setup() {
     lattice::GenericSetup();
     atrv.Setup();
+    controller.Setup();
 }
 
 void loop() {
-    atrv.Move((double)(controller.GetRudder() - 342) / (1700 - 342), controller.GetThrottle());
+    controller.Update();
+    atrv.Move((double)(controller.GetRudder()) / 2, controller.GetThrottle());
 }
