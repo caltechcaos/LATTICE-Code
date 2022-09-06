@@ -3,10 +3,9 @@
 #include <Arduino.h>
 
 using namespace lattice;
-RC::RC(UARTClass comSerial, UARTClass logSerial, int rxPin, int powerPin, int onboardLEDPin) : mSatellite(comSerial), mComSerial(comSerial), mLogSerial(logSerial), kRxPin(rxPin), kPowerPin(powerPin), kOnboardLEDPin(onboardLEDPin) {}
+RC::RC(UARTClass comSerial, int rxPin, int powerPin, int onboardLEDPin) : mSatellite(comSerial), mComSerial(comSerial), kRxPin(rxPin), kPowerPin(powerPin), kOnboardLEDPin(onboardLEDPin) {}
 
 void RC::Setup() {
-    mSatellite.setLog(mLogSerial);
     pinMode(kOnboardLEDPin, OUTPUT);
     digitalWrite(kOnboardLEDPin, HIGH);
 
@@ -18,6 +17,7 @@ void RC::Setup() {
 
 void RC::Update() {
     if (!mSatellite.getFrame()) {
+        mBinded = false;
         auto currTime = millis();
         if (currTime - mPrevBlink >= kLEDBlink) {
             mLEDState != mLEDState;
@@ -25,26 +25,35 @@ void RC::Update() {
             mPrevBlink = currTime;
         }
     } else {
+        mBinded = true;
         digitalWrite(kOnboardLEDPin, HIGH);
     }
 }
 
 double RC::GetThrottle() {
-    double rawPercent = (double)(mSatellite.getThrottle() - kMinThrottle) / (kMaxThrottle - kMinThrottle);
-    return rawPercent;
+    if (mBinded) {
+        double rawPercent = (double)(mSatellite.getThrottle() - kMinThrottle) / (kMaxThrottle - kMinThrottle);
+        return rawPercent;
+    } else {
+        return 0.0;
+    }
 }
 
 int RC::ProcessMinMidMaxInput(u_int16_t value) {
-    switch (value) {
-        case kMinThrottle:
-            return 0;
-            break;
-        case kMidThrottle:
-            return 1;
-            break;
-        case kMaxThrottle:
-            return 2;
-            break;
+    if (mBinded) {
+        switch (value) {
+            case kMinThrottle:
+                return 0;
+                break;
+            case kMidThrottle:
+                return 1;
+                break;
+            case kMaxThrottle:
+                return 2;
+                break;
+        }
+    } else {
+        return 0;
     }
 }
 
@@ -58,11 +67,23 @@ int RC::GetRudder() {
     return ProcessMinMidMaxInput(mSatellite.getRudder());
 }
 int RC::GetGear() {
-    return mSatellite.getGear();
+    if (mBinded) {
+        return mSatellite.getGear();
+    } else {
+        return 0.0;
+    }
 }
 int RC::GetAux1() {
-    return mSatellite.getAux1();
+    if (mBinded) {
+        return mSatellite.getAux1();
+    } else {
+        return 0.0;
+    }
 }
 int RC::GetAux2() {
-    return mSatellite.getAux2();
+    if (mBinded) {
+        return mSatellite.getAux2();
+    } else {
+        return 0.0;
+    }
 }
