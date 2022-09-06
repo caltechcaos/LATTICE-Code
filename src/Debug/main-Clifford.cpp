@@ -4,7 +4,7 @@
 #include "Subsystems/Clifford.h"
 #include "Util.h"
 
-lattice::RC controller(Serial1, Serial, 19, 2, 13);
+lattice::RC controller(Serial1, 19, 2, 13);
 auto& atrv = lattice::Clifford::clifford();
 void setup() {
     lattice::GenericSetup();
@@ -14,8 +14,9 @@ void setup() {
 
 void loop() {
     controller.Update();
-    double x = (double)(controller.GetRudder()) / 2;
+    double x = (double)(controller.GetRudder()); // /2
     double y = controller.GetThrottle();
+    //Serial.print("Hi");
     Serial.print(x);
     Serial.print(", ");
     Serial.println(y);

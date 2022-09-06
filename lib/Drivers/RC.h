@@ -19,7 +19,7 @@ class RC {
      * @param powerPin The power pin the module is plugged into
      * @param onboardLEDPin The pin of the onboard LED
      */
-    RC(UARTClass comSerial, int rxPin, int powerPin, int onboardLEDPin);
+    RC(UARTClass& comSerial, int rxPin, int powerPin, int onboardLEDPin);
 
     /**
      * Sets up the RC to be in bind mode
@@ -49,7 +49,7 @@ class RC {
     /**
      * Gets the Rudder value as an integer 0, 1, 2
      */
-    int GetRudder();
+    double GetRudder();
 
     /**
      * Gets the gear value as an integer (don't know the output format).
@@ -68,7 +68,7 @@ class RC {
 
    private:
     int ProcessMinMidMaxInput(u_int16_t value);
-    UARTClass mComSerial;
+    UARTClass& mComSerial;
     SpektrumSatellite<uint16_t> mSatellite;
     const int kRxPin;
     const int kPowerPin;

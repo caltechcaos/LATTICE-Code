@@ -3,7 +3,7 @@
 #include <Arduino.h>
 
 using namespace lattice;
-RC::RC(UARTClass comSerial, int rxPin, int powerPin, int onboardLEDPin) : mSatellite(comSerial), mComSerial(comSerial), kRxPin(rxPin), kPowerPin(powerPin), kOnboardLEDPin(onboardLEDPin) {}
+RC::RC(UARTClass& comSerial, int rxPin, int powerPin, int onboardLEDPin) : mSatellite(comSerial), mComSerial(comSerial), kRxPin(rxPin), kPowerPin(powerPin), kOnboardLEDPin(onboardLEDPin) {}
 
 void RC::Setup() {
     pinMode(kOnboardLEDPin, OUTPUT);
@@ -17,7 +17,7 @@ void RC::Setup() {
 
 void RC::Update() {
     if (!mSatellite.getFrame()) {
-        mBinded = false;
+        //mBinded = false;
         auto currTime = millis();
         if (currTime - mPrevBlink >= kLEDBlink) {
             mLEDState != mLEDState;
@@ -41,17 +41,18 @@ double RC::GetThrottle() {
 
 int RC::ProcessMinMidMaxInput(u_int16_t value) {
     if (mBinded) {
-        switch (value) {
-            case kMinThrottle:
-                return 0;
-                break;
-            case kMidThrottle:
-                return 1;
-                break;
-            case kMaxThrottle:
-                return 2;
-                break;
-        }
+        // switch (value) {
+        //     case kMinThrottle:
+        //         return 0;
+        //         break;
+        //     case kMidThrottle:
+        //         return 1;
+        //         break;
+        //     case kMaxThrottle:
+        //         return 2;
+        //         break;
+        //}
+        return value;
     } else {
         return 0;
     }
@@ -63,8 +64,13 @@ int RC::GetAileron() {
 int RC::GetElevator() {
     return ProcessMinMidMaxInput(mSatellite.getElevator());
 }
-int RC::GetRudder() {
-    return ProcessMinMidMaxInput(mSatellite.getRudder());
+double RC::GetRudder() {
+    if (mBinded) {
+        double rawPercent = (double)(mSatellite.getRudder() - kMinThrottle) / (kMaxThrottle - kMinThrottle);
+        return rawPercent;
+    } else {
+        return 0.0;
+    }
 }
 int RC::GetGear() {
     if (mBinded) {
