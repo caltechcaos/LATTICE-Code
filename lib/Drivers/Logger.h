@@ -26,10 +26,11 @@ class Logger {
      * Priority levels for each message logged
      */
     enum class Priority {
-        Verbose,    // Not necessary for normal operation
-        Log,        // Normal operation
-        Warning,    // Shouldn't occur, but not a deal-breaker
-        Error       // Code cannot meaningfully continue after this
+        Verbose,        // Not necessary for normal operation
+        Log,            // Normal operation
+        MinorWarning,    // Shouldn't occur, but not a deal-breaker. Deals with programatic errors
+        Warning,        // As above, but warnings that affect operation.
+        Error           // Code cannot meaningfully continue after this
     };
 
     /**
@@ -37,7 +38,14 @@ class Logger {
      * Higher numbers should be assigned to those of higher priority
      */
     enum class ErrorCode {
-        Message = 0
+        Message = 0,
+        // >= 10 : Minor warning
+        ControllerNotEvaluating = 50,
+        InputOutOfBounds = 51,
+        // >=100 : Warning
+        ElevatorWrongState = 105,
+        ElevatorStuckVoltage = 110,
+        ElevatorStuckPosition = 111
     };
 
     /**

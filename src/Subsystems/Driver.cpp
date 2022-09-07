@@ -11,7 +11,8 @@ Driver::Driver()
     : elevator(ElevatorConstants::kMotorPin, ElevatorConstants::kEncoderFwdPin, ElevatorConstants::kEncoderBckPin),
       /* actuator(), */
       handoff(HandoffConstants::kMotorPin1, HandoffConstants::kMotorPin2, HandoffConstants::kMotorPin3, HandoffConstants::kMotorPin4),
-      /* rc_input(), rc_output(), */
+      /* rc_input() */
+      logger(Logger::logger()),
       firstStake(HandoffConstants::kLimitSwitch1Pin),
       secondStake(HandoffConstants::kLimitSwitch2Pin),
       thirdStake(HandoffConstants::kLimitSwitch3Pin),
@@ -61,23 +62,34 @@ bool Driver::RunElevatorOneTick(double setpoint) {
     
     double input;
     bool success;
-    std::tie(input, success) = actuatorController.Run(feedback, setpoint);
+    std::tie(input, success) = elevatorController.Run(feedback, setpoint);
 
     if (success) {
         if (input < kElevatorMinVoltage) {  // voltage drop
-            // TODO: throw a warning that we might be stuck
+            logger.Log(Logger::Priority::Warning, Logger::ErrorCode::ElevatorStuckVoltage,
+                "Elevator stuck: voltage was " + std::to_string(input) +
+                " and threshold was " + std::to_string(kElevatorMinVoltage));
         }
         if (!elevator.Run(input)) {
-            // TODO: throw a warning for elevator input out of bounds
+            logger.Log(Logger::Priority::MinorWarning, Logger::ErrorCode::InputOutOfBounds,
+                "Elevator input out of bounds: input was " + std::to_string(input));
         }
 
+        double pos = elevator.GetPosition();
+
         delay(kElevatorLoopDelay);
+
         if (elevatorEnd.Pushed()) {
             return true;
         }
-        // TODO: calculate velocity, if it's zero, throw a warning that we might be stuck
+        if (elevator.GetPosition() == pos) {
+            logger.Log(Logger::Priority::Warning, Logger::ErrorCode::ElevatorStuckPosition,
+                "Elevator stuck: position hasn't changed from " + std::to_string(pos));
+        }
     } else {
-        // TODO: throw a warning for elevator controller not evaluating?
+        logger.Log(Logger::Priority::MinorWarning, Logger::ErrorCode::ControllerNotEvaluating,
+            "Elevator controller returned false on setpoint " + std::to_string(setpoint) +
+            ", feedback " + std::to_string(feedback));
     }
 
     return false;
@@ -92,14 +104,17 @@ bool Driver::ZeroElevator() {
         }
     } else if (state == State::Idle) {
         if (elevatorZero.Get()) {
-            // TODO: throw warning of trying to zero elevator when already zeroed
+            logger.Log(Logger::Priority::Warning, Logger::ErrorCode::ElevatorWrongState,
+                "Tried to zero elevator but it was already zeroed");
             return true;
         }
         state = State::ZeroElevator;
         elevator.Run(-kElevatorZeroSpeed);
     } else {
-        // TODO: throw warning that we can't zero the elevator right now
-        // add way to override it?
+        logger.Log(Logger::Priority::Warning, Logger::ErrorCode::ElevatorWrongState,
+            "Tried to zero elevator, but cannot do so from state " +
+            std::to_string(static_cast<int>(state)));
+        // TODO: add way to override it?
     }
     return false;
 }

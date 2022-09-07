@@ -6,6 +6,7 @@
 #include "LimitSwitch.h"
 #include "PIDF.h"
 #include "Thermistor.h"
+#include "Logger.h"
 
 namespace lattice {
 class Driver {
@@ -52,7 +53,7 @@ class Driver {
     HandoffMotor handoff;
 
     // RCInput rcInput;
-    // Logger rcOutput;
+    Logger &logger;
 
     LimitSwitch firstStake;
     LimitSwitch secondStake;

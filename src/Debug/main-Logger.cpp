@@ -12,7 +12,8 @@ void loop() {
 
     logger.Log(P::Verbose, E::Message, "verbose");
     logger.Log(P::Log, E::Message, "Log.");
-    logger.Log(P::Warning, E::Message, "Warning");
+    logger.Log(P::MinorWarning, E::Message, "Minor Warning");
+    logger.Log(P::Warning, E::Message, "Warning :(");
     logger.Log(P::Error, E::Message, "Error!!");
     delay(10000); // 10 seconds
 }
