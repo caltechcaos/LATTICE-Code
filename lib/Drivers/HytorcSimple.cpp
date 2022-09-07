@@ -3,6 +3,9 @@
 #include <Arduino.h>
 #include <Servo.h>
 
+//#include <algorithm>
+#include <cmath>
+
 #include "Constants.h"
 using namespace lattice;
 
@@ -15,11 +18,13 @@ void HytorcSimple::SetPercentOutput(double percentOut) {
     mMotor.writeMicroseconds(1000 + 1000 * (percentOut * 0.5 + 0.5));
 }
 void HytorcSimple::SetVoltage(double desiredVoltage, double batteryVoltage) {
+    double actualVoltage = abs(desiredVoltage) > batteryVoltage ? batteryVoltage : desiredVoltage;
+    desiredVoltage = std::copysign(actualVoltage, desiredVoltage);
     SetPercentOutput(desiredVoltage / batteryVoltage);
 }
 
 double HytorcSimple::GetPosition() {
-    return (kInvert ? 1 : -1) * mMotorEncoder.read() / kCPR;  // Currently, the default hall behaviour is clockwise negative so we negate the sign in the non-invert case
+    return (kInvert ? -1 : 1) * mMotorEncoder.read() / kCPR;
 }
 
 void HytorcSimple::ResetEncoderPosition() {
