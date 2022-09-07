@@ -1,18 +1,19 @@
 // NOTE: Deprecated for splitting into Shuttle and Driver
 #include <Arduino.h>
+
 #include "RC.h"
 #include "Subsystems/Clifford.h"
-#include "Subsystems/Shuttle.h"
 #include "Subsystems/Driver.h"
+#include "Subsystems/Shuttle.h"
 #include "Util.h"
 
 #define RPMSCALE 5700
 
-lattice::RC controller(Serial1, 19, 2, 13); // TODO: Use correct wiring when ATVR is fixed
+lattice::RC controller(Serial1, 19, 2, 13);  // TODO: Use correct wiring when ATVR is fixed
 lattice::Clifford &clifford = lattice::Clifford::clifford();
 lattice::Driver &driver = lattice::Driver::driver();
 lattice::Shuttle &shuttle = lattice::Shuttle::GetInstance();
-lattice::HytorcSimple hytorcSimple{9, 5, 6}; // TODO: Temp Ports
+lattice::HytorcSimple hytorcSimple{9, 5, 6};  // TODO: Temp Ports
 
 // Runs at init
 void setup() {
@@ -39,7 +40,7 @@ bool updateElevator(double y, double drill) {
 
 // Horizontal: Drive Left/Right
 bool updateShuttle(double x) {
-    shuttle.SetMotionMotors(x * RPMSCALE);
+    shuttle.SetMotion(x * RPMSCALE);
     return true;
 }
 

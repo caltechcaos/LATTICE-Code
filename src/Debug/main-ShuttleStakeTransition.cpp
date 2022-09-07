@@ -13,49 +13,47 @@ lattice::RC controller{Serial1, 19, 2, 13};
 int testState = 0;
 constexpr double takeup = 0.25;
 constexpr int kPeriod = 20;
-
+bool enable = false;
+bool armTransition = false;
+bool initial = false;
 void run() {
+    shuttle.UpdateSensors();
     if (Serial.available()) {
         char input = (uint8_t)Serial.read();
         if (input == 'a') {
-            testState = 1;
-            shuttle.StartArmTransition(lattice::Shuttle::kBothArmsRaised);
+            shuttle.SetFrontLimitSwitch(lattice::Shuttle::kLeft);
         } else if (input == 'b') {
-            testState = 2;
-            shuttle.StartArmTransition(lattice::Shuttle::kLeftArmRaised);
+            shuttle.SetFrontLimitSwitch(lattice::Shuttle::kRight);
         } else if (input == 'c') {
-            testState = 3;
+            initial = true;
             shuttle.StartArmTransition(lattice::Shuttle::kRightArmRaised);
-        } else if (input == 'd') {
-            testState = 4;
-            shuttle.StartArmTransition(lattice::Shuttle::kBothArmsRaisedNormal);
+        } else if (input == 's') {
+            enable = true;
+            Serial.println("----------------");
         } else if (input == 'e') {
-            testState = 0;
-        } else if (input == 'r') {
-            testState = 0;
-            shuttle.ResetArmPositions();
+            enable = false;
         }
     }
 
-    if (testState == 1) {
-        if (shuttle.ArmTransition(lattice::Shuttle::ArmTransitionPositions::kBothArmsRaised)) {
-            testState = 0;
-        }
-    } else if (testState == 2) {
-        if (shuttle.ArmTransition(lattice::Shuttle::ArmTransitionPositions::kLeftArmRaised)) {
-            testState = 0;
-        }
-    } else if (testState == 3) {
-        if (shuttle.ArmTransition(lattice::Shuttle::ArmTransitionPositions::kRightArmRaised)) {
-            testState = 0;
-        }
-    } else if (testState == 4) {
-        if (shuttle.ArmTransition(lattice::Shuttle::ArmTransitionPositions::kBothArmsRaisedNormal)) {
-            testState = 0;
+    if (enable) {
+        if (initial) {
+            initial = !shuttle.ArmTransition(lattice::Shuttle::kBothArmsRaisedNormal);
+            Serial.println("10000000000");
+        } else {
+            if (!armTransition) {
+                armTransition = shuttle.ConstantTakeupDrive();
+                Serial.println("2000000000");
+            } else {
+                armTransition = !shuttle.StakeTransition();
+                Serial.println("3000000000");
+            }
         }
     } else {
+        shuttle.StopMotionMotors();
         shuttle.SetTensionArmPowers(0, 0);
+        Serial.println("000000000000");
     }
+
     Serial.print(shuttle.GetLeftSetpoint());
     Serial.print(", ");
     Serial.print(shuttle.GetRightSetpoint());
@@ -71,6 +69,7 @@ void setup() {
     lattice::GenericSetup();
     shuttle.Setup();
     shuttle.SetTakeup(takeup);
+    shuttle.SetFrontLimitSwitch(lattice::Shuttle::kLeft);
     ts.addTask(mainLoop);
     delay(500);
     mainLoop.enable();

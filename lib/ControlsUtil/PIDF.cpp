@@ -1,5 +1,8 @@
 #include "PIDF.h"
 
+#ifdef ARDUINO_SAM_DUE
+#include <Arduino.h>
+#endif
 using namespace lattice;
 
 PIDF::PIDF(const double kP, const double kI, const double kD,
@@ -42,5 +45,7 @@ double PIDF::CalcD() {
 }
 
 bool PIDF::AtTarget() {
-    return abs(mSetpoint - mHistory.Get(0)) < kMaxError && abs(CalcD()) < kMaxDerivError;
+    // Serial.println(mHistory.Get(0));
+    double error = abs(mSetpoint - mHistory.Get(0));
+    return error < kMaxError && abs(CalcD()) < kMaxDerivError;
 }

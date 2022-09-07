@@ -82,6 +82,8 @@ class PIDF {
      */
     double CalcD();
 
+    double GetSetpoint() { return mSetpoint; };
+
    private:
     const double kP;
     const double kI;
