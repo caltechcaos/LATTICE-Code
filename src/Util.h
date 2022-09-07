@@ -14,6 +14,12 @@ constexpr int SERIAL_RATE = 115200;  // baud
 constexpr int ANALOG_BITS = 12;      // resolution
 
 /**
+ * remaps values in this order:
+ * long x, long in_min, long in_max, long out_min, long out_max
+ */
+double remap(double x, double in_min, double in_max, double out_min, double out_max);
+
+/**
  * Sets all parameters. Every main should call this.
  */
 void GenericSetup(std::string name = "");
