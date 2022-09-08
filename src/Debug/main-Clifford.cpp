@@ -21,7 +21,7 @@ void setup() {
 
 void loop() {
     controller.Update();
-    double x = (double)(controller.GetRudder() ); // /2
+    double x = (double)(controller.GetAileron() ); // /2
     double y = (controller.GetThrottle());
     //Serial.print("Hi");
     //x = lattice::remap(x, 0.0, 1.0, -.5, .5);

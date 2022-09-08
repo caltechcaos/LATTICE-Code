@@ -25,7 +25,7 @@ double remap(double x, double in_min, double in_max, double out_min, double out_
 void GenericSetup(std::string name = "");
 
 namespace CliffordConstants {
-constexpr int kJoystickTriggerPin = 0;
+constexpr int kJoystickTriggerPin = 22;
 }
 
 namespace ElevatorConstants {

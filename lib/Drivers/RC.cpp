@@ -58,8 +58,13 @@ int RC::ProcessMinMidMaxInput(u_int16_t value) {
     }
 }
 
-int RC::GetAileron() {
-    return ProcessMinMidMaxInput(mSatellite.getAileron());
+double RC::GetAileron() {
+        if (mBinded) {
+        double rawPercent = (double)(mSatellite.getAileron() - kMinThrottle) / (kMaxThrottle - kMinThrottle);
+        return rawPercent;
+    } else {
+        return 0.0;
+    }
 }
 int RC::GetElevator() {
     return ProcessMinMidMaxInput(mSatellite.getElevator());

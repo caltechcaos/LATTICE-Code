@@ -37,9 +37,9 @@ class RC {
     double GetThrottle();
 
     /**
-     * Gets the Aileron value as an integer 0, 1, 2
+     * Gets the Aileron value as a double between 0 and 1
      */
-    int GetAileron();
+    double GetAileron();
 
     /**
      * Gets the Elevator value as an integer 0, 1, 2
