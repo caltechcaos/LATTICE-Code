@@ -66,8 +66,13 @@ double RC::GetAileron() {
         return 0.0;
     }
 }
-int RC::GetElevator() {
-    return ProcessMinMidMaxInput(mSatellite.getElevator());
+double RC::GetElevator() {
+    if (mBinded) {
+        double rawPercent = (double)(mSatellite.getElevator() - kMinThrottle) / (kMaxThrottle - kMinThrottle);
+        return rawPercent;
+    } else {
+        return 0.0;
+    }
 }
 double RC::GetRudder() {
     if (mBinded) {

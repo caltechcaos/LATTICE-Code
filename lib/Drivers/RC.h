@@ -44,7 +44,7 @@ class RC {
     /**
      * Gets the Elevator value as an integer 0, 1, 2
      */
-    int GetElevator();
+    double GetElevator();
 
     /**
      * Gets the Rudder value as an integer 0, 1, 2

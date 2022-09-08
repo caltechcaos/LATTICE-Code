@@ -22,7 +22,7 @@ void setup() {
 void loop() {
     controller.Update();
     double x = (double)(controller.GetAileron() ); // /2
-    double y = (controller.GetThrottle());
+    double y = (controller.GetElevator());
     //Serial.print("Hi");
     //x = lattice::remap(x, 0.0, 1.0, -.5, .5);
     //y = lattice::remap(y, 0.0, 1.0, -.5, .5);

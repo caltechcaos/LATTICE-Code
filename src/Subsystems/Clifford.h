@@ -34,6 +34,9 @@ class Clifford {
      */
     bool Move(double x, double y);
 
+    bool XAxisMove(double x);
+    bool YAxisMove(double y);
+
     /**
      * Sets the brake to the given value, overriding any movement
      * @param brake True to stop, false to go
