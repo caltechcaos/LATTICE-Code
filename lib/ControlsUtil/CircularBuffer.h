@@ -38,7 +38,7 @@ class CircularBuffer {
      */
     T& Get(size_t ind) {
         // Accounts for `ind` using 0 to mean "most recent", unlike hidden mIndex
-        return mBuffer[(mIndex - ind) % L];
+        return mBuffer[(mIndex + L - ind) % L];
     }
 
     /**
