@@ -3,20 +3,18 @@
 #include "RC.h"
 #include "Subsystems/Clifford.h"
 #include "Util.h"
+#include "ButtonOut.h"
+
 
 lattice::RC controller(Serial1, 19, 2, 13);
+lattice::ButtonOut trigger(lattice::CliffordConstants::kJoystickTriggerPin);
 auto& atrv = lattice::Clifford::clifford();
 void setup() {
     lattice::GenericSetup();
     atrv.Setup();
     controller.Setup();
-    // pinMode (CS, OUTPUT); //CS - When High, sets chip to read the data.
-    // pinMode (SHDN, OUTPUT); //CS - When High, sets chip to read the data.
-    // pinMode (RS, OUTPUT); //CS - When High, sets chip to read the data.
-  
-    // digitalWrite(SHDN, HIGH); //Power ON (HIGH)
-    // digitalWrite(RS, HIGH); //Power NO RESET (LOW)
-    // SPI.begin();
+    //Auto presses the button on startup
+    trigger.Setup();
 }
 
 void loop() {
