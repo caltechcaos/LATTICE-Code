@@ -1,11 +1,12 @@
 #include <Arduino.h>
+#include <TaskScheduler.h>
 
 #include "HytorcSimple.h"
 #include "Util.h"
 
 lattice::HytorcSimple mMotor{9, 5, 6};
 
-constexpr double rampRate = 0.25;       // V/s
+constexpr double rampRate = 0.5;        // V/s
 constexpr double dynamicVoltage = 6.0;  // V
 
 int dir = 1;
@@ -15,10 +16,8 @@ double measuredPos = 0.0;
 bool quasistatic = true;
 bool enabled = false;
 
-void setup() {
-    lattice::GenericSetup();
-    mMotor.Setup();
-}
+constexpr int period = 5;
+Scheduler ts;
 
 void printTestStart(bool quasistatic, int dir) {
     Serial.print("STARTING-");
@@ -51,7 +50,7 @@ double getVoltageCommand(bool quasistatic, double rampRate, double dynamicVoltag
     }
 }
 
-void loop() {
+void run() {
     if (Serial.available()) {
         char input = (uint8_t)Serial.read();
 
@@ -80,17 +79,25 @@ void loop() {
     long currTime = millis();
     if (enabled) {
         targetVoltage = dir * getVoltageCommand(quasistatic, rampRate, dynamicVoltage, startTime, currTime);
-        mMotor.SetPercentOutput(targetVoltage / 18.0);
+        mMotor.SetVoltage(targetVoltage, 18.0);
     } else {
         targetVoltage = 0.0;
-        mMotor.SetPercentOutput(0);
+        mMotor.SetVoltage(0, 18.0);
     }
     // Do something with voltage and read position
 
     measuredPos = mMotor.GetPosition();
 
-    printTelemetry(currTime, targetVoltage / 18.0, measuredPos);
-
-    // 5 ms dt
-    delay(5);
+    printTelemetry(currTime, targetVoltage, measuredPos);
+}
+Task mainLoop(period, TASK_FOREVER, &run);
+void setup() {
+    lattice::GenericSetup();
+    mMotor.Setup();
+    ts.addTask(mainLoop);
+    delay(5000);
+    mainLoop.enable();
+}
+void loop() {
+    ts.execute();
 }

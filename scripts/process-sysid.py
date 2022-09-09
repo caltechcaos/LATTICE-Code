@@ -5,8 +5,8 @@ import matplotlib.pyplot as plt
 from scipy.signal import medfilt
 
 
-filename = "sysid-in/hytorc-test.txt"
-outfile = "sysid-out/hytorc-test.json"
+filename = "sysid-in/out.txt"
+outfile = "sysid-out/hytorc-test2.json"
 
 rotational_conversion_factor = -1/16 / 5000
 rotation_to_measurement_factor = 1
