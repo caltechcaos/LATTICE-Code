@@ -4,10 +4,10 @@
 #include "ElevatorMotor.h"
 #include "Util.h"
 
-lattice::ElevatorMotor mMotor{9, 2, 3};
+lattice::ElevatorMotor mMotor{12, 2, 3};
 
-constexpr double rampRate = 0.5;        // V/s
-constexpr double dynamicVoltage = 6.0;  // V
+constexpr double rampRate = 0.125;        // V/s
+constexpr double dynamicVoltage = 1.5;  // V
 
 int dir = 1;
 long startTime = 0;
@@ -79,10 +79,10 @@ void run() {
     long currTime = millis();
     if (enabled) {
         targetVoltage = dir * getVoltageCommand(quasistatic, rampRate, dynamicVoltage, startTime, currTime);
-        mMotor.SetVoltage(targetVoltage, 18.0);
+        mMotor.SetVoltage(targetVoltage, 12.0);
     } else {
         targetVoltage = 0.0;
-        mMotor.SetVoltage(0, 18.0);
+        mMotor.SetVoltage(0, 12.0);
     }
     // Do something with voltage and read position
 
