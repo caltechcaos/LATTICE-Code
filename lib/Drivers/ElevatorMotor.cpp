@@ -49,3 +49,7 @@ void ElevatorMotor::Zero() {
 double ElevatorMotor::GetPosition() {
     return encoder.GetPosition();
 }
+
+void ElevatorMotor::SetVoltage(double desiredVoltage, double batteryVoltage) {
+    Run(desiredVoltage / batteryVoltage);
+}
