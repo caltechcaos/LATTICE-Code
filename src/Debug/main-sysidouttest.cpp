@@ -1,4 +1,5 @@
 #include <Arduino.h>
+#include <TaskScheduler.h>
 
 #include "Util.h"
 
@@ -11,10 +12,6 @@ double targetVoltage = 0.0;
 double measuredPos = 0.0;
 bool quasistatic = true;
 bool enabled = false;
-
-void setup() {
-    lattice::GenericSetup();
-}
 
 void printTestStart(bool quasistatic, int dir) {
     Serial.print("STARTING-");
@@ -47,7 +44,7 @@ double getVoltageCommand(bool quasistatic, double rampRate, double dynamicVoltag
     }
 }
 
-void loop() {
+void run() {
     if (Serial.available()) {
         char input = (uint8_t)Serial.read();
 
@@ -83,7 +80,20 @@ void loop() {
     measuredPos = targetVoltage;
 
     printTelemetry(currTime, targetVoltage, measuredPos);
+}
 
-    // 5 ms dt
-    delay(5);
+constexpr int period = 5;
+Scheduler ts;
+
+Task mainLoop(period, TASK_FOREVER, &run);
+
+void setup() {
+    lattice::GenericSetup();
+    ts.addTask(mainLoop);
+    delay(500);
+    mainLoop.enable();
+}
+
+void loop() {
+    ts.execute();
 }
