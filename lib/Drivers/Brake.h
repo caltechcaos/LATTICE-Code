@@ -1,7 +1,10 @@
 #pragma once
 
 namespace lattice{
-
+/* 
+ * The brake will go through a relay because the arduino does not have enough power
+ * the code will funtion like a button only functioning high and low
+ */
 class Brake{
     public:
     /**

@@ -73,6 +73,11 @@ constexpr double kS = 0;
 constexpr double kV = 0;
 constexpr double kA = 0;
 
-}  // namespace DriverConstants
+} // namespace DriverConstants
+
+namespace ShuttleConstants{
+ constexpr int kBrakePin = 0;
+}
+
 
 }  // namespace lattice
