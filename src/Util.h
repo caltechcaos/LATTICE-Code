@@ -3,6 +3,7 @@
 #undef min
 #undef max
 #include <string>
+#include <Arduino.h>
 
 /**
  * Contains all generic utility functions for the main classes
@@ -77,6 +78,10 @@ constexpr double kA = 0;
 
 namespace ShuttleConstants{
  constexpr int kBrakePin = 0;
+ //This have to be analogPin and cannot exceed 5V
+ constexpr int kVoltagePin = A0; 
+ constexpr double kMaxInputVoltage = 1.2; //temp (dependson fully charge bat and resistor)
+ constexpr double kMultiplier = 3.6; //temp (depends on how much of the origional voltage is inputed)(I.E. 1/3)
 }
 
 
