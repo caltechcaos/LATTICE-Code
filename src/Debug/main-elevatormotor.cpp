@@ -21,9 +21,9 @@ void loop() {
     double elev = controller.GetElevator();
     if (gear ==1)
     {
-        if (elev > 0.55) {
+        if (elev > 0.75) {
             power = 0.25;
-        } else if (elev < 0.45) {
+        } else if (elev < 0.25) {
             power = -0.25;
         } else {
             power = 0;
