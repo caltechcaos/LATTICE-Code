@@ -12,6 +12,6 @@ double Voltage::CalculateVoltage(double MaxInputVoltage, double Multiplier) {
     //digitalWrite(M_PIN, value ? HIGH : LOW);
     ReadValue = analogRead(M_PIN);
     CurrentVoltage = (ReadValue * MaxInputVoltage) ;
-    //temp = (CurrentVoltage * Multiplier) / Divisor;
-    return CurrentVoltage;
+    temp = (CurrentVoltage * Multiplier) / Divisor;
+    return temp;
 }
