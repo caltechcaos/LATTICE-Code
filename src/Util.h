@@ -77,7 +77,7 @@ constexpr double kA = 0;
 } // namespace DriverConstants
 
 namespace ShuttleConstants{
- constexpr int kBrakePin = 0;
+ constexpr int kBrakePin = A4;
  //This have to be analogPin and cannot exceed 5V
  constexpr int kVoltagePin = A0; 
  constexpr double kMaxInputVoltage = 1.2; //temp (dependson fully charge bat and resistor)
