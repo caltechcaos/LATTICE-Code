@@ -42,6 +42,14 @@ class ElevatorMotor {
      */
     double GetPosition();
 
+    /**
+     * Sets the motor controller to a specific voltage based off the current battery voltage
+     *
+     * @param desiredVoltage The desired voltage to run the motor at
+     * @param batteryVoltage The current battery voltage that is being supplied to the motor
+     */
+    void SetVoltage(double desiredVoltage, double batteryVoltage);
+
    private:
     CTREEncoder encoder;
     Servo motor;
