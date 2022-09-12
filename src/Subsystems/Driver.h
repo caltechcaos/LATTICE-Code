@@ -4,13 +4,26 @@
 #include "ElevatorMotor.h"
 #include "HandoffMotor.h"
 #include "LimitSwitch.h"
+#include "Logger.h"
 #include "PIDF.h"
 #include "Thermistor.h"
-#include "Logger.h"
 
 namespace lattice {
 class Driver {
    public:
+    enum class StakeNumber {
+        kOne,
+        kTwo,
+        kThree
+    };
+
+    enum class DriverState {
+        kIdle,
+        kZeroElevator,
+        kHandoff,
+        kAutoDrive,
+        kManual
+    };
     /**
      * Singleton to ensure we only have one driver subsystem floating around
      * @returns The single instance of the driver
@@ -31,6 +44,12 @@ class Driver {
      */
     void Run();
 
+    bool SetStake(StakeNumber stake);
+
+    bool RunStakeHandoff();
+
+    void InitializeStakeHandoff();
+
     /**
      * Flips the emergency stop and freezes all actuators
      */
@@ -43,38 +62,47 @@ class Driver {
      */
     bool ZeroElevator();
 
+    void SetState(DriverState state);
+
+    void SetDriverPower(double power);
+    void SetElevatorPower(double power);
+
     // Guarantee the singleton
     Driver(Driver const&) = delete;
     void operator=(Driver const&) = delete;
 
    private:
-    ElevatorMotor elevator;
+    ElevatorMotor mElevator;
     // HytorcMotor actuator;
-    HandoffMotor handoff;
+    HandoffMotor mHandoff;
 
     // RCInput rcInput;
-    Logger &logger;
+    Logger& mLogger;
 
-    LimitSwitch firstStake;
-    LimitSwitch secondStake;
-    LimitSwitch thirdStake;
+    LimitSwitch mFirstStake;
+    LimitSwitch mSecondStake;
+    LimitSwitch mThirdStake;
 
-    LimitSwitch elevatorZero;  // top
-    LimitSwitch elevatorEnd;   // bottom
+    LimitSwitch mElevatorZero;  // top
+    LimitSwitch mElevatorEnd;   // bottom
 
-    Thermistor actuatorTemp;
-    CurrentSensor actuatorCurrent;
-    CurrentSensor elevatorCurrent;
+    Thermistor mActuatorTemp;
+    CurrentSensor mActuatorCurrent;
+    CurrentSensor mElevatorCurrent;
 
-    PIDF elevatorController;
-    PIDF actuatorController;
+    PIDF mElevatorController;
+    PIDF mActuatorController;
 
-    enum class State {
-        Idle,
-        ZeroElevator
-    };
+    bool mInvertHandoffOutput = false;
+    bool mStakeLimitSwitchContact = false;
+    double mPowerScaler = 1.0;
+    int mHandoffDir = 1;
+    LimitSwitch& mTargetLimitSwitch = mFirstStake;
 
-    State state;
+    DriverState mState;
+    DriverState mPrevState;
+
+    StakeNumber mStakeState = StakeNumber::kOne;
 
     // If the voltage for the elvator drops below this threshold, assume we're
     // stuck (ie: drawing a very high current)
@@ -83,6 +111,8 @@ class Driver {
     static const int kElevatorLoopDelay = 50;
     // Out of 1
     static constexpr double kElevatorZeroSpeed = 1;
+
+    static constexpr double kHandoffSpeed = 0.25;
 
     /**
      * Creates the driver subsystem, using the pins in Util.h
@@ -101,6 +131,8 @@ class Driver {
      * @returns True if the controller is done, false otherwise
      */
     bool RunElevatorOneTick(double setpoint);
+
+    bool RunStakeHandoff(LimitSwitch& targetLimitSwitch);
 };
 
 }  // namespace lattice

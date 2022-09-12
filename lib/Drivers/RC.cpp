@@ -59,7 +59,7 @@ int RC::ProcessMinMidMaxInput(u_int16_t value) {
 }
 
 double RC::GetAileron() {
-        if (mBinded) {
+    if (mBinded) {
         double rawPercent = (double)(mSatellite.getAileron() - kMinThrottle) / (kMaxThrottle - kMinThrottle);
         return rawPercent;
     } else {
@@ -84,21 +84,55 @@ double RC::GetRudder() {
 }
 int RC::GetGear() {
     if (mBinded) {
-        return mSatellite.getGear();
+        double rawPercent = (double)(mSatellite.getGear() - kMinThrottle) / (kMaxThrottle - kMinThrottle);
+        
+        if (rawPercent<0.3)
+        {
+            return 2;
+        }
+        else if (rawPercent>0.6)
+        {
+            return 0;
+        }
+        else
+        {
+            return 1;
+        }
     } else {
-        return 0.0;
+        return 0;
     }
 }
 int RC::GetAux1() {
     if (mBinded) {
-        return mSatellite.getAux1();
+        double rawPercent = (double)(mSatellite.getAux1() - kMinThrottle) / (kMaxThrottle - kMinThrottle);
+       
+       if (rawPercent<0.3)
+        {
+            return 2;
+        }
+        else if (rawPercent>0.6)
+        {
+            return 0;
+        }
+        else
+        {
+            return 1;
+        }
     } else {
-        return 0.0;
+        return 1;
     }
 }
 int RC::GetAux2() {
     if (mBinded) {
-        return mSatellite.getAux2();
+        double rawPercent = (double)(mSatellite.getAux2() - kMinThrottle) / (kMaxThrottle - kMinThrottle);
+        if (rawPercent<0.3)
+        {
+            return 1;
+        }
+        else
+        {
+            return 0;
+        }
     } else {
         return 0.0;
     }
