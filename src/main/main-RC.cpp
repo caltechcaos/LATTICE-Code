@@ -48,7 +48,7 @@ void loop() {
     // Translational Motion, Right side
     double x = -1*controller.GetAileron();
     double y = controller.GetElevator();
-    double drill = (controller.GetRudder() - 0.5) * 2;
+    double drill = (controller.GetRudder() - 0.5) * -2;
     int stake = controller.GetAux1();
 
     // Set stake number with Switch A, assume there's 3 for now
