@@ -8,105 +8,175 @@
 using namespace lattice;
 
 Driver::Driver()
-    : elevator(ElevatorConstants::kMotorPin, ElevatorConstants::kEncoderFwdPin, ElevatorConstants::kEncoderBckPin),
+    : mElevator(ElevatorConstants::kMotorPin, ElevatorConstants::kEncoderFwdPin, ElevatorConstants::kEncoderBckPin),
       /* actuator(), */
-      handoff(HandoffConstants::kMotorPin1, HandoffConstants::kMotorPin2, HandoffConstants::kMotorPin3, HandoffConstants::kMotorPin4),
+      mHandoff(HandoffConstants::kMotorPin1, HandoffConstants::kMotorPin2, HandoffConstants::kMotorPin3, HandoffConstants::kMotorPin4),
       /* rc_input() */
-      logger(Logger::logger()),
-      firstStake(HandoffConstants::kLimitSwitch1Pin),
-      secondStake(HandoffConstants::kLimitSwitch2Pin),
-      thirdStake(HandoffConstants::kLimitSwitch3Pin),
-      elevatorZero(ElevatorConstants::kTopLimitSwitchPin),
-      elevatorEnd(ElevatorConstants::kBottomLimitSwitchPin),
-      actuatorTemp(DriverConstants::kHytorcThermistorPin),
-      actuatorCurrent(DriverConstants::kHytorcCurrentPin),
-      elevatorCurrent(ElevatorConstants::kCurrentPin),
+      mLogger(Logger::logger()),
+      mFirstStake(HandoffConstants::kLimitSwitch1Pin),
+      mSecondStake(HandoffConstants::kLimitSwitch2Pin),
+      mThirdStake(HandoffConstants::kLimitSwitch3Pin),
+      mElevatorZero(ElevatorConstants::kTopLimitSwitchPin),
+      mElevatorEnd(ElevatorConstants::kBottomLimitSwitchPin),
+      mActuatorTemp(DriverConstants::kHytorcThermistorPin),
+      mActuatorCurrent(DriverConstants::kHytorcCurrentPin),
+      mElevatorCurrent(ElevatorConstants::kCurrentPin),
       // TODO: these shouldn't be called with 0s, I think
-      elevatorController(ElevatorConstants::kP, ElevatorConstants::kI, ElevatorConstants::kD,
-                         GetElevatorFeedforward(ElevatorConstants::kS, ElevatorConstants::kV, ElevatorConstants::kA, ElevatorConstants::kG, 0, 0)),
-      actuatorController(DriverConstants::kP, DriverConstants::kI, DriverConstants::kD,
-                         GetSimpleFeedforward(DriverConstants::kS, DriverConstants::kV, DriverConstants::kA, 0, 0)),
-      state(State::Idle) {}
+      mElevatorController(ElevatorConstants::kP, ElevatorConstants::kI, ElevatorConstants::kD,
+                          GetElevatorFeedforward(ElevatorConstants::kS, ElevatorConstants::kV, ElevatorConstants::kA, ElevatorConstants::kG, 0, 0)),
+      mActuatorController(DriverConstants::kP, DriverConstants::kI, DriverConstants::kD,
+                          GetSimpleFeedforward(DriverConstants::kS, DriverConstants::kV, DriverConstants::kA, 0, 0)),
+      mState(DriverState::kIdle) {}
 
 void Driver::Setup() {
-    elevator.Setup();
-
-    firstStake.Setup();
-    secondStake.Setup();
-    thirdStake.Setup();
-    elevatorZero.Setup();
-    elevatorEnd.Setup();
+    mElevator.Setup();
+    mFirstStake.Setup();
+    mSecondStake.Setup();
+    mThirdStake.Setup();
+    mElevatorZero.Setup();
+    mElevatorEnd.Setup();
 }
 
 void Driver::UpdateSensors() {
-    firstStake.Update();
-    secondStake.Update();
-    thirdStake.Update();
-    elevatorZero.Update();
-    elevatorEnd.Update();
+    mFirstStake.Update();
+    mSecondStake.Update();
+    mThirdStake.Update();
+    mElevatorZero.Update();
+    mElevatorEnd.Update();
 }
 
 void Driver::Run() {
     UpdateSensors();
-    // TODO: state machine stuff
+    if (mState == DriverState::kIdle) {
+        mHandoff.SetSpeed(0.0);
+        mElevator.SetVoltage(0, 1);
+    } else if (mState == DriverState::kManual) {
+    } else if (mState == DriverState::kHandoff) {
+    } else if (mState == DriverState::kAutoDrive) {
+    } else if (mState == DriverState::kZeroElevator) {
+    } else {
+        // Invalid state
+    }
+}
+
+void SetDriverPower(double power) {
+}
+
+void SetElevatorPower(double power) {
+}
+
+bool Driver::SetStake(StakeNumber stake) {
+    mStakeState = stake;
+}
+
+void Driver::InitializeStakeHandoff() {
+    mPowerScaler = 1.0;
+    if (mStakeState == StakeNumber::kOne) {
+        if (mFirstStake.Get()) {
+            return;
+        } else if (mSecondStake.Get()) {
+            mHandoffDir = 1;
+        } else if (mThirdStake.Get()) {
+            mHandoffDir = -1;
+        } else {
+            // LOG Error because we don't know where it is
+        }
+    } else if (mStakeState == StakeNumber::kTwo) {
+        mHandoffDir = -1;
+    } else if (mStakeState == StakeNumber::kThree) {
+        mHandoffDir = 1;
+    } else {
+        // TODO Log unknown stake/
+    }
+}
+
+bool Driver::RunStakeHandoff() {
+    if (mStakeState == StakeNumber::kOne) {
+        return RunStakeHandoff(mFirstStake);
+    } else if (mStakeState == StakeNumber::kTwo) {
+        return RunStakeHandoff(mSecondStake);
+    } else if (mStakeState == StakeNumber::kThree) {
+        return RunStakeHandoff(mThirdStake);
+    } else {
+        // TODO Log unknown stake/
+    }
+    return false;
+}
+
+bool Driver::RunStakeHandoff(LimitSwitch& targetLimitSwitch) {
+    if (targetLimitSwitch.Get()) {
+        mHandoff.SetSpeed(0.0);
+        if (mStakeLimitSwitchContact) {
+            return true;
+        } else {
+            mStakeLimitSwitchContact = true;
+        }
+    } else {
+        if (mStakeLimitSwitchContact) {
+            // If we overshot, we go half as fast in the other direction
+            mHandoffDir *= -1;
+            mPowerScaler *= 0.5;
+            mStakeLimitSwitchContact = false;
+        }
+        mHandoff.SetSpeed(mHandoffDir * kHandoffSpeed * mPowerScaler);
+    }
+    return false;
 }
 
 void Driver::EStop() {
-    elevator.SetBrake(true);
+    mElevator.SetBrake(true);
     // actuator.SetBrake(true);
-    handoff.SetBrake(true);
+    mHandoff.SetBrake(true);
 }
 
 bool Driver::RunElevatorOneTick(double setpoint) {
-    double feedback = elevatorCurrent.Get();
+    double feedback = mElevatorCurrent.Get();
 
     double input;
-    input = elevatorController.Run(feedback, setpoint);
+    input = mElevatorController.Run(feedback, setpoint);
 
     if (input < kElevatorMinVoltage) {  // voltage drop
-        logger.Log(Logger::Priority::Warning, Logger::ErrorCode::ElevatorStuckVoltage,
-                   "Elevator stuck: voltage was " + std::to_string(input) +
-                       " and threshold was " + std::to_string(kElevatorMinVoltage));
+        mLogger.Log(Logger::Priority::Warning, Logger::ErrorCode::ElevatorStuckVoltage,
+                    "Elevator stuck: voltage was " + std::to_string(input) +
+                        " and threshold was " + std::to_string(kElevatorMinVoltage));
     }
-    if (!elevator.Run(input)) {
-        logger.Log(Logger::Priority::MinorWarning, Logger::ErrorCode::InputOutOfBounds,
-                   "Elevator input out of bounds: input was " + std::to_string(input));
+    if (!mElevator.Run(input)) {
+        mLogger.Log(Logger::Priority::MinorWarning, Logger::ErrorCode::InputOutOfBounds,
+                    "Elevator input out of bounds: input was " + std::to_string(input));
     }
 
-    double pos = elevator.GetPosition();
+    double pos = mElevator.GetPosition();
 
-    delay(kElevatorLoopDelay);
-
-    if (elevatorEnd.Pushed()) {
+    if (mElevatorEnd.Pushed()) {
         return true;
     }
-    if (elevator.GetPosition() == pos) {
-        logger.Log(Logger::Priority::Warning, Logger::ErrorCode::ElevatorStuckPosition,
-                   "Elevator stuck: position hasn't changed from " + std::to_string(pos));
+    if (mElevator.GetPosition() == pos) {
+        mLogger.Log(Logger::Priority::Warning, Logger::ErrorCode::ElevatorStuckPosition,
+                    "Elevator stuck: position hasn't changed from " + std::to_string(pos));
     }
 
     return false;
 }
 
 bool Driver::ZeroElevator() {
-    if (state == State::ZeroElevator) {
-        if (elevatorZero.Get()) {
-            elevator.Run(0);  // stop
-            state = State::Idle;
+    if (mState == DriverState::kZeroElevator) {
+        if (mElevatorZero.Get()) {
+            mElevator.Run(0);  // stop
+            mState = DriverState::kIdle;
             return true;
         }
-    } else if (state == State::Idle) {
-        if (elevatorZero.Get()) {
-            logger.Log(Logger::Priority::Warning, Logger::ErrorCode::ElevatorWrongState,
-                       "Tried to zero elevator but it was already zeroed");
+    } else if (mState == DriverState::kIdle) {
+        if (mElevatorZero.Get()) {
+            mLogger.Log(Logger::Priority::Warning, Logger::ErrorCode::ElevatorWrongState,
+                        "Tried to zero elevator but it was already zeroed");
             return true;
         }
-        state = State::ZeroElevator;
-        elevator.Run(-kElevatorZeroSpeed);
+        mState = DriverState::kZeroElevator;
+        mElevator.Run(-kElevatorZeroSpeed);
     } else {
-        logger.Log(Logger::Priority::Warning, Logger::ErrorCode::ElevatorWrongState,
-                   "Tried to zero elevator, but cannot do so from state " +
-                       std::to_string(static_cast<int>(state)));
+        mLogger.Log(Logger::Priority::Warning, Logger::ErrorCode::ElevatorWrongState,
+                    "Tried to zero elevator, but cannot do so from state " +
+                        std::to_string(static_cast<int>(mState)));
         // TODO: add way to override it?
     }
     return false;
