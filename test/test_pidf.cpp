@@ -1,5 +1,6 @@
 #include <gtest/gtest.h>
 
+#include <cmath>
 #include <iostream>
 #include <tuple>
 
@@ -24,6 +25,13 @@ TEST(PIDOutput, One) {
     EXPECT_NEAR(pidf.Run(0.0), 0.5, 0.00001);    // 0 + 0 - 0 + 0.5
     EXPECT_NEAR(pidf.Run(0.1), -7.102, 0.0001);  // (0-0.1) + ((0-0.1)*(0.02)) - 7.5 + 0.5
     EXPECT_NEAR(pidf.Run(0.2), -4.706, 0.0001);  // (0-0.2) + ((0-0.1)*(0.02) + ((0-0.2) * 0.02)) - 5.0 + 0.5
+}
+
+TEST(PIDFuncFeedforward, One) {
+    auto ffFunc = [](double setpoint) { return std::copysign(5, setpoint); };
+    lattice::PIDF pidf{0, 0, 0, ffFunc};
+    EXPECT_NEAR(pidf.Run(0.0, 1), 5, 0.00001);
+    EXPECT_NEAR(pidf.Run(0.0, -1), -5, 0.0001);
 }
 
 TEST(ErrorBounds, One) {

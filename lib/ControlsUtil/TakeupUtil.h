@@ -26,14 +26,25 @@ double SingleArmTakeupAngle(double mintakeup, double Larm, double dap, double dp
 /**
  * Calculates the takeup resulting from two arm angles
  *
- * @param leftArmAngle The left arm angle in radians
- * @param rightArmAngle The right arm angle in radians
+ * @param leftArmAngle The left arm angle in degrees
+ * @param rightArmAngle The right arm angle in degrees
  * @param Larm The arm length
  * @param dap The horizontal distance between the arm pivot and the passive pulley
  * @param dpdp The horizontal distance between the passive pulley and the drive pulley
  * @return The takeup resulting from the angles
  */
 double GetTakeup(double leftArmAngle, double rightArmAngle, double Larm, double dap, double dpdp);
+
+/**
+ * Calculates the corresponding angle to maintain a takeup given one arm angle
+ *
+ * @param Larm The arm length
+ * @param dap The horizontal distance between the arm pivot and the passive pulley
+ * @param dpdp The horizontal distance between the passive pulley and the drive pulley
+ * @param otherAngle The angle of the other arm in degrees
+ * @return The angle (in degrees) the other arm needs to be at to maintain the specified takeup
+ */
+double GetCorrespondingAngle(double mintakeup, double Larm, double dap, double dpdp, double otherAngle);
 
 /**
  * Calculates the relative rates the arms need to move to maintain a specific takeup
