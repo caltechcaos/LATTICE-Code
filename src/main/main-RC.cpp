@@ -23,7 +23,7 @@ void setup() {
 // Vertical: Move Drive Train Up/Down
 // Horizontal: Move Drive Train Left/Right
 bool updateClifford(double x, double y) {
-    clifford.Move(x, y);
+    // clifford.Move(x, y); TODO: Implement
     return true;
 }
 
@@ -46,10 +46,10 @@ void loop() {
     controller.Update();
 
     // Translational Motion, Right side
-    double x = controller.GetAileron();
+    double x = -1*controller.GetAileron();
     double y = controller.GetElevator();
     double drill = (controller.GetRudder() - 0.5) * 2;
-    int stake = controller.GetAux2();
+    int stake = controller.GetAux1();
 
     // Set stake number with Switch A, assume there's 3 for now
     switch (stake) {
@@ -63,7 +63,11 @@ void loop() {
             driver.SetStake(lattice::Driver::StakeNumber::kThree);
             break;
     }
-        
+
+    // Serial.println(drill);
+    // Serial.print(stake);
+    // Serial.print(" ");
+
     // F Switch Finite State Machine
     bool success;
     switch (controller.GetGear()) {
@@ -78,10 +82,10 @@ void loop() {
             break;
         default:
             success = false;
-            Serial.print("Unexpected return val for controller.GetGear()");
+            Serial.println("Unexpected return val for controller.GetGear()");
     };
 
     if (!success) {
-        Serial.print("Failure in Finite State Machine for RC");
+        Serial.println("Failure in Finite State Machine for RC");
     }
 }
