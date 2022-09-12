@@ -43,5 +43,5 @@ void loop() {
     //Serial.print(aux1);
     //Serial.print(", ");
     //Serial.println(aux2);
-    atrv.Move(x, y); //0.5 + //0.5+
+    atrv.Move(ail, elev); //0.5 + //0.5+
 }
