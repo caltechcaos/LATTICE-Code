@@ -6,8 +6,8 @@
 
 lattice::ElevatorMotor mMotor{12, 2, 3};
 
-constexpr double rampRate = 0.125;        // V/s
-constexpr double dynamicVoltage = 1.5;  // V
+constexpr double rampRate = 0.125;    // V/s
+constexpr double dynamicVoltage = 5;  // V
 
 int dir = 1;
 long startTime = 0;
