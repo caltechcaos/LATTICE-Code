@@ -2,10 +2,13 @@
 
 #include "ElevatorMotor.h"
 #include "Util.h"
+#include "RC.h"
 
+lattice::RC controller(Serial1, 19, 2, 13);
 lattice::ElevatorMotor testMotor{12, 2, 3};
 void setup() {
     lattice::GenericSetup();
+    controller.Setup();
     testMotor.Setup();
     testMotor.Run(0.0);
 }
@@ -13,22 +16,30 @@ void setup() {
 double power = 0.0;
 
 void loop() {
-    if (Serial.available()) {
-        char input = (uint8_t)Serial.read();
-
-        if (input == 'a') {
+    controller.Update();
+    int gear = controller.GetGear();
+    double elev = controller.GetElevator();
+    if (gear ==1)
+    {
+        if (elev > 0.55) {
             power = 0.25;
-        } else if (input == 'b') {
+        } else if (elev < 0.45) {
             power = -0.25;
-        } else if (input == 'c') {
-            power = 1;
-        } else if (input == 'd') {
-            power = -1;
-        } else if (input == 'f') {
+        } else {
             power = 0;
         }
     }
-    Serial.println(testMotor.GetPosition());
+    else{
+        power = 0;
+    }
+    //if (Serial.available()) {
+        //else if (input == 'c') {
+          //  power = 1;
+        //} else if (input == 'd') {
+        //    power = -1;
+    //}
+    Serial.println(gear);
+    //Serial.println(testMotor.GetPosition());
 
     testMotor.Run(power);
 }

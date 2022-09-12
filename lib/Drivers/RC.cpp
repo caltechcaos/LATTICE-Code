@@ -59,7 +59,7 @@ int RC::ProcessMinMidMaxInput(u_int16_t value) {
 }
 
 double RC::GetAileron() {
-        if (mBinded) {
+    if (mBinded) {
         double rawPercent = (double)(mSatellite.getAileron() - kMinThrottle) / (kMaxThrottle - kMinThrottle);
         return rawPercent;
     } else {
@@ -99,7 +99,7 @@ int RC::GetGear() {
             return 1;
         }
     } else {
-        return 0.0;
+        return 0;
     }
 }
 int RC::GetAux1() {
@@ -119,7 +119,7 @@ int RC::GetAux1() {
             return 1;
         }
     } else {
-        return 0.0;
+        return 1;
     }
 }
 int RC::GetAux2() {
