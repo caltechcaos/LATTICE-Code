@@ -1,10 +1,3 @@
-// TODO:  Manual Mode (Control arms and inner/outer motors separately)
-// -  Make sure that the arms can’t be controlled at the same time as motion motors
-// TODO: Autonomous Mode
-// - Automatic traversal of cable + stake transition
-//   - Need to somehow indicate which side is the “front side”
-// - Although can indicate when to stop (not estop)
-
 #include <Arduino.h>
 #include "RC.h"
 #include "Subsystems/Shuttle.h"
@@ -22,29 +15,51 @@ void setup() {
 }
 
 // Horizontal: Drive Left/Right
-bool updateShuttle(double x) {
+void updateShuttle(double x) {
     shuttle.SetMotionMotors(x * RPMSCALE);
-    return true;
 }
 
+void engageBreaks(double tensionBreak) {
+    if (tensionBreak >= .75) {
+        shuttle.EngageMotorBreak();
+    } else if (tensionBreak <= .25) {
+        shuttle.DisengageMotorBreak();
+    }
+}
+
+void adjustTension(double tensionAdjust, int tensionReset, double tensionBreak) {
+    switch (tensionReset) {
+        case 0: // Manual Adjust
+            shuttle.SetTensionArmPowers(tensionAdjust, tensionAdjust);
+            break;
+        case 1: // Reset
+            shuttle.ResetTensionArms();
+            break;
+        case 2:
+            engageBreaks(tensionBreak);
+            break;
+    }
+}
 
 enum auto_mode {
     StakeTransition,
-    TakeupDrive,
+    TakeupDrive
 };
 
 void loop() {
     controller.Update();
-
+    double tensionBreak = -1 * controller.GetThrottle();
     double x = -1 * controller.GetAileron();
+    double tensionAdjust = -1 * controller.GetElevator();
+    int tensionReset = controller.GetGear();
     int ShuttleAutoDrive = controller.GetAux1();
 
     // Set stake number with Switch A, assume there's 3 for now
     auto_mode curr_mode = auto_mode::TakeupDrive;
     switch (ShuttleAutoDrive) {
         case 0: // Manual Mode
-            if (!updateShuttle(x))
-                Serial.println("Failure in Shuttle updateShuttle()");
+            updateShuttle(x);
+            adjustTension(tensionAdjust, tensionReset, tensionBreak);
             break;
         case 1: // Autonomous Mode
             if (curr_mode == auto_mode::TakeupDrive) {
@@ -64,8 +79,8 @@ void loop() {
 
     // Killswitch
     if (controller.GetAux2() == 1) {
+        Serial.println("Killing Shuttle...");
         shuttle.EStop();
-        Serial.println("Aux 2: Killed shuttle");
     };
     
 }
