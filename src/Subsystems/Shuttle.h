@@ -1,3 +1,4 @@
+#pragma once
 #include "HytorcSimple.h"
 #include "LimitSwitch.h"
 #include "MotionMotor.h"

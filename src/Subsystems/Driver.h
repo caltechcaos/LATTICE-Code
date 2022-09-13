@@ -8,6 +8,7 @@
 #include "Logger.h"
 #include "PIDF.h"
 #include "Thermistor.h"
+
 namespace lattice {
 class Driver {
    public:

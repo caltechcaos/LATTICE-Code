@@ -1,4 +1,3 @@
-// NOTE: Deprecated for splitting into Shuttle and Driver
 #include <Arduino.h>
 #include "RC.h"
 #include "Subsystems/Clifford.h"
@@ -8,10 +7,14 @@
 
 #define RPMSCALE 5700
 
+// TODO: If limit switches are hit on elevator that we can’t move it anymore
+// TODO: ESTOP
+// TODO: Drive ATRV
+// TODO: Autonomous torque and downforce application and Stake handoff
+
 lattice::RC controller(Serial1, 19, 2, 13); // TODO: Use correct wiring when ATVR is fixed
 lattice::Clifford &clifford = lattice::Clifford::clifford();
 lattice::Driver &driver = lattice::Driver::driver();
-lattice::Shuttle &shuttle = lattice::Shuttle::GetInstance();
 lattice::HytorcSimple hytorcSimple{9, 5, 6}; // TODO: Temp Ports
 
 // Runs at init
@@ -37,10 +40,10 @@ bool updateElevator(double y, double drill) {
 }
 
 // Horizontal: Drive Left/Right
-bool updateShuttle(double x) {
-    shuttle.SetMotionMotors(x * RPMSCALE);
-    return true;
-}
+// bool updateShuttle(double x) {
+//     shuttle.SetMotionMotors(x * RPMSCALE);
+//     return true;
+// }
 
 // Runs continously
 void loop() {
@@ -78,12 +81,27 @@ void loop() {
         case 1:
             success = updateElevator(y, drill);
             break;
-        case 2:
-            success = updateShuttle(x);
-            break;
+        // case 2:
+        //     success = updateShuttle(x);
+        //     break;
         default:
             success = false;
             Serial.println("Unexpected return val for controller.GetGear()");
+    };
+
+    if (!success) {
+        Serial.println("Failure in Finite State Machine for RC");
+    }
+
+    // Aux2 Finite State Machine - Killswitch
+    switch (controller.GetAux2()) {
+        case 1:
+            driver.EStop();
+            success = true;
+            break;
+        default:
+            success = false;
+            Serial.println("Unexpected return val for controller.GetAux2()");
     };
 
     if (!success) {
