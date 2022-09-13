@@ -29,7 +29,9 @@ class Voltage{
      const int M_PIN;
      double ReadValue;
      double CurrentVoltage;
-     const double Divisor = 4000;
+     const double Large_Resistor = 75000;
+     const double Small_Resistor = 12000;
+     const double Resistance_Coefficient = (Large_Resistor + Small_Resistor) / Small_Resistor;
      //double MilliVoltsPerCount = 4.55; //temperary
     };
 }
