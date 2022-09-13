@@ -6,6 +6,20 @@
 #include "Util.h"
 
 #define RPMSCALE 5700
+#define ks 1
+#define kv 1
+#define t_desired 100 // Nm
+#define ka 1
+#define THETA 1
+#define I_s 1
+#define max_voltage 100
+
+template <typename T> int sgn(T num) {
+    return (T(0) < num) - (num < T(0));
+}
+
+#define DesiredVoltage ks*sgn(THETA) + kv + ka*(t_desired/I_s)
+#define Battery 100 // TODO
 
 // TODO: If limit switches are hit on elevator that we can’t move it anymore
 // TODO: Autonomous torque and downforce application and Stake handoff
@@ -36,6 +50,11 @@ bool updateClifford(double x, double y) {
 bool updateElevator(double y, double drill) {
     driver.SetElevatorPower(y);
     hytorcSimple.SetPercentOutput(drill);
+    return true;
+}
+
+bool autoDrill() {
+    hytorcSimple.SetVoltage(DesiredVoltage, Battery);
     return true;
 }
 
@@ -81,9 +100,9 @@ void loop() {
         case 1:
             success = updateElevator(y, drill);
             break;
-        // case 2:
+        case 2:
         //     success = updateShuttle(x);
-        //     break;
+            break;
         default:
             success = false;
             Serial.println("Unexpected return val for controller.GetGear()");
