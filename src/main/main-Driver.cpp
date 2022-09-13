@@ -8,9 +8,9 @@
 #define RPMSCALE 5700
 
 // TODO: If limit switches are hit on elevator that we can’t move it anymore
-// TODO: ESTOP
-// TODO: Drive ATRV
 // TODO: Autonomous torque and downforce application and Stake handoff
+// - https://www.overleaf.com/read/kghkvywmkyfj
+// - Use Latex file's math to calculate
 
 lattice::RC controller(Serial1, 19, 2, 13); // TODO: Use correct wiring when ATVR is fixed
 lattice::Clifford &clifford = lattice::Clifford::clifford();
@@ -93,18 +93,9 @@ void loop() {
         Serial.println("Failure in Finite State Machine for RC");
     }
 
-    // Aux2 Finite State Machine - Killswitch
-    switch (controller.GetAux2()) {
-        case 1:
-            driver.EStop();
-            success = true;
-            break;
-        default:
-            success = false;
-            Serial.println("Unexpected return val for controller.GetAux2()");
+    // Killswitch
+    if (controller.GetAux2() == 1) {
+        driver.EStop();
+        Serial.println("Aux 2: Killed shuttle");
     };
-
-    if (!success) {
-        Serial.println("Failure in Finite State Machine for RC");
-    }
 }
