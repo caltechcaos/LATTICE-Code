@@ -3,11 +3,11 @@
 #include "CurrentSensor.h"
 #include "ElevatorMotor.h"
 #include "HandoffMotor.h"
+#include "HytorcSimple.h"
 #include "LimitSwitch.h"
 #include "Logger.h"
 #include "PIDF.h"
 #include "Thermistor.h"
-
 namespace lattice {
 class Driver {
    public:
@@ -66,6 +66,7 @@ class Driver {
 
     void SetDriverPower(double power);
     void SetElevatorPower(double power);
+    void DriveStake();
 
     // Guarantee the singleton
     Driver(Driver const&) = delete;
@@ -73,7 +74,7 @@ class Driver {
 
    private:
     ElevatorMotor mElevator;
-    // HytorcMotor actuator;
+    HytorcSimple mActuator;
     HandoffMotor mHandoff;
 
     // RCInput rcInput;

@@ -9,7 +9,7 @@ using namespace lattice;
 
 Driver::Driver()
     : mElevator(ElevatorConstants::kMotorPin, ElevatorConstants::kEncoderFwdPin, ElevatorConstants::kEncoderBckPin),
-      /* actuator(), */
+      mActuator(DriverConstants::kHytorcMotorPin, DriverConstants::kHytorcEncoderForward, DriverConstants::kHytorcEncoderBackward),
       mHandoff(HandoffConstants::kMotorPin1, HandoffConstants::kMotorPin2, HandoffConstants::kMotorPin3, HandoffConstants::kMotorPin4),
       /* rc_input() */
       mLogger(Logger::logger()),
@@ -59,14 +59,20 @@ void Driver::Run() {
     }
 }
 
-void SetDriverPower(double power) {
+void Driver::SetDriverPower(double power) {
+    mActuator.SetPercentOutput(power);
 }
 
-void SetElevatorPower(double power) {
+void Driver::SetElevatorPower(double power) {
+    mElevator.Run(power);
 }
 
 bool Driver::SetStake(StakeNumber stake) {
     mStakeState = stake;
+}
+
+void Driver::DriveStake() {
+    // TODO Implement
 }
 
 void Driver::InitializeStakeHandoff() {

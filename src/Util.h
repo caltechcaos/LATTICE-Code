@@ -63,7 +63,9 @@ constexpr int kLimitSwitch3Pin = 0;
 }  // namespace HandoffConstants
 
 namespace DriverConstants {
-
+constexpr int kHytorcMotorPin = 0;
+constexpr int kHytorcEncoderForward = 0;
+constexpr int kHytorcEncoderBackward = 0;
 constexpr int kHytorcThermistorPin = 0;
 constexpr int kHytorcCurrentPin = 0;
 
