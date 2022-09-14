@@ -55,10 +55,10 @@ namespace lattice
 
     namespace HandoffConstants
     {
-        constexpr int kMotorPin1 = 0;
-        constexpr int kMotorPin2 = 0;
-        constexpr int kMotorPin3 = 0;
-        constexpr int kMotorPin4 = 0;
+        // constexpr int kMotorPin1 = 0;
+        // constexpr int kMotorPin2 = 0;
+        // constexpr int kMotorPin3 = 0;
+        // constexpr int kMotorPin4 = 0;
 
         constexpr int kLimitSwitch1Pin = 0;
         constexpr int kLimitSwitch2Pin = 0;
