@@ -6,14 +6,14 @@
 using namespace lattice;
 using namespace lattice::HandoffConstants;
 
-lattice::HandoffMotor StepperDriver(kDrivePin, kStepPin, kStepsPerRev, kRPM, kMicrosteps);
+lattice::HandoffMotor StepperDriver(kDrivePin, kStepPin, kStepsPerRev);//, kRPM, kMicrosteps
 
 int steps; 
 
 void setup() {
     lattice::GenericSetup();
     StepperDriver.Setup();
-    StepperDriver.SetAccel(kMotorAccel, kMotorDecel);
+    //StepperDriver.SetAccel(kMotorAccel, kMotorDecel);
 }
 
 void loop() {
@@ -34,5 +34,6 @@ void loop() {
 
     }
     StepperDriver.StepMove(steps);
+    Serial.println(steps);
 
 }

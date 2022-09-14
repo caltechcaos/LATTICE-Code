@@ -11,7 +11,7 @@ namespace lattice {
          * @param StepPin and @param DriverPin
          */
         HandoffMotor(const int StepPin, const int DriverPin,
-            const int StepPerRev, const int kRPM, const int kMicrosteps);
+            const int StepPerRev);//const int kRPM, const int kMicrosteps
 
         /**
         * Sets up for control of the elevator motor. Must be called before using it
@@ -24,9 +24,9 @@ namespace lattice {
          * @param speed Speed in rpm
          * @return True if successful, false if error
          */
-        void SetAccel(int MotorAccel, int MotorDecel);
+        //void SetAccel(int MotorAccel, int MotorDecel);
 
-        void SetMicroStep(int mode);
+        //void SetMicroStep(int mode);
 
         /**
          * Instructs the handoff motor to advance the given
@@ -36,6 +36,8 @@ namespace lattice {
          * @return True on successful movement, false otherwise
          */
         void StepMove(int steps);
+
+        void SetSpeed(int RPM);
 
         /**
          * Instructs the handoff motor to advance the given
@@ -51,16 +53,17 @@ namespace lattice {
          * @param brake True to stop, false to go
          * @return True on success, false otherwise
          */
-        //bool SetBrake(bool brake);
+        bool SetBrake(bool brake);
 
         private:
         //static const int STEPS_PER_REV = 200;
         // DRV8834::DRV8834(short steps, short dir_pin, short step_pin)
         DRV8834 mMotor;
-        const int RPM;
-        const int MicroSteps;
-        int Mode = 1;
+        int RPM = 120;
+        int MicroSteps = 1;
+        //const int MicroSteps;
+        // int Mode = 1;
         // const int StepsPRev;
-        //bool brake;
+        bool brake;
     };
 }
