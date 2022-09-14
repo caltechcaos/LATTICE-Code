@@ -4,7 +4,7 @@
 #include "HytorcSimple.h"
 #include "Util.h"
 
-lattice::HytorcSimple mMotor{9, 5, 6};
+lattice::HytorcSimple mMotor{53, 5, 6};
 
 constexpr double rampRate = 0.5;        // V/s
 constexpr double dynamicVoltage = 6.0;  // V

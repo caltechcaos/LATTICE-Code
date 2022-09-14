@@ -4,15 +4,15 @@
 #include "PIDF.h"
 #include "Util.h"
 
-constexpr double kP = 1;
+constexpr double kP = 0.9;
 constexpr double kI = 0.0;
 constexpr double kD = 0.5;
 constexpr double kVolts = 18.0;
 double kSetpoint = 36.5;
-constexpr double kS = 1.7;
+constexpr double kS = 1.8;
 
 lattice::HytorcSimple mMotor{32, 24, 25};
-lattice::PIDF mController{kP, kI, kD, [](double s) { return copysign(kS, s); }, 0.5, 1};
+lattice::PIDF mController{kP, kI, kD, [](double s) { return copysign(kS, s); }, 0.5, 1.5};
 
 constexpr int period = 20;
 Scheduler ts;

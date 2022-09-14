@@ -197,10 +197,10 @@ class Shuttle {
     static constexpr int kArmTransitionIntervals = 5;  // Number of intermediary states required to make the arm transition.
 
     // TODO Fix these numbers to an actual constants file
-    MotionMotor mRightPassiveMotionMotor{ShuttleConstants::kRightPassiveMotionMotorEnablePin, ShuttleConstants::kRightPassiveMotionMotorSignalPin, ShuttleConstants::kRightPassiveMotionMotorRPMPin, ShuttleConstants::kRightPassiveMotionMotorThermalPin};
-    MotionMotor mLeftPassiveMotionMotor{ShuttleConstants::kLeftPassiveMotionMotorEnablePin, ShuttleConstants::kLeftPassiveMotionMotorSignalPin, ShuttleConstants::kLeftPassiveMotionMotorRPMPin, ShuttleConstants::kLeftPassiveMotionMotorThermalPin};
-    MotionMotor mRightDriveMotionMotor{ShuttleConstants::kRightDriveMotionMotorEnablePin, ShuttleConstants::kRightDriveMotionMotorSignalPin, ShuttleConstants::kRightDriveMotionMotorRPMPin, ShuttleConstants::kRightDriveMotionMotorThermalPin};
-    MotionMotor mLeftDriveMotionMotor{ShuttleConstants::kLeftDriveMotionMotorEnablePin, ShuttleConstants::kLeftDriveMotionMotorSignalPin, ShuttleConstants::kLeftDriveMotionMotorRPMPin, ShuttleConstants::kLeftDriveMotionMotorThermalPin};
+    // MotionMotor mRightPassiveMotionMotor{ShuttleConstants::kRightPassiveMotionMotorEnablePin, ShuttleConstants::kRightPassiveMotionMotorSignalPin, ShuttleConstants::kRightPassiveMotionMotorRPMPin, ShuttleConstants::kRightPassiveMotionMotorThermalPin};
+    // MotionMotor mLeftPassiveMotionMotor{ShuttleConstants::kLeftPassiveMotionMotorEnablePin, ShuttleConstants::kLeftPassiveMotionMotorSignalPin, ShuttleConstants::kLeftPassiveMotionMotorRPMPin, ShuttleConstants::kLeftPassiveMotionMotorThermalPin};
+    // MotionMotor mRightDriveMotionMotor{ShuttleConstants::kRightDriveMotionMotorEnablePin, ShuttleConstants::kRightDriveMotionMotorSignalPin, ShuttleConstants::kRightDriveMotionMotorRPMPin, ShuttleConstants::kRightDriveMotionMotorThermalPin};
+    // MotionMotor mLeftDriveMotionMotor{ShuttleConstants::kLeftDriveMotionMotorEnablePin, ShuttleConstants::kLeftDriveMotionMotorSignalPin, ShuttleConstants::kLeftDriveMotionMotorRPMPin, ShuttleConstants::kLeftDriveMotionMotorThermalPin};
 
     HytorcSimple mRightTensionMotor{ShuttleConstants::kRightHytorcMotorPin, ShuttleConstants::kRightHytorcForwardEncoderPin, ShuttleConstants::kRightHytorcBackwardEncoderPin};
     HytorcSimple mLeftTensionMotor{ShuttleConstants::kLeftHytorcMotorPin, ShuttleConstants::kLeftHytorcForwardEncoderPin, ShuttleConstants::kLeftHytorcBackwardEncoderPin};

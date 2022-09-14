@@ -9,10 +9,10 @@ using namespace lattice;
 Shuttle::Shuttle() {
 }
 void Shuttle::Setup() {
-    mLeftPassiveMotionMotor.Setup();
-    mRightPassiveMotionMotor.Setup();
-    mLeftDriveMotionMotor.Setup();
-    mRightDriveMotionMotor.Setup();
+    // mLeftPassiveMotionMotor.Setup();
+    // mRightPassiveMotionMotor.Setup();
+    // mLeftDriveMotionMotor.Setup();
+    // mRightDriveMotionMotor.Setup();
 
     mLeftTensionMotor.Setup();
     mRightTensionMotor.Setup();
@@ -115,14 +115,14 @@ void Shuttle::DisengageMotorBreak() {
 }
 
 void Shuttle::SetMotionMotors(double passiveLeft, double driveLeft, double driveRight, double passiveRight) {
-    mLeftPassiveMotionMotor.EnableMotor();
-    mRightPassiveMotionMotor.EnableMotor();
-    mLeftDriveMotionMotor.EnableMotor();
-    mRightDriveMotionMotor.EnableMotor();
-    mLeftPassiveMotionMotor.SetVelocity(passiveLeft);
-    mRightPassiveMotionMotor.SetVelocity(passiveRight);
-    mLeftDriveMotionMotor.SetVelocity(driveLeft);
-    mRightDriveMotionMotor.SetVelocity(driveRight);
+    // mLeftPassiveMotionMotor.EnableMotor();
+    // mRightPassiveMotionMotor.EnableMotor();
+    // mLeftDriveMotionMotor.EnableMotor();
+    // mRightDriveMotionMotor.EnableMotor();
+    // mLeftPassiveMotionMotor.SetVelocity(passiveLeft);
+    // mRightPassiveMotionMotor.SetVelocity(passiveRight);
+    // mLeftDriveMotionMotor.SetVelocity(driveLeft);
+    // mRightDriveMotionMotor.SetVelocity(driveRight);
 }
 
 double Shuttle::BoundPID(double input, double minimum, double target, double pos) {
@@ -205,10 +205,10 @@ void Shuttle::ResetTensionArms() {
     }
 }
 void Shuttle::StopMotionMotors() {
-    mLeftPassiveMotionMotor.DisableMotor();
-    mRightPassiveMotionMotor.DisableMotor();
-    mLeftDriveMotionMotor.DisableMotor();
-    mRightDriveMotionMotor.DisableMotor();
+    // mLeftPassiveMotionMotor.DisableMotor();
+    // mRightPassiveMotionMotor.DisableMotor();
+    // mLeftDriveMotionMotor.DisableMotor();
+    // mRightDriveMotionMotor.DisableMotor();
 }
 
 bool Shuttle::StakeTransition() {

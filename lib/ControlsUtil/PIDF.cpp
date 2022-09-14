@@ -46,6 +46,8 @@ double PIDF::CalcD() {
 
 bool PIDF::AtTarget() {
     // Serial.println(mHistory.Get(0));
-    double error = abs(mSetpoint - mHistory.Get(0));
-    return error < kMaxError && abs(CalcD()) < kMaxDerivError;
+    double error = mSetpoint - mHistory.Get(0);
+    double deriv = CalcD();
+    error = abs(error);
+    return error < kMaxError && abs(deriv) < kMaxDerivError;
 }
