@@ -4,22 +4,26 @@
 #include "Subsystems/Shuttle.h"
 #include "Subsystems/Driver.h"
 #include "Util.h"
+#include "FeedforwardUtil.h"
 
-#define RPMSCALE 5700
-#define ks 1
-#define kv 1
-#define t_desired 100 // Nm
-#define ka 1
-#define THETA 1
-#define I_s 1
-#define max_voltage 100
+// CONSTANTS
+constexpr double RPMSCALE = 5700;
 
+double kS = lattice::DriverConstants::kS;
+double kV = lattice::DriverConstants::kV;
+double kA = lattice::DriverConstants::kA;
+constexpr double t_desired = 100; // Nm
+constexpr double THETA = 1;
+constexpr double I_s = 1;
+constexpr double max_voltage = 100;
+
+// sgn() function definiition
 template <typename T> int sgn(T num) {
     return (T(0) < num) - (num < T(0));
 }
 
-#define DesiredVoltage ks*sgn(THETA) + kv + ka*(t_desired/I_s)
-#define Battery 100 // TODO
+double DesiredVoltage = lattice::GetSimpleFeedforward(kS, kV, kA, 0, t_desired/I_s);
+constexpr double Battery = 100; // TMP
 
 // TODO: If limit switches are hit on elevator that we can’t move it anymore
 // TODO: Autonomous torque and downforce application and Stake handoff
@@ -36,6 +40,7 @@ void setup() {
     lattice::GenericSetup();
     controller.Setup();
     driver.Setup();
+    clifford.Setup();
 }
 
 // Vertical: Move Drive Train Up/Down
@@ -68,6 +73,12 @@ bool autoDrill() {
 void loop() {
     controller.Update();
 
+    // Killswitch
+    if (controller.GetAux2() == 1) {
+        driver.EStop();
+        Serial.println("Aux 2: Killed shuttle");
+    };
+
     // Translational Motion, Right side
     double x = -1 * controller.GetAileron();
     double y = controller.GetElevator();
@@ -86,10 +97,6 @@ void loop() {
             driver.SetStake(lattice::Driver::StakeNumber::kThree);
             break;
     }
-
-    // Serial.println(drill);
-    // Serial.print(stake);
-    // Serial.print(" ");
 
     // F Switch Finite State Machine
     bool success;
@@ -111,10 +118,4 @@ void loop() {
     if (!success) {
         Serial.println("Failure in Finite State Machine for RC");
     }
-
-    // Killswitch
-    if (controller.GetAux2() == 1) {
-        driver.EStop();
-        Serial.println("Aux 2: Killed shuttle");
-    };
 }

@@ -19,6 +19,7 @@ void setup() {
     lattice::GenericSetup();
     controller.Setup();
     driver.Setup();
+    clifford.Setup();
 }
 
 // Vertical: Move Drive Train Up/Down

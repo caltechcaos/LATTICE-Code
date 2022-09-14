@@ -12,6 +12,7 @@ lattice::Shuttle &shuttle = lattice::Shuttle::GetInstance();
 void setup() {
     lattice::GenericSetup();
     controller.Setup();
+    shuttle.Setup();
 }
 
 // Horizontal: Drive Left/Right
@@ -21,9 +22,9 @@ void updateShuttle(double x) {
 
 void engageBreaks(double tensionBreak) {
     if (tensionBreak >= .75) {
-        shuttle.EngageMotorBreak();
+        shuttle.EngageMotorBreak(); // not yet implemented
     } else if (tensionBreak <= .25) {
-        shuttle.DisengageMotorBreak();
+        shuttle.DisengageMotorBreak(); // not yet implemented
     }
 }
 
@@ -48,11 +49,20 @@ enum auto_mode {
 
 void loop() {
     controller.Update();
+    shuttle.UpdateSensors();
+
     double tensionBreak = -1 * controller.GetThrottle();
     double x = -1 * controller.GetAileron();
     double tensionAdjust = -1 * controller.GetElevator();
     int tensionReset = controller.GetGear();
     int ShuttleAutoDrive = controller.GetAux1();
+
+    // Control front of shuttle, assume default gear position is 0
+    if (controller.GetGear() == 0) {
+        shuttle.SetFrontLimitSwitch(lattice::Shuttle::FrontLimitSwitch::kLeft);
+    } else if (controller.GetGear() == 2) {
+        shuttle.SetFrontLimitSwitch(lattice::Shuttle::FrontLimitSwitch::kRight);
+    }
 
     // Set stake number with Switch A, assume there's 3 for now
     auto_mode curr_mode = auto_mode::TakeupDrive;
