@@ -9,19 +9,19 @@ using namespace lattice;
 Shuttle::Shuttle() {
 }
 void Shuttle::Setup() {
-    // mLeftPassiveMotionMotor.Setup();
-    // mRightPassiveMotionMotor.Setup();
-    // mLeftDriveMotionMotor.Setup();
-    // mRightDriveMotionMotor.Setup();
+    // mOuterLeftMotionMotor.Setup();
+    // mOuterRightMotionMotor.Setup();
+    // mInnerLeftMotionMotor.Setup();
+    // mInnerRightMotionMotor.Setup();
 
     mLeftTensionMotor.Setup();
     mRightTensionMotor.Setup();
 
-    mLeftArmLimitSwitch.Setup();
-    mRightArmLimitSwitch.Setup();
+    mLeftArmTopLimitSwitch.Setup();
+    mRightArmTopLimitSwitch.Setup();
+    mLeftArmBottomLimitSwitch.Setup();
+    mRightArmBottomLimitSwitch.Setup();
 
-    mLeftLimitSwitch.Setup();
-    mRightLimitSwitch.Setup();
     mCenterLimitSwitch.Setup();
 }
 void Shuttle::SetTakeup(double takeup) {
@@ -63,17 +63,6 @@ bool Shuttle::ArmTransition(ArmTransitionPositions pos) {
         }
         mArmTransitionState = kRunningControls;
         mArmTransitionIntermediary++;
-
-        // Serial.print("Transition: ");
-        // Serial.print(mArmTransitionInterval);
-        // Serial.print(", ");
-        // Serial.print("Setpoint: ");
-        // Serial.print(mainArmSetpoint);
-        // Serial.print("Current: ");
-        // Serial.print(mArmTransitionMainAngle);
-        // Serial.print("Count: ");
-        // Serial.print(mArmTransitionIntermediary);
-        // Serial.println();
     } else if (mArmTransitionState == kRunningControls) {
         bool atPosition;
         if (pos == kLeftArmRaised) {
@@ -98,11 +87,11 @@ bool Shuttle::ArmTransition(ArmTransitionPositions pos) {
     return false;
 }
 void Shuttle::UpdateSensors() {
-    mLeftArmLimitSwitch.Update();
-    mRightArmLimitSwitch.Update();
+    mLeftArmTopLimitSwitch.Update();
+    mRightArmTopLimitSwitch.Update();
+    mLeftArmBottomLimitSwitch.Update();
+    mRightArmBottomLimitSwitch.Update();
 
-    mLeftLimitSwitch.Update();
-    mRightLimitSwitch.Update();
     mCenterLimitSwitch.Update();
 }
 
@@ -114,15 +103,15 @@ void Shuttle::DisengageMotorBreak() {
     // TODO
 }
 
-void Shuttle::SetMotionMotors(double passiveLeft, double driveLeft, double driveRight, double passiveRight) {
-    // mLeftPassiveMotionMotor.EnableMotor();
-    // mRightPassiveMotionMotor.EnableMotor();
-    // mLeftDriveMotionMotor.EnableMotor();
-    // mRightDriveMotionMotor.EnableMotor();
-    // mLeftPassiveMotionMotor.SetVelocity(passiveLeft);
-    // mRightPassiveMotionMotor.SetVelocity(passiveRight);
-    // mLeftDriveMotionMotor.SetVelocity(driveLeft);
-    // mRightDriveMotionMotor.SetVelocity(driveRight);
+void Shuttle::SetMotionMotors(double outerLeft, double innerLeft, double innerRight, double outerRight) {
+    // mOuterLeftMotionMotor.EnableMotor();
+    // mOuterRightMotionMotor.EnableMotor();
+    // mInnerLeftMotionMotor.EnableMotor();
+    // mInnerRightMotionMotor.EnableMotor();
+    // mOuterLeftMotionMotor.SetVelocity(outerLeft);
+    // mOuterRightMotionMotor.SetVelocity(outerRight);
+    // mInnerLeftMotionMotor.SetVelocity(innerLeft);
+    // mInnerRightMotionMotor.SetVelocity(innerRight);
 }
 
 double Shuttle::BoundPID(double input, double minimum, double target, double pos) {
@@ -142,9 +131,9 @@ double Shuttle::BoundPID(double input, double minimum, double target, double pos
 void Shuttle::SetTensionArmPowers(double leftArmPower, double rightArmPower) {
     auto batt = GetBatteryVoltage();
     double leftPassive, leftDrive, rightDrive, rightPassive = 0.0;
-    if (mLeftArmLimitSwitch.Get() && leftArmPower < 0) {
+    if ((mLeftArmBottomLimitSwitch.Get() && leftArmPower < 0) || (mLeftArmTopLimitSwitch.Get() && leftArmPower > 0)) {
         mLeftTensionMotor.SetPercentOutput(0.0);
-        if (leftArmPower > 0) {
+        if (abs(leftArmPower) > 0) {
             // TODO Log an error that we hit the limit switch prematurely
         }
     } else {
@@ -157,7 +146,7 @@ void Shuttle::SetTensionArmPowers(double leftArmPower, double rightArmPower) {
             leftDrive = ShuttleConstants::kTensionRPM;
         }
     }
-    if (mRightArmLimitSwitch.Get() && rightArmPower < 0) {
+    if ((mRightArmBottomLimitSwitch.Get() && rightArmPower < 0) || (mRightArmTopLimitSwitch.Get() && rightArmPower > 0)) {
         mRightTensionMotor.SetPercentOutput(0.0);
         if (rightArmPower > 0) {
             // TODO Log an error that we hit the limit switch prematurely
@@ -192,26 +181,46 @@ bool Shuttle::SetTensionArmPositions(double leftArmAngle, double rightArmAngle) 
     return atTarget;
 }
 void Shuttle::ResetTensionArms() {
-    if (!mLeftArmLimitSwitch.Get()) {
+    if (!mLeftArmBottomLimitSwitch.Get()) {
         mLeftTensionMotor.SetPercentOutput(-kPercentPowerReset);
     } else {
         mLeftTensionMotor.SetPercentOutput(0.0);
     }
 
-    if (!mRightArmLimitSwitch.Get()) {
+    if (!mRightArmBottomLimitSwitch.Get()) {
         mRightTensionMotor.SetPercentOutput(-kPercentPowerReset);
     } else {
         mRightTensionMotor.SetPercentOutput(0.0);
     }
 }
 void Shuttle::StopMotionMotors() {
-    // mLeftPassiveMotionMotor.DisableMotor();
-    // mRightPassiveMotionMotor.DisableMotor();
-    // mLeftDriveMotionMotor.DisableMotor();
-    // mRightDriveMotionMotor.DisableMotor();
+    // mOuterLeftMotionMotor.DisableMotor();
+    // mOuterRightMotionMotor.DisableMotor();
+    // mInnerLeftMotionMotor.DisableMotor();
+    // mInnerRightMotionMotor.DisableMotor();
 }
 
-bool Shuttle::StakeTransition() {
+void Shuttle::StartArmTransition(ArmTransitionPositions pos) {
+    mArmTransitionState = ArmTransitionState::kCalculate;
+    mArmTransitionIntermediary = 0;
+    if (pos == ArmTransitionPositions::kBothArmsRaised) {
+        mArmTransitionMainAngle = GetLeftTensionArmPos();
+        mArmTransitionInterval = (mTwoArmTakeupAngle - GetLeftTensionArmPos()) / kArmTransitionIntervals;
+    } else if (pos == ArmTransitionPositions::kLeftArmRaised) {
+        mArmTransitionMainAngle = GetLeftTensionArmPos();
+        mArmTransitionInterval = (mOneArmTakeupAngle - GetLeftTensionArmPos()) / kArmTransitionIntervals;
+    } else if (pos == ArmTransitionPositions::kRightArmRaised) {
+        mArmTransitionMainAngle = GetRightTensionArmPos();
+        mArmTransitionInterval = (mOneArmTakeupAngle - GetRightTensionArmPos()) / kArmTransitionIntervals;
+    }
+}
+
+double Shuttle::GetBatteryVoltage() {
+    // TODO Use battery voltage sensor
+    return 18.0;
+}
+
+bool Shuttle::StakeTransition(bool offRail) {
     ArmTransitionPositions preTransition;
     ArmTransitionPositions postTransition;
     if (mFrontLimitSwitch == kLeft) {
@@ -244,7 +253,7 @@ bool Shuttle::StakeTransition() {
             mStakeTransitionState = kGoingOffRail;
         }
     } else if (mStakeTransitionState == kGoingOffRail) {
-        if ((mFrontLimitSwitch == kLeft && !mRightLimitSwitch.Get()) || (mFrontLimitSwitch == kRight && !mLeftLimitSwitch.Get())) {
+        if (offRail) {
             // SetMotionMotors(kRailRPM);
         } else {
             // StopMotionMotors();
@@ -263,18 +272,21 @@ bool Shuttle::StakeTransition() {
     return false;
 }
 
-bool Shuttle::ConstantTakeupDrive() {
-    if (mLeftLimitSwitch.Get() || mRightLimitSwitch.Get()) {
-        // StopMotionMotors();
-        if ((mLeftLimitSwitch.Get() && mFrontLimitSwitch == kLeft) || (mRightLimitSwitch.Get() && mFrontLimitSwitch == kRight)) {  // If front limit switch is hit start stake transition
-            mStakeTransitionState = kHitRail;
-            return true;
-        } else {
-            // TODO: Log that something isn't right most likely that the front of the robot wasn't configured properly
+bool Shuttle::ConstantTakeupDrive(bool hitFront) {
+    // At the very start of an autonomous run, take up the cable
+    if (mAtStart) {
+        if (ArmTransition(Shuttle::ArmTransitionPositions::kBothArmsRaisedNormal)) {
+            mAtStart = false;
         }
+        return false;
+    }
+    if (hitFront) {
+        mStakeTransitionState = kHitRail;
+        return true;
     } else {
         // SetMotionMotors(kDriveRPM);
     }
+    return false;
 }
 void Shuttle::EStop() {
     StopMotionMotors();

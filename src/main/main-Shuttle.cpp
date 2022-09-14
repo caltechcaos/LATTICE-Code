@@ -71,13 +71,14 @@ void shuttleLoop() {
             break;
         case 1:  // Transition Mode
             // Up - Switch from autonomous constant takeup to autonomous stake transition
-            if (abs(y_left) >= 0.9 && curr_mode == mode::TakeupDrive) {
-                shuttle.ConstantTakeupDrive();
-                curr_mode = mode::StakeTransition;
-                // Down - Switch from autonomous stake transition to autonomous constant takeup
-            } else if (abs(y_left) <= 0.1 && curr_mode == mode::StakeTransition) {
-                shuttle.StakeTransition();
-                curr_mode = mode::TakeupDrive;
+            if (curr_mode == mode::TakeupDrive) {
+                if (shuttle.ConstantTakeupDrive(abs(y_left) >= 0.9)) {
+                    curr_mode = mode::StakeTransition;
+                }
+            } else {
+                if (shuttle.StakeTransition(abs(y_left) <= 0.1)) {
+                    curr_mode = mode::TakeupDrive;
+                }
             }
             break;
         case 2:  // Emergency Stop
