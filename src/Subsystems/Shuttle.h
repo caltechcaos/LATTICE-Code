@@ -93,10 +93,18 @@ class Shuttle {
     /**
      * Sets the motion motors to move
      *
+     * @param outerLeft The RPM the outer left pulley should move at
+     * @param innerLeft The RPM the inner left pulley should move at
+     * @param innerRight The RPM the inner right pulley should move at
+     * @param outerRight The RPM the outer right pulley should move at
+     */
+    void SetMotionMotors(double outerLeft, double innerLeft, double innerRight, double outerRight);
+
+    /**
+     * Sets the shuttle to move in a direction with a specified rpm
+     *
      * @param RPM The RPM in which to move at
      */
-    void SetMotionMotors(double passiveLeft, double poweredLeft, double poweredRight, double passiveRight);
-
     void SetMotion(double RPM);
 
     /**
@@ -126,14 +134,14 @@ class Shuttle {
      *
      * @return True if the stake transition is complete
      */
-    bool StakeTransition();
+    bool StakeTransition(bool offRail);
 
     /**
      * Runs constant takeup traversal across cable. Only runs if arms are already configured to be both raised.
      *
-     * @return True if the front limit switch has been triggered and a stake transition should start.
+     * @return True if the stake transition should start
      */
-    bool ConstantTakeupDrive();
+    bool ConstantTakeupDrive(bool hitFront);
 
     /**
      * Emergency stop that freezes all the actuators.
@@ -148,7 +156,18 @@ class Shuttle {
      */
     bool SetTensionArmPositions(double leftArmAngle, double rightArmAngle);
 
-    double GetLeftTensionArmPos() { return mLeftTensionMotor.GetPosition() * 360.0 / 5000; };
+    /**
+     * Get the left tension arm position in degrees
+     *
+     * @return the left tension arm position in degrees
+     */
+    double GetLeftTensionArmPos() { return mLeftTensionMotor.GetPosition() * 360.0 / 5000; };  // TODO Account for gearing here officially
+
+    /**
+     * Get the right tension arm position in degrees
+     *
+     * @return the right tension arm position in degrees
+     */
     double GetRightTensionArmPos() { return -mRightTensionMotor.GetPosition() * 360.0 / 5000; };
 
     void ResetArmPositions() {
@@ -159,21 +178,8 @@ class Shuttle {
     double GetLeftSetpoint() { return mLeftArmController.GetSetpoint(); };
     double GetRightSetpoint() { return mRightArmController.GetSetpoint(); };
 
-    double GetBatteryVoltage() { return 18.0; }
-    void StartArmTransition(ArmTransitionPositions pos) {
-        mArmTransitionState = ArmTransitionState::kCalculate;
-        mArmTransitionIntermediary = 0;
-        if (pos == ArmTransitionPositions::kBothArmsRaised) {
-            mArmTransitionMainAngle = GetLeftTensionArmPos();
-            mArmTransitionInterval = (mTwoArmTakeupAngle - GetLeftTensionArmPos()) / kArmTransitionIntervals;
-        } else if (pos == ArmTransitionPositions::kLeftArmRaised) {
-            mArmTransitionMainAngle = GetLeftTensionArmPos();
-            mArmTransitionInterval = (mOneArmTakeupAngle - GetLeftTensionArmPos()) / kArmTransitionIntervals;
-        } else if (pos == ArmTransitionPositions::kRightArmRaised) {
-            mArmTransitionMainAngle = GetRightTensionArmPos();
-            mArmTransitionInterval = (mOneArmTakeupAngle - GetRightTensionArmPos()) / kArmTransitionIntervals;
-        }
-    }
+    double GetBatteryVoltage();
+    void StartArmTransition(ArmTransitionPositions pos);
 
     // Guarantee the singleton
     Shuttle(Shuttle const&) = delete;
@@ -196,24 +202,25 @@ class Shuttle {
     static constexpr double kLengthArm = 0.25;
     static constexpr int kArmTransitionIntervals = 5;  // Number of intermediary states required to make the arm transition.
 
-    // TODO Fix these numbers to an actual constants file
-    // MotionMotor mRightPassiveMotionMotor{ShuttleConstants::kRightPassiveMotionMotorEnablePin, ShuttleConstants::kRightPassiveMotionMotorSignalPin, ShuttleConstants::kRightPassiveMotionMotorRPMPin, ShuttleConstants::kRightPassiveMotionMotorThermalPin};
-    // MotionMotor mLeftPassiveMotionMotor{ShuttleConstants::kLeftPassiveMotionMotorEnablePin, ShuttleConstants::kLeftPassiveMotionMotorSignalPin, ShuttleConstants::kLeftPassiveMotionMotorRPMPin, ShuttleConstants::kLeftPassiveMotionMotorThermalPin};
-    // MotionMotor mRightDriveMotionMotor{ShuttleConstants::kRightDriveMotionMotorEnablePin, ShuttleConstants::kRightDriveMotionMotorSignalPin, ShuttleConstants::kRightDriveMotionMotorRPMPin, ShuttleConstants::kRightDriveMotionMotorThermalPin};
-    // MotionMotor mLeftDriveMotionMotor{ShuttleConstants::kLeftDriveMotionMotorEnablePin, ShuttleConstants::kLeftDriveMotionMotorSignalPin, ShuttleConstants::kLeftDriveMotionMotorRPMPin, ShuttleConstants::kLeftDriveMotionMotorThermalPin};
+    // // TODO Fix these numbers to an actual constants file
+    // MotionMotor mOuterRightMotionMotor{ShuttleConstants::kOuterRightMotionMotorEnablePin, ShuttleConstants::kOuterRightMotionMotorSignalPin, ShuttleConstants::kOuterRightMotionMotorRPMPin, ShuttleConstants::kOuterRightMotionMotorThermalPin};
+    // MotionMotor mOuterLeftMotionMotor{ShuttleConstants::kOuterLeftMotionMotorEnablePin, ShuttleConstants::kOuterLeftMotionMotorSignalPin, ShuttleConstants::kOuterLeftMotionMotorRPMPin, ShuttleConstants::kOuterLeftMotionMotorThermalPin};
+    // MotionMotor mInnerRightMotionMotor{ShuttleConstants::kInnerRightMotionMotorEnablePin, ShuttleConstants::kInnerRightMotionMotorSignalPin, ShuttleConstants::kInnerRightMotionMotorRPMPin, ShuttleConstants::kInnerRightMotionMotorThermalPin};
+    // MotionMotor mInnerLeftMotionMotor{ShuttleConstants::kInnerLeftMotionMotorEnablePin, ShuttleConstants::kInnerLeftMotionMotorSignalPin, ShuttleConstants::kInnerLeftMotionMotorRPMPin, ShuttleConstants::kInnerLeftMotionMotorThermalPin};
 
     HytorcSimple mRightTensionMotor{ShuttleConstants::kRightHytorcMotorPin, ShuttleConstants::kRightHytorcForwardEncoderPin, ShuttleConstants::kRightHytorcBackwardEncoderPin};
     HytorcSimple mLeftTensionMotor{ShuttleConstants::kLeftHytorcMotorPin, ShuttleConstants::kLeftHytorcForwardEncoderPin, ShuttleConstants::kLeftHytorcBackwardEncoderPin};
 
-    LimitSwitch mRightLimitSwitch{ShuttleConstants::kRightLimitSwitchPin};
-    LimitSwitch mLeftLimitSwitch{ShuttleConstants::kLeftLimitSwitchPin};
+    LimitSwitch mRightArmBottomLimitSwitch{ShuttleConstants::kRightArmBottomLimitSwitchPin};
+    LimitSwitch mLeftArmBottomLimitSwitch{ShuttleConstants::kLeftArmBottomLimitSwitchPin};
+    LimitSwitch mRightArmTopLimitSwitch{ShuttleConstants::kRightArmTopLimitSwitchPin};
+    LimitSwitch mLeftArmTopLimitSwitch{ShuttleConstants::kLeftArmTopLimitSwitchPin};
     LimitSwitch mCenterLimitSwitch{ShuttleConstants::kCenterLimitSwitchPin};
-    LimitSwitch mRightArmLimitSwitch{ShuttleConstants::kRightArmLimitSwitchPin};
-    LimitSwitch mLeftArmLimitSwitch{ShuttleConstants::kLeftArmLimitSwitchPin};
 
     PIDF mLeftArmController{ShuttleConstants::kP, ShuttleConstants::kI, ShuttleConstants::kD, [](double setpoint) { return copysign(ShuttleConstants::kS, setpoint); }, ShuttleConstants::kError, ShuttleConstants::kVError};
     PIDF mRightArmController{ShuttleConstants::kP, ShuttleConstants::kI, ShuttleConstants::kD, [](double setpoint) { return copysign(ShuttleConstants::kS, setpoint); }, ShuttleConstants::kError, ShuttleConstants::kVError};
 
+    bool mAtStart = true;
     double mTargetTakeup;
     double mOneArmTakeupAngle;
     double mTwoArmTakeupAngle;

@@ -16,6 +16,8 @@ constexpr int kPeriod = 20;
 bool enable = false;
 bool armTransition = false;
 bool initial = false;
+bool hitStake = false;
+bool offStake = false;
 void run() {
     shuttle.UpdateSensors();
     if (Serial.available()) {
@@ -25,8 +27,9 @@ void run() {
         } else if (input == 'b') {
             shuttle.SetFrontLimitSwitch(lattice::Shuttle::kRight);
         } else if (input == 'c') {
-            initial = true;
-            shuttle.StartArmTransition(lattice::Shuttle::kRightArmRaised);
+            hitStake = true;
+        } else if (input == 'd') {
+            offStake = false;
         } else if (input == 's') {
             enable = true;
             Serial.println("----------------");
@@ -36,17 +39,14 @@ void run() {
     }
 
     if (enable) {
-        if (initial) {
-            initial = !shuttle.ArmTransition(lattice::Shuttle::kBothArmsRaisedNormal);
-            Serial.println("10000000000");
+        if (!armTransition) {
+            offStake = false;
+            armTransition = shuttle.ConstantTakeupDrive(hitStake);
+            Serial.println("2000000000");
         } else {
-            if (!armTransition) {
-                armTransition = shuttle.ConstantTakeupDrive();
-                Serial.println("2000000000");
-            } else {
-                armTransition = !shuttle.StakeTransition();
-                Serial.println("3000000000");
-            }
+            hitStake = false;
+            armTransition = !shuttle.StakeTransition(offStake);
+            Serial.println("3000000000");
         }
     } else {
         shuttle.StopMotionMotors();
