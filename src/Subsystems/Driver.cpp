@@ -10,7 +10,7 @@ using namespace lattice;
 Driver::Driver()
     : mElevator(ElevatorConstants::kMotorPin, ElevatorConstants::kEncoderFwdPin, ElevatorConstants::kEncoderBckPin),
       mActuator(DriverConstants::kHytorcMotorPin, DriverConstants::kHytorcEncoderForward, DriverConstants::kHytorcEncoderBackward),
-      mHandoff(HandoffConstants::kMotorPin1, HandoffConstants::kMotorPin2, HandoffConstants::kMotorPin3, HandoffConstants::kMotorPin4),
+      mHandoff(HandoffConstants::kStepPin, HandoffConstants::kDrivePin, HandoffConstants::kStepsPerRev),
       /* rc_input() */
       mLogger(Logger::logger()),
       mFirstStake(HandoffConstants::kLimitSwitch1Pin),

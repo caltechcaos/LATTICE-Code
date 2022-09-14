@@ -55,14 +55,24 @@ namespace lattice
 
     namespace HandoffConstants
     {
-        constexpr int kMotorPin1 = 0;
-        constexpr int kMotorPin2 = 0;
-        constexpr int kMotorPin3 = 0;
-        constexpr int kMotorPin4 = 0;
+        // constexpr int kMotorPin1 = 0;
+        // constexpr int kMotorPin2 = 0;
+        // constexpr int kMotorPin3 = 0;
+        // constexpr int kMotorPin4 = 0;
 
         constexpr int kLimitSwitch1Pin = 0;
         constexpr int kLimitSwitch2Pin = 0;
         constexpr int kLimitSwitch3Pin = 0;
+
+        //hand off mech stepper motor 
+        constexpr int kStepPin = 2;
+        constexpr int kDrivePin = 3;
+        constexpr int kStepsPerRev = 200;
+        constexpr int kRPM = 120;
+        constexpr int kMotorAccel = 2000;
+        constexpr int kMotorDecel = 1000;
+        constexpr int kMicrosteps = 16;
+        //constexpr int kSleepPin = 13;
 
     } // namespace HandoffConstants
 

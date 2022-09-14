@@ -1,6 +1,7 @@
 #pragma once
 #include "ButtonOut.h"
 #include "Digipot.h"
+#include "ATRVMotor.h"
 
 namespace lattice {
 /**
@@ -51,6 +52,7 @@ class Clifford {
    private:
     bool brake;
     Digipot joystick;
+    //ATRVMotor joystick;
     ButtonOut trigger;
 
     /**
