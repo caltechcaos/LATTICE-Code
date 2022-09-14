@@ -17,18 +17,18 @@ void loop() {
         char input = (uint8_t)Serial.read();
 
         if (input == 'a') {
-            power = 0.25;
-        } else if (input == 'b') {
-            power = -0.25;
-        } else if (input == 'c') {
             power = 1;
+        } else if (input == 'b') {
+            power -= -.1;
+        } else if (input == 'c') {
+            power += .1;
         } else if (input == 'd') {
-            power = -1;
+            power = -3;
         } else if (input == 'f') {
             power = 0;
         }
     }
-    Serial.println(testMotor.GetPosition());
+    Serial.println(power);
 
-    testMotor.SetPercentOutput(power);
+    testMotor.SetVoltage(power, 18);
 }
