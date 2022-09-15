@@ -10,7 +10,7 @@ using namespace lattice;
 Driver::Driver()
     : mElevator(ElevatorConstants::kMotorPin, ElevatorConstants::kEncoderFwdPin, ElevatorConstants::kEncoderBckPin),
       mActuator(DriverConstants::kHytorcMotorPin, DriverConstants::kHytorcEncoderForward, DriverConstants::kHytorcEncoderBackward),
-      mHandoff(HandoffConstants::kStepPin, HandoffConstants::kDrivePin, HandoffConstants::kStepsPerRev),
+      mHandoff(HandoffConstants::kStepsPerRev, HandoffConstants::kStepPin1, HandoffConstants::kStepPin2, HandoffConstants::kStepPin3, HandoffConstants::kStepPin4),
       /* rc_input() */
       mLogger(Logger::logger()),
       mFirstStake(HandoffConstants::kLimitSwitch1Pin),
@@ -48,7 +48,7 @@ void Driver::UpdateSensors() {
 void Driver::Run() {
     UpdateSensors();
     if (mState == DriverState::kIdle) {
-        mHandoff.SetSpeed(0.0);
+        mHandoff.setSpeed(0.0);
         mElevator.SetVoltage(0, 1);
     } else if (mState == DriverState::kManual) {
     } else if (mState == DriverState::kHandoff) {
@@ -111,7 +111,8 @@ bool Driver::RunStakeHandoff() {
 
 bool Driver::RunStakeHandoff(LimitSwitch& targetLimitSwitch) {
     if (targetLimitSwitch.Get()) {
-        mHandoff.SetSpeed(0.0);
+        mHandoff.setSpeed(0.0);
+        mHandoff.step(0);
         if (mStakeLimitSwitchContact) {
             return true;
         } else {
@@ -124,7 +125,8 @@ bool Driver::RunStakeHandoff(LimitSwitch& targetLimitSwitch) {
             mPowerScaler *= 0.5;
             mStakeLimitSwitchContact = false;
         }
-        mHandoff.SetSpeed(mHandoffDir * kHandoffSpeed * mPowerScaler);
+        mHandoff.setSpeed(kHandoffSpeed * mPowerScaler);
+        mHandoff.step(mHandoffDir * 10000000);
     }
     return false;
 }
@@ -132,7 +134,8 @@ bool Driver::RunStakeHandoff(LimitSwitch& targetLimitSwitch) {
 void Driver::EStop() {
     mElevator.SetBrake(true);
     // actuator.SetBrake(true);
-    mHandoff.SetBrake(true);
+    mHandoff.step(0);
+    mHandoff.setSpeed(0);
 }
 
 bool Driver::RunElevatorOneTick(double setpoint) {

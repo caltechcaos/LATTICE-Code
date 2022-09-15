@@ -65,8 +65,11 @@ namespace lattice
         constexpr int kLimitSwitch3Pin = 0;
 
         //hand off mech stepper motor 
-        constexpr int kStepPin = 2;
-        constexpr int kDrivePin = 3;
+        constexpr int kStepPin1 = 8;
+        constexpr int kStepPin2 = 9;
+        constexpr int kStepPin3 = 10;
+        constexpr int kStepPin4 = 11;
+        //constexpr int kDrivePin = 3;
         constexpr int kStepsPerRev = 200;
         constexpr int kRPM = 120;
         constexpr int kMotorAccel = 2000;

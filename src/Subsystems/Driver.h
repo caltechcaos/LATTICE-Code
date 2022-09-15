@@ -8,6 +8,7 @@
 #include "Logger.h"
 #include "PIDF.h"
 #include "Thermistor.h"
+#include <Stepper.h>
 
 namespace lattice {
 class Driver {
@@ -63,6 +64,12 @@ class Driver {
      */
     bool ZeroElevator();
 
+        /**
+     * Updates all sensors which require an update. Must be called
+     * each loop cycle, before using the driver.
+     */
+    void UpdateSensors();
+
     void SetState(DriverState state);
 
     void SetDriverPower(double power);
@@ -76,7 +83,7 @@ class Driver {
    private:
     ElevatorMotor mElevator;
     HytorcSimple mActuator;
-    HandoffMotor mHandoff;
+    Stepper mHandoff;
 
     // RCInput rcInput;
     Logger& mLogger;
@@ -114,18 +121,14 @@ class Driver {
     // Out of 1
     static constexpr double kElevatorZeroSpeed = 1;
 
-    static constexpr double kHandoffSpeed = 0.25;
+    static constexpr double kHandoffSpeed = 10;
 
     /**
      * Creates the driver subsystem, using the pins in Util.h
      */
     Driver();
 
-    /**
-     * Updates all sensors which require an update. Must be called
-     * each loop cycle, before using the driver.
-     */
-    void UpdateSensors();
+
 
     /**
      * Runs the elevator controller one tick (using PIDF current control)
