@@ -19,7 +19,7 @@ class RC {
      * @param powerPin The power pin the module is plugged into
      * @param onboardLEDPin The pin of the onboard LED
      */
-    RC(UARTClass& comSerial, int rxPin, int powerPin, int onboardLEDPin);
+    RC(UARTClass& comSerial, int rxPin, int powerPin);
 
     /**
      * Sets up the RC to be in bind mode
@@ -72,7 +72,6 @@ class RC {
     SpektrumSatellite<uint16_t> mSatellite;
     const int kRxPin;
     const int kPowerPin;
-    const int kOnboardLEDPin;
     bool mLEDState;
     bool mBinded = false;
     int mPrevBlink;

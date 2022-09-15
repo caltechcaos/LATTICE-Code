@@ -1,10 +1,10 @@
 #include <Arduino.h>
 
 #include "ElevatorMotor.h"
-#include "Util.h"
 #include "RC.h"
+#include "Util.h"
 
-lattice::RC controller(Serial1, 19, 2, 13);
+lattice::RC controller(Serial1, 19, 2);
 lattice::ElevatorMotor testMotor{12, 2, 3};
 void setup() {
     lattice::GenericSetup();
@@ -19,8 +19,7 @@ void loop() {
     controller.Update();
     int gear = controller.GetGear();
     double elev = controller.GetElevator();
-    if (gear ==1)
-    {
+    if (gear == 1) {
         if (elev > 0.75) {
             power = 0.25;
         } else if (elev < 0.25) {
@@ -28,18 +27,17 @@ void loop() {
         } else {
             power = 0;
         }
-    }
-    else{
+    } else {
         power = 0;
     }
-    //if (Serial.available()) {
-        //else if (input == 'c') {
-          //  power = 1;
-        //} else if (input == 'd') {
-        //    power = -1;
+    // if (Serial.available()) {
+    // else if (input == 'c') {
+    //   power = 1;
+    //} else if (input == 'd') {
+    //    power = -1;
     //}
     Serial.println(gear);
-    //Serial.println(testMotor.GetPosition());
+    // Serial.println(testMotor.GetPosition());
 
     testMotor.Run(power);
 }

@@ -1,7 +1,8 @@
 #pragma once
+#include "ATRVMotor.h"
 #include "ButtonOut.h"
 #include "Digipot.h"
-#include "ATRVMotor.h"
+#include "Util.h"
 
 namespace lattice {
 /**
@@ -29,14 +30,11 @@ class Clifford {
     /**
      * Provides the given joystick input to Clifford. It will remain
      * at that value until new ones are sent.
-     * @param x The joystick x value input, between 0 and 1, inclusive
-     * @param y The joystick y value input, between 0 and 1, inclusive
+     * @param x The joystick x value input, between -1 and 1, inclusive
+     * @param y The joystick y value input, between -1 and 1, inclusive
      * @return True on successful movement, false otherwise
      */
     bool Move(double x, double y);
-
-    bool XAxisMove(double x);
-    bool YAxisMove(double y);
 
     /**
      * Sets the brake to the given value, overriding any movement
@@ -50,10 +48,10 @@ class Clifford {
     void operator=(Clifford const&) = delete;
 
    private:
-    bool brake;
-    Digipot joystick;
-    //ATRVMotor joystick;
-    ButtonOut trigger;
+    bool brake = false;
+    ATRVMotor mLeftMotor{CliffordConstants::kLeftMotorForwardPin, CliffordConstants::kLeftMotorBackwardPin};
+    ATRVMotor mRightMotor{CliffordConstants::kRightMotorForwardPin, CliffordConstants::kRightMotorBackwardPin};
+    static constexpr double kScaler = 0.5;  // We don't need Clifford at full throttle
 
     /**
      * Creates controls for Clifford

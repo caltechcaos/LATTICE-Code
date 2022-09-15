@@ -27,18 +27,21 @@ double remap(double x, double in_min, double in_max, double out_min, double out_
 void GenericSetup(std::string name = "");
 
 namespace CliffordConstants {
-constexpr int kJoystickTriggerPin = 22;
-}
+constexpr int kLeftMotorForwardPin = 2;
+constexpr int kLeftMotorBackwardPin = 3;
+constexpr int kRightMotorForwardPin = 12;
+constexpr int kRightMotorBackwardPin = 13;
+}  // namespace CliffordConstants
 
 namespace ElevatorConstants {
-constexpr int kMotorPin = 0;
-constexpr int kEncoderFwdPin = 0;
-constexpr int kEncoderBckPin = 0;
+constexpr int kMotorPin = 2;
+constexpr int kEncoderFwdPin = 6;
+constexpr int kEncoderBckPin = 7;
 
-constexpr int kTopLimitSwitchPin = 0;
-constexpr int kBottomLimitSwitchPin = 0;
+constexpr int kTopLimitSwitchPin = 10;
+constexpr int kBottomLimitSwitchPin = 5;
 
-constexpr int kCurrentPin = 0;
+constexpr int kCurrentPin = 4;
 
 constexpr double kP = 0;
 constexpr double kI = 0;
@@ -51,14 +54,9 @@ constexpr double kG = 0;
 }  // namespace ElevatorConstants
 
 namespace HandoffConstants {
-// constexpr int kMotorPin1 = 0;
-// constexpr int kMotorPin2 = 0;
-// constexpr int kMotorPin3 = 0;
-// constexpr int kMotorPin4 = 0;
-
-constexpr int kLimitSwitch1Pin = 0;
-constexpr int kLimitSwitch2Pin = 0;
-constexpr int kLimitSwitch3Pin = 0;
+constexpr int kLimitSwitch1Pin = 51;
+constexpr int kLimitSwitch2Pin = 52;
+constexpr int kLimitSwitch3Pin = 53;
 
 // hand off mech stepper motor
 constexpr int kStepPin1 = 8;
@@ -76,11 +74,11 @@ constexpr int kMicrosteps = 16;
 }  // namespace HandoffConstants
 
 namespace DriverConstants {
-constexpr int kHytorcMotorPin = 0;
-constexpr int kHytorcEncoderForward = 0;
-constexpr int kHytorcEncoderBackward = 0;
-constexpr int kHytorcThermistorPin = 0;
-constexpr int kHytorcCurrentPin = 0;
+constexpr int kHytorcMotorPin = 21;
+constexpr int kHytorcEncoderForward = 22;
+constexpr int kHytorcEncoderBackward = 23;
+constexpr int kHytorcThermistorPin = 24;
+constexpr int kHytorcCurrentPin = 25;
 
 constexpr double kP = 0;
 constexpr double kI = 0;

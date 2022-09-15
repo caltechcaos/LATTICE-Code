@@ -9,7 +9,7 @@
 
 #define RPMSCALE 5700
 
-lattice::RC controller(Serial1, 19, 2, 13);  // TODO: Use correct wiring when ATVR is fixed
+lattice::RC controller(Serial1, 19, 2);  // TODO: Use correct wiring when ATVR is fixed
 lattice::Clifford &clifford = lattice::Clifford::clifford();
 lattice::Driver &driver = lattice::Driver::driver();
 lattice::Shuttle &shuttle = lattice::Shuttle::GetInstance();

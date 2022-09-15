@@ -1,11 +1,12 @@
 #include <Arduino.h>
+#include <TaskScheduler.h>
+
+#include "FeedforwardUtil.h"
 #include "RC.h"
 #include "Subsystems/Clifford.h"
-#include "Subsystems/Shuttle.h"
 #include "Subsystems/Driver.h"
+#include "Subsystems/Shuttle.h"
 #include "Util.h"
-#include "FeedforwardUtil.h"
-#include <TaskScheduler.h>
 
 // CONSTANTS
 constexpr double RPMSCALE = 5700;
@@ -13,30 +14,29 @@ constexpr double RPMSCALE = 5700;
 double kS = lattice::DriverConstants::kS;
 double kV = lattice::DriverConstants::kV;
 double kA = lattice::DriverConstants::kA;
-constexpr double t_desired = 100; // Nm
+constexpr double t_desired = 100;  // Nm
 constexpr double THETA = 1;
 constexpr double I_s = 1;
 constexpr double max_voltage = 100;
 
 // sgn() function definiition
-template <typename T> int sgn(T num) {
+template <typename T>
+int sgn(T num) {
     return (T(0) < num) - (num < T(0));
 }
 
-double DesiredVoltage = lattice::GetSimpleFeedforward(kS, kV, kA, 0, t_desired/I_s);
-constexpr double Battery = 100; // TMP
+double DesiredVoltage = lattice::GetSimpleFeedforward(kS, kV, kA, 0, t_desired / I_s);
+constexpr double Battery = 100;  // TMP
 
 // TODO: If limit switches are hit on elevator that we can’t move it anymore
 // TODO: Autonomous torque and downforce application and Stake handoff
 // - https://www.overleaf.com/read/kghkvywmkyfj
 // - Use Latex file's math to calculate
 
-lattice::RC controller(Serial1, 19, 2, 13); // TODO: Use correct wiring when ATVR is fixed
+lattice::RC controller(Serial1, 19, 2);  // TODO: Use correct wiring when ATVR is fixed
 lattice::Clifford &clifford = lattice::Clifford::clifford();
 lattice::Driver &driver = lattice::Driver::driver();
-lattice::HytorcSimple hytorcSimple{9, 5, 6}; // TODO: Temp Ports
-
-
+lattice::HytorcSimple hytorcSimple{9, 5, 6};  // TODO: Temp Ports
 
 // Vertical: Move Drive Train Up/Down
 // Horizontal: Move Drive Train Left/Right
@@ -72,13 +72,13 @@ void driverLoop() {
     if (controller.GetAux2() == 1) {
         driver.EStop();
         Serial.println("Aux 2: Killed shuttle");
+        return;
     };
 
-    
     // Translational Motion of Driver
     double x_right = -1 * controller.GetAileron();
     double y_right = controller.GetElevator();
-    // Elevator 
+    // Elevator
     double x_left = (controller.GetRudder() - 0.5) * -2;
     int aux1 = controller.GetAux1();
 
@@ -105,7 +105,7 @@ void driverLoop() {
             success = updateElevator(y_right, x_left);
             break;
         case 2:
-        //     success = updateShuttle(x);
+            //     success = updateShuttle(x);
             break;
         default:
             success = false;
@@ -115,7 +115,6 @@ void driverLoop() {
     if (!success) {
         Serial.println("Failure in Finite State Machine for RC");
     }
-   
 }
 
 Scheduler ts;
