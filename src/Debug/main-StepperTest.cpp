@@ -1,6 +1,7 @@
 #include <Arduino.h>
 #include <AccelStepper.h>
 #include "Util.h"
+#include "StepperHandOff.h"
 //#include "HandoffMotor.h"
 
 using namespace lattice;
@@ -10,12 +11,14 @@ using namespace lattice;
 
 int stepsPerRevolution = 200;
 //AccelStepper stepper = AccelStepper(MotorInterfaceType, 8, 9, 10, 11);
-AccelStepper myStepper(4, 8, 9, 10, 11);
+//AccelStepper myStepper(4, 8, 9, 10, 11);
+lattice::StepperHandOff Handoff(4, HandoffConstants::kStepPin1, HandoffConstants::kStepPin2, HandoffConstants::kStepPin3, HandoffConstants::kStepPin4);
 int Speed; 
 
 void setup() {
     lattice::GenericSetup();
-    myStepper.setMaxSpeed(1000);
+    //myStepper.setMaxSpeed(1000);
+    Handoff.Setup(1000);
     //StepperDriver.Setup();
     //StepperDriver.SetAccel(kMotorAccel, kMotorDecel);
     //myStepper.setSpeed(60);
@@ -38,9 +41,9 @@ void loop() {
         }
 
     }
-    myStepper.setSpeed(Speed);
+    Handoff.SetSpeed(Speed);
     //StepperDriver.StepMove(steps);    
-    myStepper.runSpeed();
+    //Handoff.run();
     Serial.println(Speed);
 
 }
