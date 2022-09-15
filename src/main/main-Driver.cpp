@@ -5,6 +5,7 @@
 #include "Subsystems/Driver.h"
 #include "Util.h"
 #include "FeedforwardUtil.h"
+#include <TaskScheduler.h>
 
 // CONSTANTS
 constexpr double RPMSCALE = 5700;
@@ -35,13 +36,7 @@ lattice::Clifford &clifford = lattice::Clifford::clifford();
 lattice::Driver &driver = lattice::Driver::driver();
 lattice::HytorcSimple hytorcSimple{9, 5, 6}; // TODO: Temp Ports
 
-// Runs at init
-void setup() {
-    lattice::GenericSetup();
-    controller.Setup();
-    driver.Setup();
-    clifford.Setup();
-}
+
 
 // Vertical: Move Drive Train Up/Down
 // Horizontal: Move Drive Train Left/Right
@@ -70,7 +65,7 @@ bool autoDrill() {
 // }
 
 // Runs continously
-void loop() {
+void driverLoop() {
     controller.Update();
 
     // Killswitch
@@ -120,4 +115,29 @@ void loop() {
     if (!success) {
         Serial.println("Failure in Finite State Machine for RC");
     }
+   
+}
+
+Scheduler ts;
+constexpr int period = 5;
+
+Task mainLoop(period, TASK_FOREVER, &driverLoop);
+
+// Runs at init
+void setup() {
+    lattice::GenericSetup();
+    controller.Setup();
+    driver.Setup();
+    clifford.Setup();
+
+    Serial.begin(115200);
+
+    ts.init();
+    ts.addTask(mainLoop);
+    delay(5000);
+    mainLoop.enable();
+}
+
+void loop() {
+    ts.execute();
 }

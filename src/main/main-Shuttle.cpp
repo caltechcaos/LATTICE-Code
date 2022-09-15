@@ -3,18 +3,13 @@
 #include "Subsystems/Shuttle.h"
 #include "Util.h"
 #include <cstdlib>
+#include <TaskScheduler.h>
 
 #define RPMSCALE 5700
 
 lattice::RC controller(Serial1, 19, 2, 13); // TODO: Use correct wiring when ATVR is fixed
 lattice::Shuttle &shuttle = lattice::Shuttle::GetInstance();
 
-// Runs at init
-void setup() {
-    lattice::GenericSetup();
-    controller.Setup();
-    shuttle.Setup();
-}
 
 // Horizontal: Drive Left/Right
 void updateShuttle(double x) {
@@ -48,7 +43,7 @@ enum mode {
     TakeupDrive
 };
 
-void loop() {
+void shuttleLoop() {
     controller.Update();
     shuttle.UpdateSensors();
 
@@ -96,4 +91,27 @@ void loop() {
         shuttle.EStop();
     };
     
+}
+
+Scheduler ts;
+constexpr int period = 5;
+
+Task mainLoop(period, TASK_FOREVER, &shuttleLoop);
+
+// Runs at init
+void setup() {
+    lattice::GenericSetup();
+    controller.Setup();
+    shuttle.Setup();
+
+    Serial.begin(115200);
+
+    ts.init();
+    ts.addTask(mainLoop);
+    delay(5000);
+    mainLoop.enable();
+}
+
+void loop() {
+    ts.execute();
 }
