@@ -3,12 +3,9 @@
 #include <Arduino.h>
 
 using namespace lattice;
-RC::RC(UARTClass& comSerial, int rxPin, int powerPin, int onboardLEDPin) : mSatellite(comSerial), mComSerial(comSerial), kRxPin(rxPin), kPowerPin(powerPin), kOnboardLEDPin(onboardLEDPin) {}
+RC::RC(UARTClass& comSerial, int rxPin, int powerPin) : mSatellite(comSerial), mComSerial(comSerial), kRxPin(rxPin), kPowerPin(powerPin) {}
 
 void RC::Setup() {
-    pinMode(kOnboardLEDPin, OUTPUT);
-    digitalWrite(kOnboardLEDPin, HIGH);
-
     mSatellite.setBindingMode(Internal_DSMx_22ms);
     mSatellite.startBinding(kPowerPin, kRxPin);
     mPrevBlink = millis();
@@ -17,23 +14,21 @@ void RC::Setup() {
 
 void RC::Update() {
     if (!mSatellite.getFrame()) {
-        //mBinded = false;
+        // mBinded = false;
         auto currTime = millis();
         if (currTime - mPrevBlink >= kLEDBlink) {
             mLEDState != mLEDState;
-            digitalWrite(kOnboardLEDPin, mLEDState);
             mPrevBlink = currTime;
         }
     } else {
         mBinded = true;
-        digitalWrite(kOnboardLEDPin, HIGH);
     }
 }
 
 double RC::GetThrottle() {
     if (mBinded) {
         double rawPercent = (double)(mSatellite.getThrottle() - kMinThrottle) / (kMaxThrottle - kMinThrottle);
-        return rawPercent;
+        return rawPercent * 2 - 1;
     } else {
         return 0.0;
     }
@@ -61,7 +56,7 @@ int RC::ProcessMinMidMaxInput(u_int16_t value) {
 double RC::GetAileron() {
     if (mBinded) {
         double rawPercent = (double)(mSatellite.getAileron() - kMinThrottle) / (kMaxThrottle - kMinThrottle);
-        return rawPercent;
+        return rawPercent * 2 - 1;
     } else {
         return 0.0;
     }
@@ -69,7 +64,7 @@ double RC::GetAileron() {
 double RC::GetElevator() {
     if (mBinded) {
         double rawPercent = (double)(mSatellite.getElevator() - kMinThrottle) / (kMaxThrottle - kMinThrottle);
-        return rawPercent;
+        return rawPercent * 2 - 1;
     } else {
         return 0.0;
     }
@@ -85,17 +80,12 @@ double RC::GetRudder() {
 int RC::GetGear() {
     if (mBinded) {
         double rawPercent = (double)(mSatellite.getGear() - kMinThrottle) / (kMaxThrottle - kMinThrottle);
-        
-        if (rawPercent<0.3)
-        {
+
+        if (rawPercent < 0.3) {
             return 2;
-        }
-        else if (rawPercent>0.6)
-        {
+        } else if (rawPercent > 0.6) {
             return 0;
-        }
-        else
-        {
+        } else {
             return 1;
         }
     } else {
@@ -105,17 +95,12 @@ int RC::GetGear() {
 int RC::GetAux1() {
     if (mBinded) {
         double rawPercent = (double)(mSatellite.getAux1() - kMinThrottle) / (kMaxThrottle - kMinThrottle);
-       
-       if (rawPercent<0.3)
-        {
+
+        if (rawPercent < 0.3) {
             return 2;
-        }
-        else if (rawPercent>0.6)
-        {
+        } else if (rawPercent > 0.6) {
             return 0;
-        }
-        else
-        {
+        } else {
             return 1;
         }
     } else {
@@ -125,12 +110,9 @@ int RC::GetAux1() {
 int RC::GetAux2() {
     if (mBinded) {
         double rawPercent = (double)(mSatellite.getAux2() - kMinThrottle) / (kMaxThrottle - kMinThrottle);
-        if (rawPercent<0.3)
-        {
+        if (rawPercent < 0.3) {
             return 1;
-        }
-        else
-        {
+        } else {
             return 0;
         }
     } else {

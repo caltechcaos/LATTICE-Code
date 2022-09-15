@@ -9,7 +9,7 @@
 
 #define RPMSCALE 5700
 
-lattice::RC controller(Serial1, 19, 2, 13);  // TODO: Use correct wiring when ATVR is fixed
+lattice::RC controller(Serial1, 19, 2);  // TODO: Use correct wiring when ATVR is fixed
 lattice::Shuttle &shuttle = lattice::Shuttle::GetInstance();
 
 // Horizontal: Drive Left/Right

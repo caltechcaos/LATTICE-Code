@@ -9,7 +9,7 @@
 // Right Arm Transition
 
 auto& shuttle = lattice::Shuttle::GetInstance();
-lattice::RC controller{Serial1, 19, 2, 13};
+lattice::RC controller{Serial1, 19, 2};
 int testState = 0;
 constexpr double takeup = 0.25;
 constexpr int kPeriod = 20;

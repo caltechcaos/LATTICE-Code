@@ -1,14 +1,16 @@
 #pragma once
+#include <AccelStepper.h>
+
 #include "Clifford.h"
 #include "CurrentSensor.h"
 #include "ElevatorMotor.h"
-#include "HandoffMotor.h"
+#include "FeedforwardUtil.h"
 #include "HytorcSimple.h"
 #include "LimitSwitch.h"
 #include "Logger.h"
 #include "PIDF.h"
 #include "Thermistor.h"
-#include <Stepper.h>
+#include "Util.h"
 
 namespace lattice {
 class Driver {
@@ -19,13 +21,6 @@ class Driver {
         kThree
     };
 
-    enum class DriverState {
-        kIdle,
-        kZeroElevator,
-        kHandoff,
-        kAutoDrive,
-        kManual
-    };
     /**
      * Singleton to ensure we only have one driver subsystem floating around
      * @returns The single instance of the driver
@@ -64,13 +59,11 @@ class Driver {
      */
     bool ZeroElevator();
 
-        /**
+    /**
      * Updates all sensors which require an update. Must be called
      * each loop cycle, before using the driver.
      */
     void UpdateSensors();
-
-    void SetState(DriverState state);
 
     void SetDriverPower(double power);
     void SetElevatorPower(double power);
@@ -81,35 +74,34 @@ class Driver {
     void operator=(Driver const&) = delete;
 
    private:
-    ElevatorMotor mElevator;
-    HytorcSimple mActuator;
-    Stepper mHandoff;
+    ElevatorMotor mElevator{ElevatorConstants::kMotorPin, ElevatorConstants::kEncoderFwdPin, ElevatorConstants::kEncoderBckPin};
+    HytorcSimple mActuator{DriverConstants::kHytorcMotorPin, DriverConstants::kHytorcEncoderForward, DriverConstants::kHytorcEncoderBackward};
+    AccelStepper mHandoff{4, HandoffConstants::kStepPin1, HandoffConstants::kStepPin2, HandoffConstants::kStepPin3, HandoffConstants::kStepPin4};
 
     // RCInput rcInput;
     Logger& mLogger;
 
-    LimitSwitch mFirstStake;
-    LimitSwitch mSecondStake;
-    LimitSwitch mThirdStake;
+    LimitSwitch mFirstStake{HandoffConstants::kLimitSwitch1Pin};
+    LimitSwitch mSecondStake{HandoffConstants::kLimitSwitch2Pin};
+    LimitSwitch mThirdStake{HandoffConstants::kLimitSwitch3Pin};
 
-    LimitSwitch mElevatorZero;  // top
-    LimitSwitch mElevatorEnd;   // bottom
+    LimitSwitch mElevatorZero{ElevatorConstants::kTopLimitSwitchPin};    // top
+    LimitSwitch mElevatorEnd{ElevatorConstants::kBottomLimitSwitchPin};  // bottom
 
-    Thermistor mActuatorTemp;
-    CurrentSensor mActuatorCurrent;
-    CurrentSensor mElevatorCurrent;
+    Thermistor mActuatorTemp{DriverConstants::kHytorcThermistorPin};
+    CurrentSensor mActuatorCurrent{DriverConstants::kHytorcCurrentPin};
+    CurrentSensor mElevatorCurrent{ElevatorConstants::kCurrentPin};
 
-    PIDF mElevatorController;
-    PIDF mActuatorController;
+    PIDF mElevatorController{ElevatorConstants::kP, ElevatorConstants::kI, ElevatorConstants::kD,
+                             GetElevatorFeedforward(ElevatorConstants::kS, ElevatorConstants::kV, ElevatorConstants::kA, ElevatorConstants::kG, 0, 0)};
+    PIDF mActuatorController{DriverConstants::kP, DriverConstants::kI, DriverConstants::kD,
+                             GetSimpleFeedforward(DriverConstants::kS, DriverConstants::kV, DriverConstants::kA, 0, 0)};
 
     bool mInvertHandoffOutput = false;
     bool mStakeLimitSwitchContact = false;
     double mPowerScaler = 1.0;
     int mHandoffDir = 1;
     LimitSwitch& mTargetLimitSwitch = mFirstStake;
-
-    DriverState mState;
-    DriverState mPrevState;
 
     StakeNumber mStakeState = StakeNumber::kOne;
 
@@ -121,23 +113,14 @@ class Driver {
     // Out of 1
     static constexpr double kElevatorZeroSpeed = 1;
 
-    static constexpr double kHandoffSpeed = 10;
+    static constexpr double kHandoffSpeed = 600;
 
     /**
      * Creates the driver subsystem, using the pins in Util.h
      */
     Driver();
 
-
-
-    /**
-     * Runs the elevator controller one tick (using PIDF current control)
-     * @param setpoint The target current, in amps
-     * @returns True if the controller is done, false otherwise
-     */
-    bool RunElevatorOneTick(double setpoint);
-
-    bool RunStakeHandoff(LimitSwitch& targetLimitSwitch);
+    bool RunHandoff(LimitSwitch& targetLimitSwitch);
 };
 
 }  // namespace lattice
