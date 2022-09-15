@@ -79,14 +79,16 @@ void loop() {
         Serial.println("Aux 2: Killed shuttle");
     };
 
-    // Translational Motion, Right side
-    double x = -1 * controller.GetAileron();
-    double y = controller.GetElevator();
-    double drill = (controller.GetRudder() - 0.5) * -2;
-    int stake = controller.GetAux1();
+    
+    // Translational Motion of Driver
+    double x_right = -1 * controller.GetAileron();
+    double y_right = controller.GetElevator();
+    // Elevator 
+    double x_left = (controller.GetRudder() - 0.5) * -2;
+    int aux1 = controller.GetAux1();
 
     // Set stake number with Switch A, assume there's 3 for now
-    switch (stake) {
+    switch (aux1) {
         case 0:
             driver.SetStake(lattice::Driver::StakeNumber::kOne);
             break;
@@ -102,10 +104,10 @@ void loop() {
     bool success;
     switch (controller.GetGear()) {
         case 0:
-            success = updateClifford(x, y);
+            success = updateClifford(x_right, y_right);
             break;
         case 1:
-            success = updateElevator(y, drill);
+            success = updateElevator(y_right, x_left);
             break;
         case 2:
         //     success = updateShuttle(x);

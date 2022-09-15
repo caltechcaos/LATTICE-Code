@@ -1,3 +1,4 @@
+
 /*
   Sets up HobbyStar ESC with Arduino, in accordance with  the instructions from the manual
   https://hobbystarlabs.com/hobbystar-120a-brushless-sensored-esc-2-6s.html#.YwcNC3bMIuU
@@ -10,6 +11,7 @@
 */
 
 #include <Servo.h>
+#include <Arduino.h>
 
 // constants won't change. They're used here to set pin numbers:
 const int buttonOnePin = 2;     // the number of the pushbutton pin
