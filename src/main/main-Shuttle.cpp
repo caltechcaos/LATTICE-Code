@@ -2,6 +2,7 @@
 #include "RC.h"
 #include "Subsystems/Shuttle.h"
 #include "Util.h"
+#include <cstdlib>
 
 #define RPMSCALE 5700
 
@@ -42,7 +43,7 @@ void adjustTension(double tensionAdjust, int tensionReset, double tensionBreak) 
     }
 }
 
-enum auto_mode {
+enum mode {
     StakeTransition,
     TakeupDrive
 };
@@ -51,11 +52,13 @@ void loop() {
     controller.Update();
     shuttle.UpdateSensors();
 
-    double tensionBreak = -1 * controller.GetThrottle();
-    double x = -1 * controller.GetAileron();
-    double tensionAdjust = -1 * controller.GetElevator();
-    int tensionReset = controller.GetGear();
-    int ShuttleAutoDrive = controller.GetAux1();
+    
+    double y_left = -1 * controller.GetThrottle(); // tensionBreak
+    double y_right = -1 * controller.GetElevator(); // tensionAdjust
+    double x_right = -1 * controller.GetAileron(); // x
+
+    int gearPosition = controller.GetGear(); // tensionReset
+    int aux1 = controller.GetAux1(); // shuttleAutoDrive
 
     // Control front of shuttle, assume default gear position is 0
     if (controller.GetGear() == 0) {
@@ -65,21 +68,21 @@ void loop() {
     }
 
     // Set stake number with Switch A, assume there's 3 for now
-    auto_mode curr_mode = auto_mode::TakeupDrive;
-    switch (ShuttleAutoDrive) {
+    mode curr_mode = mode::TakeupDrive;
+    switch (aux1) {
         case 0: // Manual Mode
-            updateShuttle(x);
-            adjustTension(tensionAdjust, tensionReset, tensionBreak);
+            updateShuttle(x_right);
+            adjustTension(y_right, gearPosition, y_left);
             break;
-        case 1: // Autonomous Mode
-            if (curr_mode == auto_mode::TakeupDrive) {
-                if (shuttle.ConstantTakeupDrive()) {
-                    curr_mode = auto_mode::StakeTransition;
-                }
-            } else {
-                if (shuttle.StakeTransition()) {
-                    curr_mode = auto_mode::TakeupDrive;
-                }
+        case 1: // Transition Mode
+            // Up - Switch from autonomous constant takeup to autonomous stake transition
+            if (abs(y_left) >= 0.9 && curr_mode == mode::TakeupDrive) {
+                    shuttle.ConstantTakeupDrive();
+                    curr_mode = mode::StakeTransition;
+            // Down - Switch from autonomous stake transition to autonomous constant takeup
+            } else if (abs(y_left) <= 0.1 && curr_mode == mode::StakeTransition) {
+                    shuttle.StakeTransition();
+                    curr_mode = mode::TakeupDrive;
             }
             break;
         case 2: // Emergency Stop
