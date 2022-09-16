@@ -93,7 +93,6 @@ constexpr double kA = 0;
 }  // namespace DriverConstants
 
 namespace ShuttleConstants {
-constexpr int kBrakePin = A4;
 // This have to be analogPin and cannot exceed 5V
 constexpr int kVoltagePin = A0;
 constexpr double kMaxInputVoltage = 1.2;  // temp (dependson fully charge bat and resistor)
@@ -132,6 +131,9 @@ constexpr int kLeftArmTopLimitSwitchPin = 52;
 constexpr int kRightArmBottomLimitSwitchPin = 53;
 constexpr int kRightArmTopLimitSwitchPin = 53;
 constexpr int kCenterLimitSwitchPin = 55;
+
+constexpr int kLeftArmBrakePin = A4;
+constexpr int kRightArmBrakePin = A4;
 
 constexpr double kTensionRPM = 500;
 

@@ -1,25 +1,26 @@
 #include <Arduino.h>
-#include "Util.h"
+
 #include "Brake.h"
 #include "HytorcSimple.h"
+#include "Util.h"
 
-lattice::Brake brakeport(lattice::ShuttleConstants::kBrakePin);
-//lattice::HytorcSimple testMotor(9, 5, 6);
+lattice::Brake brakeport(A4);
+// lattice::HytorcSimple testMotor(9, 5, 6);
 
 double power = 0;
-bool brakeflag = false; 
-//temperary until test
-//Brake = false (off)
-//brake = true (on)
- 
-void setup(){
-    //testMotor.Setup();
-    //testMotor.SetPercentOutput(power);
+bool brakeflag = false;
+// temperary until test
+// Brake = false (off)
+// brake = true (on)
+
+void setup() {
+    // testMotor.Setup();
+    // testMotor.SetPercentOutput(power);
     lattice::GenericSetup();
     brakeport.Setup();
 }
 
-void loop(){    
+void loop() {
     // if(Serial.available()){
     //     char input = (uint8_t)Serial.read();
 
@@ -39,20 +40,18 @@ void loop(){
     //         power = 0;
     //     }
     // }
-    if(Serial.available()){
+    if (Serial.available()) {
         char input = (uint8_t)Serial.read();
-        if( input  == 's'){
-            //testMotor.SetPercentOutput(power);
+        if (input == 's') {
+            // testMotor.SetPercentOutput(power);
             brakeport.Set(true);
             Serial.println("start");
-        } else if (input == 'a'){
+        } else if (input == 'a') {
             brakeport.Set(false);
             Serial.println("end");
         }
-    
-        
     }
-    //Serial.println(testMotor.GetPosition());
-    //testMotor.SetPercentOutput(power);
-    //brakeport.Set(brakeflag);
+    // Serial.println(testMotor.GetPosition());
+    // testMotor.SetPercentOutput(power);
+    // brakeport.Set(brakeflag);
 }
