@@ -93,8 +93,8 @@ constexpr double kA = 0;
 namespace ShuttleConstants {
 // This have to be analogPin and cannot exceed 5V
 constexpr int kVoltagePin = A0;
-constexpr double kMaxInputVoltage = 1.2;  // temp (dependson fully charge bat and resistor)
-constexpr double kMultiplier = 3.6;       // temp (depends on how much of the origional voltage is inputed)(I.E. 1/3)
+constexpr double kMaxInputVoltage = 18.0;  // temp (dependson fully charge bat and resistor)
+constexpr double kMultiplier = 1;          // temp (depends on how much of the origional voltage is inputed)(I.E. 1/3)
 
 constexpr int kOuterLeftMotionMotorEnablePin = 44;
 constexpr int kOuterRightMotionMotorEnablePin = 45;
