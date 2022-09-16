@@ -293,7 +293,4 @@ void Shuttle::EStop() {
 
     mLeftTensionMotor.SetPercentOutput(0);
     mRightTensionMotor.SetPercentOutput(0);
-
-    // Engage Motor break to prevent arms from moving
-    EngageMotorBreak();
 }
