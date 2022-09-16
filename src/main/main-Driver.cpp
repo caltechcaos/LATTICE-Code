@@ -38,11 +38,10 @@ lattice::Clifford &clifford = lattice::Clifford::clifford();
 lattice::Driver &driver = lattice::Driver::driver();
 lattice::HytorcSimple hytorcSimple{9, 5, 6};  // TODO: Temp Ports
 
-// Vertical: Move Drive Train Up/Down
-// Horizontal: Move Drive Train Left/Right
-bool updateClifford(double x, double y) {
-    // clifford.Move(x, y); // TODO: Implement clifford.Move()
-    return true;
+// r: forward/backward translation
+// theta: rotation
+bool updateClifford(double r, double theta) {
+    return clifford.Move(r, theta); 
 }
 
 // Vertical: Move Elevator
@@ -64,9 +63,18 @@ bool autoDrill() {
 //     return true;
 // }
 
+int stakeIterations = 0;
+
+bool stakeHandoff() {
+    driver.InitializeStakeHandoff();
+    driver.RunStakeHandoff();
+    return true;
+}
+
 // Runs continously
 void driverLoop() {
     controller.Update();
+    driver.UpdateSensors();
 
     // Killswitch
     if (controller.GetAux2() == 1) {
@@ -76,10 +84,13 @@ void driverLoop() {
     };
 
     // Translational Motion of Driver
-    double x_right = -1 * controller.GetAileron();
-    double y_right = controller.GetElevator();
+    double x_left = (controller.GetRudder() - 0.5) * -2; //[0, 1] -> [-1, 1]
+    double x_right = (controller.GetAileron() - 0.5) * -2;
+
+    double y_left = (controller.GetElevator() - 0.5) * -2; 
+    double y_right = (controller.GetElevator() - 0.5) * -2;
     // Elevator
-    double x_left = (controller.GetRudder() - 0.5) * -2;
+
     int aux1 = controller.GetAux1();
 
     // Set stake number with Switch A, assume there's 3 for now
@@ -98,14 +109,15 @@ void driverLoop() {
     // F Switch Finite State Machine
     bool success;
     switch (controller.GetGear()) {
-        case 0:
-            success = updateClifford(x_right, y_right);
+        case 0: // Move clifford
+            success = updateClifford(y_left, x_right);
             break;
-        case 1:
+        case 1: // Update elevator
             success = updateElevator(y_right, x_left);
             break;
-        case 2:
-            //     success = updateShuttle(x);
+        case 2: // Stake Handoff
+            success = stakeHandoff();
+            
             break;
         default:
             success = false;
