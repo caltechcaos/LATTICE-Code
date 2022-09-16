@@ -59,15 +59,16 @@ void Driver::InitializeStakeHandoff() {
     }
 }
 
+// Add a way to run handoff (note you need to call InitializeStakeHandoff once before running the handoff)
 bool Driver::RunStakeHandoff() {
-    if (mStakeState == StakeNumber::kOne) {
+    if (mStakeState == StakeNumber::kOne) { 
         return RunHandoff(mFirstStake);
     } else if (mStakeState == StakeNumber::kTwo) {
         return RunHandoff(mSecondStake);
     } else if (mStakeState == StakeNumber::kThree) {
         return RunHandoff(mThirdStake);
     } else {
-        // TODO Log unknown stake/
+        // TODO Log unknown stake 
     }
 
     return false;

@@ -65,8 +65,13 @@ bool autoDrill() {
 
 int stakeIterations = 0;
 
+
 bool stakeHandoff() {
-    driver.InitializeStakeHandoff();
+    bool initializedStakeHandoff = false; 
+    if (!initializedStakeHandoff) { 
+        driver.InitializeStakeHandoff(); 
+        initializedStakeHandoff = true;
+    }
     driver.RunStakeHandoff();
     return true;
 }
@@ -84,13 +89,13 @@ void driverLoop() {
     };
 
     // Translational Motion of Driver
-    double x_left = (controller.GetRudder() - 0.5) * -2; //[0, 1] -> [-1, 1]
+    double x_left = (controller.GetRudder() - 0.5) * -2; // [0, 1] -> [-1, 1]
     double x_right = (controller.GetAileron() - 0.5) * -2;
 
     double y_left = (controller.GetElevator() - 0.5) * -2; 
     double y_right = (controller.GetElevator() - 0.5) * -2;
-    // Elevator
 
+    // Elevator
     int aux1 = controller.GetAux1();
 
     // Set stake number with Switch A, assume there's 3 for now
@@ -108,6 +113,7 @@ void driverLoop() {
 
     // F Switch Finite State Machine
     bool success;
+    bool initializedStakeHandoff = false;
     switch (controller.GetGear()) {
         case 0: // Move clifford
             success = updateClifford(y_left, x_right);
@@ -116,8 +122,9 @@ void driverLoop() {
             success = updateElevator(y_right, x_left);
             break;
         case 2: // Stake Handoff
-            success = stakeHandoff();
-            
+            if (y_right >= 0.9) {
+                success = stakeHandoff();
+            }
             break;
         default:
             success = false;
