@@ -91,6 +91,11 @@ void shuttleLoop() {
         Serial.println("Killing Shuttle...");
         shuttle.EStop();
     };
+
+    Serial.print(shuttle.GetLeftTensionArmPos());
+    Serial.print(", ");
+    Serial.println(shuttle.GetRightTensionArmPos());
+
 }
 
 Scheduler ts;
