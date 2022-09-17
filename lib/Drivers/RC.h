@@ -81,5 +81,7 @@ class RC {
     static constexpr u_int16_t kMaxThrottle = 1700;
     static constexpr u_int16_t kMidThrottle = 1025;
     static constexpr u_int16_t kMinThrottle = 342;
+    static constexpr double kDeadband = 0.15;
+    double ConvertOutput(double controllerInput);
 };
 }  // namespace lattice

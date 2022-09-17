@@ -33,7 +33,7 @@ constexpr double Battery = 100;  // TMP
 // - https://www.overleaf.com/read/kghkvywmkyfj
 // - Use Latex file's math to calculate
 
-lattice::RC controller(Serial1, 19, 2);  // TODO: Use correct wiring when ATVR is fixed
+lattice::RC controller(Serial3, lattice::RCPorts::kDriverRXPort, lattice::RCPorts::kDriverPowerPort);  // TODO: Use correct wiring when ATVR is fixed
 lattice::Clifford &clifford = lattice::Clifford::clifford();
 lattice::Driver &driver = lattice::Driver::driver();
 lattice::HytorcSimple hytorcSimple{9, 5, 6};  // TODO: Temp Ports
@@ -41,7 +41,7 @@ lattice::HytorcSimple hytorcSimple{9, 5, 6};  // TODO: Temp Ports
 // r: forward/backward translation
 // theta: rotation
 bool updateClifford(double r, double theta) {
-    return clifford.Move(r, theta); 
+    return clifford.Move(r, theta);
 }
 
 // Vertical: Move Elevator
@@ -65,13 +65,8 @@ bool autoDrill() {
 
 int stakeIterations = 0;
 
-
+int prevAux = 0;
 bool stakeHandoff() {
-    bool initializedStakeHandoff = false; 
-    if (!initializedStakeHandoff) { 
-        driver.InitializeStakeHandoff(); 
-        initializedStakeHandoff = true;
-    }
     driver.RunStakeHandoff();
     return true;
 }
@@ -84,16 +79,18 @@ void driverLoop() {
     // Killswitch
     if (controller.GetAux2() == 1) {
         driver.EStop();
+        clifford.SetBrake(true);
+        clifford.Move(0, 0);
         Serial.println("Aux 2: Killed shuttle");
         return;
     };
 
     // Translational Motion of Driver
-    double x_left = (controller.GetRudder() - 0.5) * -2; // [0, 1] -> [-1, 1]
-    double x_right = (controller.GetAileron() - 0.5) * -2;
+    double x_left = controller.GetRudder();  // [0, 1] -> [-1, 1]
+    double x_right = controller.GetAileron();
 
-    double y_left = (controller.GetElevator() - 0.5) * -2; 
-    double y_right = (controller.GetElevator() - 0.5) * -2;
+    double y_left = controller.GetThrottle();
+    double y_right = controller.GetElevator();
 
     // Elevator
     int aux1 = controller.GetAux1();
@@ -110,26 +107,35 @@ void driverLoop() {
             driver.SetStake(lattice::Driver::StakeNumber::kThree);
             break;
     }
+    if (aux1 != prevAux) {
+        driver.InitializeStakeHandoff();
+    }
+    prevAux = aux1;
 
     // F Switch Finite State Machine
     bool success;
     bool initializedStakeHandoff = false;
     switch (controller.GetGear()) {
-        case 0: // Move clifford
+        case 0:  // Move clifford
             success = updateClifford(y_left, x_right);
+            updateElevator(0, 0);
             break;
-        case 1: // Update elevator
+        case 1:  // Update elevator
             success = updateElevator(y_right, x_left);
+            updateClifford(0, 0);
             break;
-        case 2: // Stake Handoff
+        case 2:  // Stake Handoff
             if (y_right >= 0.9) {
                 success = stakeHandoff();
             }
+            updateElevator(0, 0);
+            updateClifford(0, 0);
             break;
         default:
             success = false;
             Serial.println("Unexpected return val for controller.GetGear()");
     };
+    Serial.println(driver.GetBatteryVoltage());
 
     if (!success) {
         Serial.println("Failure in Finite State Machine for RC");
@@ -137,7 +143,7 @@ void driverLoop() {
 }
 
 Scheduler ts;
-constexpr int period = 5;
+constexpr int period = 20;
 
 Task mainLoop(period, TASK_FOREVER, &driverLoop);
 
@@ -152,8 +158,9 @@ void setup() {
 
     ts.init();
     ts.addTask(mainLoop);
-    delay(5000);
+    delay(500);
     mainLoop.enable();
+    driver.InitializeStakeHandoff();
 }
 
 void loop() {

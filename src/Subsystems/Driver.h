@@ -11,6 +11,7 @@
 #include "PIDF.h"
 #include "Thermistor.h"
 #include "Util.h"
+#include "Voltage.h"
 
 namespace lattice {
 class Driver {
@@ -69,6 +70,8 @@ class Driver {
     void SetElevatorPower(double power);
     void DriveStake();
 
+    double GetBatteryVoltage() { return mVoltageSensor.CalculateFilteredVoltage(); }
+
     // Guarantee the singleton
     Driver(Driver const&) = delete;
     void operator=(Driver const&) = delete;
@@ -91,6 +94,7 @@ class Driver {
     Thermistor mActuatorTemp{DriverConstants::kHytorcThermistorPin};
     CurrentSensor mActuatorCurrent{DriverConstants::kHytorcCurrentPin};
     CurrentSensor mElevatorCurrent{ElevatorConstants::kCurrentPin};
+    Voltage mVoltageSensor{DriverConstants::kVoltageSensorPin};
 
     PIDF mElevatorController{ElevatorConstants::kP, ElevatorConstants::kI, ElevatorConstants::kD,
                              GetElevatorFeedforward(ElevatorConstants::kS, ElevatorConstants::kV, ElevatorConstants::kA, ElevatorConstants::kG, 0, 0)};

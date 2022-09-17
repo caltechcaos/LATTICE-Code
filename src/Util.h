@@ -34,7 +34,7 @@ constexpr int kRightMotorBackwardPin = 13;
 }  // namespace CliffordConstants
 
 namespace ElevatorConstants {
-constexpr int kMotorPin = 2;
+constexpr int kMotorPin = 53;
 constexpr int kEncoderFwdPin = 6;
 constexpr int kEncoderBckPin = 7;
 
@@ -54,9 +54,9 @@ constexpr double kG = 0;
 }  // namespace ElevatorConstants
 
 namespace HandoffConstants {
-constexpr int kLimitSwitch1Pin = 51;
-constexpr int kLimitSwitch2Pin = 52;
-constexpr int kLimitSwitch3Pin = 53;
+constexpr int kLimitSwitch1Pin = 41;
+constexpr int kLimitSwitch2Pin = 42;
+constexpr int kLimitSwitch3Pin = 43;
 
 // hand off mech stepper motor
 constexpr int kStepPin1 = 8;
@@ -74,7 +74,8 @@ constexpr int kMicrosteps = 16;
 }  // namespace HandoffConstants
 
 namespace DriverConstants {
-constexpr int kHytorcMotorPin = 21;
+constexpr int kVoltageSensorPin = A0;
+constexpr int kHytorcMotorPin = 25;
 constexpr int kHytorcEncoderForward = 22;
 constexpr int kHytorcEncoderBackward = 23;
 constexpr int kHytorcThermistorPin = 24;
@@ -143,4 +144,8 @@ constexpr double kError = 0.5;
 constexpr double kVError = 1.5;
 }  // namespace ShuttleConstants
 
+namespace RCPorts {
+constexpr int kDriverRXPort = 15;
+constexpr int kDriverPowerPort = 22;
+}  // namespace RCPorts
 }  // namespace lattice

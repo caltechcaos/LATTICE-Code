@@ -12,6 +12,15 @@ void RC::Setup() {
     mComSerial.begin(115200);
 }
 
+double RC::ConvertOutput(double controllerInput) {
+    double rawPercent = (controllerInput - kMinThrottle) / (kMaxThrottle - kMinThrottle);
+    rawPercent = rawPercent * 2 - 1;
+    if (abs(rawPercent) < kDeadband) {
+        rawPercent = 0;
+    }
+    return rawPercent;
+}
+
 void RC::Update() {
     if (!mSatellite.getFrame()) {
         // mBinded = false;
@@ -27,8 +36,7 @@ void RC::Update() {
 
 double RC::GetThrottle() {
     if (mBinded) {
-        double rawPercent = (double)(mSatellite.getThrottle() - kMinThrottle) / (kMaxThrottle - kMinThrottle);
-        return rawPercent * 2 - 1;
+        return ConvertOutput(mSatellite.getThrottle());
     } else {
         return 0.0;
     }
@@ -55,24 +63,21 @@ int RC::ProcessMinMidMaxInput(u_int16_t value) {
 
 double RC::GetAileron() {
     if (mBinded) {
-        double rawPercent = (double)(mSatellite.getAileron() - kMinThrottle) / (kMaxThrottle - kMinThrottle);
-        return rawPercent * 2 - 1;
+        return ConvertOutput(mSatellite.getAileron());
     } else {
         return 0.0;
     }
 }
 double RC::GetElevator() {
     if (mBinded) {
-        double rawPercent = (double)(mSatellite.getElevator() - kMinThrottle) / (kMaxThrottle - kMinThrottle);
-        return rawPercent * 2 - 1;
+        return ConvertOutput(mSatellite.getElevator());
     } else {
         return 0.0;
     }
 }
 double RC::GetRudder() {
     if (mBinded) {
-        double rawPercent = (double)(mSatellite.getRudder() - kMinThrottle) / (kMaxThrottle - kMinThrottle);
-        return rawPercent;
+        return ConvertOutput(mSatellite.getRudder());
     } else {
         return 0.0;
     }

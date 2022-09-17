@@ -20,7 +20,7 @@ void updateShuttle(double x) {
 void engageBreaks(double tensionBreak) {
     if (tensionBreak >= .75) {
         shuttle.EngageMotorBreak();  // not yet implemented
-    } else if (tensionBreak <= .25) {
+    } else if (tensionBreak <= -.75) {
         shuttle.DisengageMotorBreak();  // not yet implemented
     }
 }
@@ -31,10 +31,10 @@ void adjustTension(double tensionAdjust, int tensionReset, double tensionBreak) 
             shuttle.SetTensionArmPowers(tensionAdjust, tensionAdjust);
             break;
         case 1:  // Reset
-            shuttle.ResetTensionArms();
+            engageBreaks(tensionBreak);
             break;
         case 2:
-            engageBreaks(tensionBreak);
+            shuttle.ResetTensionArms();
             break;
     }
 }
@@ -47,6 +47,12 @@ enum mode {
 void shuttleLoop() {
     controller.Update();
     shuttle.UpdateSensors();
+    // Killswitch
+    if (controller.GetAux2() == 1) {
+        Serial.println("Killing Shuttle...");
+        shuttle.EStop();
+        return;
+    };
 
     double y_left = -1 * controller.GetThrottle();   // tensionBreak
     double y_right = -1 * controller.GetElevator();  // tensionAdjust
@@ -86,16 +92,9 @@ void shuttleLoop() {
             break;
     }
 
-    // Killswitch
-    if (controller.GetAux2() == 1) {
-        Serial.println("Killing Shuttle...");
-        shuttle.EStop();
-    };
-
     Serial.print(shuttle.GetLeftTensionArmPos());
     Serial.print(", ");
     Serial.println(shuttle.GetRightTensionArmPos());
-
 }
 
 Scheduler ts;
@@ -109,11 +108,9 @@ void setup() {
     controller.Setup();
     shuttle.Setup();
 
-    Serial.begin(115200);
-
     ts.init();
     ts.addTask(mainLoop);
-    delay(5000);
+    delay(500);
     mainLoop.enable();
 }
 

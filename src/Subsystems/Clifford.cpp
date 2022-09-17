@@ -31,7 +31,7 @@ bool Clifford::Move(double forward, double rot) {
         double left = forward + rot;
         double right = forward - rot;
         mLeftMotor.SetPower(kScaler * left);
-        mRightMotor.SetPower(kScaler * right);
+        mRightMotor.SetPower(-kScaler * right);
     } else {
         mLeftMotor.SetPower(0);
         mRightMotor.SetPower(0);

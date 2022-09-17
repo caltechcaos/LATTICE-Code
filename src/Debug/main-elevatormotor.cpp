@@ -4,8 +4,8 @@
 #include "RC.h"
 #include "Util.h"
 
-lattice::RC controller(Serial1, 19, 2);
-lattice::ElevatorMotor testMotor{12, 2, 3};
+lattice::RC controller(Serial3, 15, 22);
+lattice::ElevatorMotor testMotor{53, 2, 3};
 void setup() {
     lattice::GenericSetup();
     controller.Setup();
