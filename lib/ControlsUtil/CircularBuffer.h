@@ -30,6 +30,8 @@ class CircularBuffer {
         return true;
     }
 
+    size_t Size() { return L; }
+
     /**
      * Gets the object at the given index
      * @param ind The index, where 0 is the most recent object and
