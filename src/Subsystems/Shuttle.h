@@ -200,7 +200,9 @@ class Shuttle {
     static constexpr double kDistancePassivePulleyArmPulley = 0.2;
     static constexpr double kDistancePassivePulleyDrivePulley = 0.1542;
     static constexpr double kLengthArm = 0.25;
-    static constexpr int kArmTransitionIntervals = 5;  // Number of intermediary states required to make the arm transition.
+
+    // Assume max takeup angle 72 degrees (~71 for a 0.475m takeup) and 5 degree max difference in arm angle positions, so 72/5 = 15
+    static constexpr int kArmTransitionIntervals = 15;  // Number of intermediary states required to make the arm transition.
 
     // // TODO Fix these numbers to an actual constants file
     // MotionMotor mOuterRightMotionMotor{ShuttleConstants::kOuterRightMotionMotorEnablePin, ShuttleConstants::kOuterRightMotionMotorSignalPin, ShuttleConstants::kOuterRightMotionMotorRPMPin, ShuttleConstants::kOuterRightMotionMotorThermalPin};
