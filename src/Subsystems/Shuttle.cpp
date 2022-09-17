@@ -233,34 +233,42 @@ bool Shuttle::StakeTransition(bool offRail) {
     if (mStakeTransitionState == kHitRail) {
         mStakeTransitionState = kLowerFrontArm;
         StartArmTransition(preTransition);
+        DisengageMotorBreak();
     } else if (mStakeTransitionState == kLowerFrontArm) {
-        // StopMotionMotors();
+        StopMotionMotors();
+        DisengageMotorBreak();
         if (ArmTransition(preTransition)) {
             mStakeTransitionState = kGoingOnRail;
         }
     } else if (mStakeTransitionState == kGoingOnRail) {
         if (!mCenterLimitSwitch.Get()) {
-            // SetMotionMotors(kRailRPM);
+            SetMotion(kRailRPM);
+            EngageMotorBreak();
         } else {
-            // SetMotionMotors(0.0);
+            SetMotion(0.0);
             mStakeTransitionState = kCenterOfRail;
             StartArmTransition(postTransition);
+            DisengageMotorBreak();
         }
 
     } else if (mStakeTransitionState == kCenterOfRail) {
-        // SetMotionMotors(0.0);
+        SetMotion(0.0);
+        DisengageMotorBreak();
         if (ArmTransition(postTransition)) {
             mStakeTransitionState = kGoingOffRail;
         }
     } else if (mStakeTransitionState == kGoingOffRail) {
-        if (offRail) {
-            // SetMotionMotors(kRailRPM);
+        if (!offRail) {
+            EngageMotorBreak();
+            SetMotion(kRailRPM);
         } else {
-            // StopMotionMotors();
+            StopMotionMotors();
+            DisengageMotorBreak();
             StartArmTransition(kBothArmsRaised);
             mStakeTransitionState = kResettingArms;
         }
     } else if (mStakeTransitionState == kResettingArms) {
+        DisengageMotorBreak();
         if (ArmTransition(kBothArmsRaised)) {
             mStakeTransitionState = kDone;
         }
@@ -275,6 +283,7 @@ bool Shuttle::StakeTransition(bool offRail) {
 bool Shuttle::ConstantTakeupDrive(bool hitFront) {
     // At the very start of an autonomous run, take up the cable
     if (mAtStart) {
+        DisengageMotorBreak();
         if (ArmTransition(Shuttle::ArmTransitionPositions::kBothArmsRaisedNormal)) {
             mAtStart = false;
         }
@@ -284,7 +293,8 @@ bool Shuttle::ConstantTakeupDrive(bool hitFront) {
         mStakeTransitionState = kHitRail;
         return true;
     } else {
-        // SetMotionMotors(kDriveRPM);
+        SetMotion(kDriveRPM);
+        EngageMotorBreak();
     }
     return false;
 }
