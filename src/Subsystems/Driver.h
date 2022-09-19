@@ -68,6 +68,8 @@ class Driver {
 
     void SetDriverPower(double power);
     void SetElevatorPower(double power);
+    void SetDriverVoltage(double voltage);
+    void SetElevatorVoltage(double voltage);
     void DriveStake();
 
     double GetBatteryVoltage() { return mVoltageSensor.CalculateFilteredVoltage(); }

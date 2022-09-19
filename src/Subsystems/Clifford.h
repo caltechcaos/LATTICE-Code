@@ -51,7 +51,7 @@ class Clifford {
     bool brake = false;
     ATRVMotor mLeftMotor{CliffordConstants::kLeftMotorForwardPin, CliffordConstants::kLeftMotorBackwardPin};
     ATRVMotor mRightMotor{CliffordConstants::kRightMotorForwardPin, CliffordConstants::kRightMotorBackwardPin};
-    static constexpr double kScaler = 0.5;  // We don't need Clifford at full throttle
+    static constexpr double kScaler = 1.0;  // We don't need Clifford at full throttle
 
     /**
      * Creates controls for Clifford

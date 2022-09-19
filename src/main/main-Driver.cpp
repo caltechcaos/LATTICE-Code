@@ -15,6 +15,7 @@ double kS = lattice::DriverConstants::kS;
 double kV = lattice::DriverConstants::kV;
 double kA = lattice::DriverConstants::kA;
 constexpr double t_desired = 100;  // Nm
+constexpr double f_desired = 100;  // Nm
 constexpr double THETA = 1;
 constexpr double I_s = 1;
 constexpr double max_voltage = 100;
@@ -25,7 +26,8 @@ int sgn(T num) {
     return (T(0) < num) - (num < T(0));
 }
 
-double DesiredVoltage = lattice::GetSimpleFeedforward(kS, kV, kA, 0, t_desired / I_s);
+double DriverVoltage = lattice::GetSimpleFeedforward(kS, kV, kA, 0, t_desired / I_s);
+double ElevatorVoltage = lattice::GetElevatorFeedforward(lattice::ElevatorConstants::kS, lattice::ElevatorConstants::kV, lattice::ElevatorConstants::kA, lattice::ElevatorConstants::kG, 0, f_desired);
 constexpr double Battery = 100;  // TMP
 
 // TODO: If limit switches are hit on elevator that we can’t move it anymore
@@ -53,7 +55,8 @@ bool updateElevator(double y, double drill) {
 }
 
 bool autoDrill() {
-    hytorcSimple.SetVoltage(DesiredVoltage, Battery);
+    driver.SetDriverVoltage(DriverVoltage);
+    driver.SetElevatorVoltage(ElevatorVoltage);
     return true;
 }
 
@@ -117,11 +120,16 @@ void driverLoop() {
     bool initializedStakeHandoff = false;
     switch (controller.GetGear()) {
         case 0:  // Move clifford
-            success = updateClifford(y_left, x_right);
+            success = updateClifford(y_right, -x_right);
             updateElevator(0, 0);
             break;
         case 1:  // Update elevator
-            success = updateElevator(y_right, x_left);
+            if (y_left >= 0.9) {
+                autoDrill();
+            } else {
+                success = updateElevator(y_right, x_left);
+            }
+
             updateClifford(0, 0);
             break;
         case 2:  // Stake Handoff
