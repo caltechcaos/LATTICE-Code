@@ -28,6 +28,9 @@ void Shuttle::SetTakeup(double takeup) {
     mTargetTakeup = takeup;
     mOneArmTakeupAngle = SingleArmTakeupAngle(mTargetTakeup, kLengthArm, kDistancePassivePulleyArmPulley, kDistancePassivePulleyDrivePulley);
     mTwoArmTakeupAngle = DoubleArmTakeupAngles(mTargetTakeup, kLengthArm, kDistancePassivePulleyArmPulley, kDistancePassivePulleyDrivePulley);
+
+    // If we want to enforce a maximum difference in the change in angle per step of the arm transition:
+    mArmTransitionIntervals = (int)ceil((mOneArmTakeupAngle - mTwoArmTakeupAngle) / kMaxDegreeIncrement);
 }
 
 void Shuttle::SetFrontLimitSwitch(FrontLimitSwitch front) {
@@ -50,13 +53,13 @@ bool Shuttle::ArmTransition(ArmTransitionPositions pos) {
         } else {
             mainArmSetpoint = mTwoArmTakeupAngle;
         }
-        if (mArmTransitionIntermediary >= kArmTransitionIntervals) {  // This assumes that the decrements, etc were valid.
+        if (mArmTransitionIntermediary >= mArmTransitionIntervals) {  // This assumes that the decrements, etc were valid.
             // Since this is the state in which the setpoints get calculated, if it starts with the final state already calculated, this means we have reached our desired state.
             mArmTransitionState = kComplete;
             return true;
         }
 
-        mArmTransitionMainAngle += mArmTransitionInterval;
+        mArmTransitionMainAngle += mArmTransitionIncrement;
         mArmTransitionOtherAngle = GetCorrespondingAngle(mTargetTakeup, kLengthArm, kDistancePassivePulleyArmPulley, kDistancePassivePulleyDrivePulley, mArmTransitionMainAngle);
         if (isnan(mArmTransitionOtherAngle)) {
             mArmTransitionOtherAngle = 0.0;
@@ -203,13 +206,13 @@ void Shuttle::StartArmTransition(ArmTransitionPositions pos) {
     mArmTransitionIntermediary = 0;
     if (pos == ArmTransitionPositions::kBothArmsRaised) {
         mArmTransitionMainAngle = GetLeftTensionArmPos();
-        mArmTransitionInterval = (mTwoArmTakeupAngle - GetLeftTensionArmPos()) / kArmTransitionIntervals;
+        mArmTransitionIncrement = (mTwoArmTakeupAngle - GetLeftTensionArmPos()) / mArmTransitionIntervals;
     } else if (pos == ArmTransitionPositions::kLeftArmRaised) {
         mArmTransitionMainAngle = GetLeftTensionArmPos();
-        mArmTransitionInterval = (mOneArmTakeupAngle - GetLeftTensionArmPos()) / kArmTransitionIntervals;
+        mArmTransitionIncrement = (mOneArmTakeupAngle - GetLeftTensionArmPos()) / mArmTransitionIntervals;
     } else if (pos == ArmTransitionPositions::kRightArmRaised) {
         mArmTransitionMainAngle = GetRightTensionArmPos();
-        mArmTransitionInterval = (mOneArmTakeupAngle - GetRightTensionArmPos()) / kArmTransitionIntervals;
+        mArmTransitionIncrement = (mOneArmTakeupAngle - GetRightTensionArmPos()) / mArmTransitionIntervals;
     }
 }
 

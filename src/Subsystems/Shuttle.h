@@ -201,9 +201,6 @@ class Shuttle {
     static constexpr double kDistancePassivePulleyDrivePulley = 0.1542;
     static constexpr double kLengthArm = 0.25;
 
-    // Assume max takeup angle 72 degrees (~71 for a 0.475m takeup) and 5 degree max difference in arm angle positions, so 72/5 = 15
-    static constexpr int kArmTransitionIntervals = 15;  // Number of intermediary states required to make the arm transition.
-
     // // TODO Fix these numbers to an actual constants file
     // MotionMotor mOuterRightMotionMotor{ShuttleConstants::kOuterRightMotionMotorEnablePin, ShuttleConstants::kOuterRightMotionMotorSignalPin, ShuttleConstants::kOuterRightMotionMotorRPMPin, ShuttleConstants::kOuterRightMotionMotorThermalPin};
     // MotionMotor mOuterLeftMotionMotor{ShuttleConstants::kOuterLeftMotionMotorEnablePin, ShuttleConstants::kOuterLeftMotionMotorSignalPin, ShuttleConstants::kOuterLeftMotionMotorRPMPin, ShuttleConstants::kOuterLeftMotionMotorThermalPin};
@@ -226,12 +223,14 @@ class Shuttle {
     double mTargetTakeup;
     double mOneArmTakeupAngle;
     double mTwoArmTakeupAngle;
+    int mArmTransitionIntervals;                        // Number of intermediary states required to make the arm transition.
+    static constexpr double kMaxDegreeIncrement = 5.0;  // 5 degrees should prevent a significant amount of overtensioning if an arm doesn't reach its intermediary position in time
     ArmTransitionPositions mTargetArmPos;
     FrontLimitSwitch mFrontLimitSwitch;
     StakeTransitionState mStakeTransitionState;
     ArmTransitionState mArmTransitionState = ArmTransitionState::kCalculate;
     int mArmTransitionIntermediary = 0;
-    double mArmTransitionInterval = 0;
+    double mArmTransitionIncrement = 0;
     double mArmTransitionMainAngle = 0;
     double mArmTransitionOtherAngle = 0;
 };
