@@ -1,6 +1,6 @@
 #pragma once
+#include "HallEffect.h"
 #include "HytorcSimple.h"
-#include "LimitSwitch.h"
 #include "MotionMotor.h"
 #include "PIDF.h"
 #include "Util.h"
@@ -217,7 +217,7 @@ class Shuttle {
     LimitSwitch mLeftArmBottomLimitSwitch{ShuttleConstants::kLeftArmBottomLimitSwitchPin};
     LimitSwitch mRightArmTopLimitSwitch{ShuttleConstants::kRightArmTopLimitSwitchPin};
     LimitSwitch mLeftArmTopLimitSwitch{ShuttleConstants::kLeftArmTopLimitSwitchPin};
-    LimitSwitch mCenterLimitSwitch{ShuttleConstants::kCenterLimitSwitchPin};
+    HallEffect mCenterSwitch{ShuttleConstants::kCenterHallSwitchPin};
 
     PIDF mLeftArmController{ShuttleConstants::kP, ShuttleConstants::kI, ShuttleConstants::kD, [](double setpoint) { return copysign(ShuttleConstants::kS, setpoint); }, ShuttleConstants::kError, ShuttleConstants::kVError};
     PIDF mRightArmController{ShuttleConstants::kP, ShuttleConstants::kI, ShuttleConstants::kD, [](double setpoint) { return copysign(ShuttleConstants::kS, setpoint); }, ShuttleConstants::kError, ShuttleConstants::kVError};

@@ -129,7 +129,7 @@ constexpr int kLeftArmBottomLimitSwitchPin = 52;
 constexpr int kLeftArmTopLimitSwitchPin = 52;
 constexpr int kRightArmBottomLimitSwitchPin = 53;
 constexpr int kRightArmTopLimitSwitchPin = 53;
-constexpr int kCenterLimitSwitchPin = 55;
+constexpr int kCenterHallSwitchPin = 55;
 
 constexpr int kLeftArmBrakePin = A4;
 constexpr int kRightArmBrakePin = A4;

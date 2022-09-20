@@ -22,7 +22,7 @@ void Shuttle::Setup() {
     mLeftArmBottomLimitSwitch.Setup();
     mRightArmBottomLimitSwitch.Setup();
 
-    mCenterLimitSwitch.Setup();
+    mCenterSwitch.Setup();
 }
 void Shuttle::SetTakeup(double takeup) {
     mTargetTakeup = takeup;
@@ -91,8 +91,6 @@ void Shuttle::UpdateSensors() {
     mRightArmTopLimitSwitch.Update();
     mLeftArmBottomLimitSwitch.Update();
     mRightArmBottomLimitSwitch.Update();
-
-    mCenterLimitSwitch.Update();
 }
 
 void Shuttle::EngageMotorBreak() {
@@ -241,7 +239,7 @@ bool Shuttle::StakeTransition(bool offRail) {
             mStakeTransitionState = kGoingOnRail;
         }
     } else if (mStakeTransitionState == kGoingOnRail) {
-        if (!mCenterLimitSwitch.Get()) {
+        if (!mCenterSwitch.Get()) {
             SetMotion(kRailRPM);
             EngageMotorBreak();
         } else {
