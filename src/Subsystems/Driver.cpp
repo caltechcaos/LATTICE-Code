@@ -33,15 +33,24 @@ void Driver::SetDriverPower(double power) {
     mActuator.SetPercentOutput(power);
 }
 
-void Driver::SetElevatorPower(double power) {
-    mElevator.Run(power);
+double Driver::BoundPower(double power) {
+    if (power > 0 && mElevatorZero.Get()) {
+        return 0;
+    } else if (power < 0 && mElevatorEnd.Get()) {
+        return 0;
+    } else {
+        return power;
+    }
 }
 
+void Driver::SetElevatorPower(double power) {
+    mElevator.Run(BoundPower(power));
+}
 void Driver::SetDriverVoltage(double voltage) {
     mActuator.SetVoltage(voltage, GetBatteryVoltage());
 }
 void Driver::SetElevatorVoltage(double voltage) {
-    mElevator.SetVoltage(voltage, GetBatteryVoltage());
+    mElevator.SetVoltage(BoundPower(voltage), GetBatteryVoltage());
 }
 
 bool Driver::SetStake(StakeNumber stake) {

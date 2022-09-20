@@ -127,6 +127,7 @@ class Driver {
     Driver();
 
     bool RunHandoff(LimitSwitch& targetLimitSwitch);
+    double BoundPower(double power);
 };
 
 }  // namespace lattice
