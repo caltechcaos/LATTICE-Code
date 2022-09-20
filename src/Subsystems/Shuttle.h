@@ -1,6 +1,7 @@
 #pragma once
 #include "HallEffect.h"
 #include "HytorcSimple.h"
+#include "LimitSwitch.h"
 #include "MotionMotor.h"
 #include "PIDF.h"
 #include "Util.h"
