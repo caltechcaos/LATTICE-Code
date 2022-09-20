@@ -7,14 +7,15 @@
 #include "Subsystems/Shuttle.h"
 #include "Util.h"
 
-#define RPMSCALE 5700
+constexpr double kRPMScale = 5700;
+constexpr double kTakeup = 0.25;  // Required takeup in meters.
 
 lattice::RC controller(Serial1, 19, 2);  // TODO: Use correct wiring when ATVR is fixed
 lattice::Shuttle &shuttle = lattice::Shuttle::GetInstance();
 
 // Horizontal: Drive Left/Right
 void updateShuttle(double x) {
-    shuttle.SetMotion(x * RPMSCALE);
+    shuttle.SetMotion(x * kRPMScale);
 }
 
 void engageBreaks(double tensionBreak) {
@@ -107,6 +108,7 @@ void setup() {
     lattice::GenericSetup();
     controller.Setup();
     shuttle.Setup();
+    shuttle.SetTakeup(kTakeup);
 
     ts.init();
     ts.addTask(mainLoop);
