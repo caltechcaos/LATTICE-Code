@@ -26,9 +26,9 @@ int sgn(T num) {
     return (T(0) < num) - (num < T(0));
 }
 
-double DriverVoltage = lattice::GetSimpleFeedforward(kS, kV, kA, 0, t_desired / I_s);
-double ElevatorVoltage = lattice::GetElevatorFeedforward(lattice::ElevatorConstants::kS, lattice::ElevatorConstants::kV, lattice::ElevatorConstants::kA, lattice::ElevatorConstants::kG, 0, f_desired);
-constexpr double Battery = 100;  // TMP
+double DriverVoltage = 18;     // lattice::GetSimpleFeedforward(kS, kV, kA, 0, t_desired / I_s);
+double ElevatorVoltage = 2.5;  // lattice::GetElevatorFeedforward(lattice::ElevatorConstants::kS, lattice::ElevatorConstants::kV, lattice::ElevatorConstants::kA, lattice::ElevatorConstants::kG, 0, f_desired);
+// constexpr double Battery = 100;  // TMP
 
 // TODO: If limit switches are hit on elevator that we can’t move it anymore
 // TODO: Autonomous torque and downforce application and Stake handoff
@@ -38,7 +38,6 @@ constexpr double Battery = 100;  // TMP
 lattice::RC controller(Serial3, lattice::RCPorts::kDriverRXPort, lattice::RCPorts::kDriverPowerPort);  // TODO: Use correct wiring when ATVR is fixed
 lattice::Clifford &clifford = lattice::Clifford::clifford();
 lattice::Driver &driver = lattice::Driver::driver();
-lattice::HytorcSimple hytorcSimple{9, 5, 6};  // TODO: Temp Ports
 
 // r: forward/backward translation
 // theta: rotation
@@ -50,13 +49,13 @@ bool updateClifford(double r, double theta) {
 // Horizontal: Switch Stake
 bool updateElevator(double y, double drill) {
     driver.SetElevatorPower(y);
-    hytorcSimple.SetPercentOutput(drill);
+    driver.SetDriverPower(drill);
     return true;
 }
 
 bool autoDrill() {
     driver.SetDriverVoltage(DriverVoltage);
-    driver.SetElevatorVoltage(ElevatorVoltage);
+    driver.SetElevatorVoltage(-ElevatorVoltage);
     return true;
 }
 
@@ -124,7 +123,7 @@ void driverLoop() {
             updateElevator(0, 0);
             break;
         case 1:  // Update elevator
-            if (y_left >= 0.9) {
+            if (y_left >= 0.7) {
                 autoDrill();
             } else {
                 success = updateElevator(y_right, x_left);

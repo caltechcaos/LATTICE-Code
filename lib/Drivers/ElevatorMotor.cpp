@@ -4,8 +4,8 @@ using namespace lattice;
 
 // cf. https://docs.revrobotics.com/sparkmax/operating-modes/control-interfaces#pwm-interface
 
-ElevatorMotor::ElevatorMotor(const int kElevatorPin, const int kEncoderFwdPin, const int kEncoderBckPin)
-    : encoder(kEncoderFwdPin, kEncoderBckPin), motor(), kPin(kElevatorPin), brake(false) {}
+ElevatorMotor::ElevatorMotor(const int kElevatorPin, const int kEncoderFwdPin, const int kEncoderBckPin, bool invert)
+    : encoder(kEncoderFwdPin, kEncoderBckPin), motor(), kPin(kElevatorPin), brake(false), invert(invert) {}
 
 void ElevatorMotor::Setup() {
     motor.attach(kPin);
@@ -26,7 +26,7 @@ bool ElevatorMotor::Run(double power) {
     }
 
     // Map from [-1, 1] to [1000, 2000] microseconds
-    motor.writeMicroseconds(power * 500 + 1500);
+    motor.writeMicroseconds((invert ? -1 : 1) * power * 500 + 1500);
     return success;
 }
 

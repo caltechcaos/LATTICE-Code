@@ -75,11 +75,11 @@ constexpr int kMicrosteps = 16;
 
 namespace DriverConstants {
 constexpr int kVoltageSensorPin = A0;
-constexpr int kHytorcMotorPin = 25;
-constexpr int kHytorcEncoderForward = 22;
-constexpr int kHytorcEncoderBackward = 23;
-constexpr int kHytorcThermistorPin = 24;
-constexpr int kHytorcCurrentPin = 25;
+constexpr int kHytorcMotorPin = 23;
+constexpr int kHytorcEncoderForward = 10;
+constexpr int kHytorcEncoderBackward = 11;
+constexpr int kHytorcThermistorPin = 12;
+constexpr int kHytorcCurrentPin = 13;
 
 constexpr double kP = 0;
 constexpr double kI = 0;

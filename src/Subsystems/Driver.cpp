@@ -14,6 +14,7 @@ void Driver::Setup() {
     mElevatorZero.Setup();
     mElevatorEnd.Setup();
     mHandoff.setMaxSpeed(1000);
+    mActuator.Setup();
 }
 
 void Driver::UpdateSensors() {
@@ -113,8 +114,8 @@ bool Driver::RunHandoff(LimitSwitch& targetLimitSwitch) {
 
 void Driver::EStop() {
     mElevator.SetBrake(true);
-    // actuator.SetBrake(true);
     mHandoff.stop();
+    mActuator.SetPercentOutput(0.0);
 }
 bool Driver::ZeroElevator() {
     if (mElevatorZero.Get()) {
