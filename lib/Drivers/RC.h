@@ -7,6 +7,7 @@
 namespace lattice {
 /**
  * Class for interfacing with the spektrum satellite module.
+ * Note that this module assumes that there is no trimming done on any of the controls.
  */
 class RC {
    public:
@@ -14,10 +15,8 @@ class RC {
      * Constructor for the RC Class
      *
      * @param comSerial The serial that the RC module is communicating with
-     * @param logSerial The serial to log text information to
      * @param rxPin The RX Pin the module is plugged into
      * @param powerPin The power pin the module is plugged into
-     * @param onboardLEDPin The pin of the onboard LED
      */
     RC(UARTClass& comSerial, int rxPin, int powerPin);
 
@@ -32,37 +31,55 @@ class RC {
     void Update();
 
     /**
-     * Gets the throttle value as a number in the range [0, 1].
+     * Gets the throttle value as a number in the range [-1, 1].
+     * Note the throttle is the y-axis on the left joystick of the spektrum controller.
+     *
+     * @return The throttle position as a value from -1 to 1.
      */
     double GetThrottle();
 
     /**
-     * Gets the Aileron value as a double between 0 and 1
+     * Gets the aileron value as a number in the range [-1, 1].
+     * Note the aileron is the x-axis on the right joystick of the spektrum controller.
+     *
+     * @return The aileron position as a value from -1 to 1.
      */
     double GetAileron();
 
     /**
-     * Gets the Elevator value as an integer 0, 1, 2
+     * Gets the elevator value as a number in the range [-1, 1].
+     * Note the elevator is the y-axis on the right joystick of the spektrum controller.
+     *
+     * @return The elevator position as a value from -1 to 1.
      */
     double GetElevator();
 
     /**
-     * Gets the Rudder value as an integer 0, 1, 2
+     * Gets the rudder value as a number in the range [-1, 1].
+     * Note the rudder is the x-axis on the left joystick of the spektrum controller.
+     *
+     * @return The rudder position as a value from -1 to 1.
      */
     double GetRudder();
 
     /**
-     * Gets the gear value as an integer (don't know the output format).
+     * Gets the gear value as an integer in the list [0, 1, 2].
+     *
+     * @return The gear value as either 0, 1, or 2.
      */
     int GetGear();
 
     /**
-     * Gets the Aux1 value as an integer (don't know the output format).
+     * Gets the aux 1 value as an integer in the list [0, 1, 2].
+     *
+     * @return The aux 1 value as either 0, 1, or 2.
      */
     int GetAux1();
 
     /**
-     * Gets the Aux2 value as an integer (don't know the output format).
+     * Gets the aux 2 value as an integer in the list [0, 1, 2].
+     *
+     * @return The aux 2 value as either 0, 1, or 2.
      */
     int GetAux2();
 

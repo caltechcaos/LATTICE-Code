@@ -51,6 +51,8 @@ constexpr double kS = 0;
 constexpr double kV = 0;
 constexpr double kA = 0;
 constexpr double kG = 0;
+
+constexpr double kElevatorVoltage = 2.5;  // lattice::GetElevatorFeedforward(lattice::ElevatorConstants::kS, lattice::ElevatorConstants::kV, lattice::ElevatorConstants::kA, lattice::ElevatorConstants::kG, 0, f_desired);
 }  // namespace ElevatorConstants
 
 namespace HandoffConstants {
@@ -88,6 +90,8 @@ constexpr double kD = 0;
 constexpr double kS = 0;
 constexpr double kV = 0;
 constexpr double kA = 0;
+
+constexpr double kDriverVoltage = 18;  // lattice::GetSimpleFeedforward(kS, kV, kA, 0, t_desired / I_s);
 
 }  // namespace DriverConstants
 
@@ -147,5 +151,8 @@ constexpr double kVError = 1.5;
 namespace RCPorts {
 constexpr int kDriverRXPort = 15;
 constexpr int kDriverPowerPort = 22;
+
+constexpr int kShuttleRXPort = 15;
+constexpr int kShuttlePowerPort = 22;
 }  // namespace RCPorts
 }  // namespace lattice

@@ -17,16 +17,22 @@ class Voltage {
     Voltage(const int PIN, double resistanceL = 75000.0, double resistanceS = 12000.0);
 
     /**
-     * Sets up to use as input for votage. Must be called before
+     * Sets up to use as input for voltage. Must be called before
      * using it.
      */
     void Setup();
     /**
-     * Calculates the volatge based on resistors
-     * @param value will multiply based on what resistor value
+     * Calculates the voltage based on resistors
+     *
+     * @return the calculated voltage based off of the voltage dividers.
      */
     double CalculateVoltage();
 
+    /**
+     * Calculates the voltage through a moving mean filter.
+     *
+     * @return The filtered voltage reading.
+     */
     double CalculateFilteredVoltage();
 
    private:

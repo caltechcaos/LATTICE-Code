@@ -1,15 +1,8 @@
 #include "ATRVMotor.h"
 
 #include <Arduino.h>
-
-//#include "BTS7960.h"
-
 using namespace lattice;
 
-// ATRVMotor::ATRVMotor(const int LeftPin, const int RightPin):LeftM(LeftPin), RightM(RightPin) { }
-
-// ATRVMotor::ATRVMotor(uint8_t F_PWM, uint8_t B_PWM) : ATRVMotor(F_PWM, B_PWM) {}
-// EN?
 ATRVMotor::ATRVMotor(int forwardPWMPin, int backwardPWMPin) : kForwardPWMPin(forwardPWMPin), kBackwardPWMPin(backwardPWMPin) {}
 
 void ATRVMotor::Setup() {

@@ -1,4 +1,5 @@
 #pragma once
+#include "Brake.h"
 #include "HallEffect.h"
 #include "HytorcSimple.h"
 #include "LimitSwitch.h"

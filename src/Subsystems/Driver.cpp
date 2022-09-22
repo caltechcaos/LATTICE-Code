@@ -26,10 +26,6 @@ void Driver::UpdateSensors() {
     mHandoff.runSpeed();
 }
 
-void Driver::Run() {
-    //   mHandoff.runSpeed();
-}
-
 void Driver::SetDriverPower(double power) {
     mActuator.SetPercentOutput(power);
 }
@@ -54,12 +50,13 @@ void Driver::SetElevatorVoltage(double voltage) {
     mElevator.SetVoltage(BoundPower(voltage), GetBatteryVoltage());
 }
 
-bool Driver::SetStake(StakeNumber stake) {
+void Driver::SetStake(StakeNumber stake) {
     mStakeState = stake;
 }
 
 void Driver::DriveStake() {
-    // TODO Implement
+    SetDriverVoltage(DriverConstants::kDriverVoltage);
+    SetElevatorVoltage(ElevatorConstants::kElevatorVoltage);
 }
 
 void Driver::InitializeStakeHandoff() {

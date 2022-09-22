@@ -8,34 +8,7 @@
 #include "Subsystems/Shuttle.h"
 #include "Util.h"
 
-// CONSTANTS
-constexpr double RPMSCALE = 5700;
-
-double kS = lattice::DriverConstants::kS;
-double kV = lattice::DriverConstants::kV;
-double kA = lattice::DriverConstants::kA;
-constexpr double t_desired = 100;  // Nm
-constexpr double f_desired = 100;  // Nm
-constexpr double THETA = 1;
-constexpr double I_s = 1;
-constexpr double max_voltage = 100;
-
-// sgn() function definiition
-template <typename T>
-int sgn(T num) {
-    return (T(0) < num) - (num < T(0));
-}
-
-double DriverVoltage = 18;     // lattice::GetSimpleFeedforward(kS, kV, kA, 0, t_desired / I_s);
-double ElevatorVoltage = 2.5;  // lattice::GetElevatorFeedforward(lattice::ElevatorConstants::kS, lattice::ElevatorConstants::kV, lattice::ElevatorConstants::kA, lattice::ElevatorConstants::kG, 0, f_desired);
-// constexpr double Battery = 100;  // TMP
-
-// TODO: If limit switches are hit on elevator that we can’t move it anymore
-// TODO: Autonomous torque and downforce application and Stake handoff
-// - https://www.overleaf.com/read/kghkvywmkyfj
-// - Use Latex file's math to calculate
-
-lattice::RC controller(Serial3, lattice::RCPorts::kDriverRXPort, lattice::RCPorts::kDriverPowerPort);  // TODO: Use correct wiring when ATVR is fixed
+lattice::RC controller(Serial3, lattice::RCPorts::kDriverRXPort, lattice::RCPorts::kDriverPowerPort);
 lattice::Clifford &clifford = lattice::Clifford::clifford();
 lattice::Driver &driver = lattice::Driver::driver();
 
@@ -46,27 +19,12 @@ bool updateClifford(double r, double theta) {
 }
 
 // Vertical: Move Elevator
-// Horizontal: Switch Stake
+// Horizontal: Move drill
 bool updateElevator(double y, double drill) {
     driver.SetElevatorPower(y);
     driver.SetDriverPower(drill);
     return true;
 }
-
-bool autoDrill() {
-    driver.SetDriverVoltage(DriverVoltage);
-    driver.SetElevatorVoltage(-ElevatorVoltage);
-    return true;
-}
-
-// Horizontal: Drive Left/Right
-// bool updateShuttle(double x) {
-//     shuttle.SetMotionMotors(x * RPMSCALE);
-//     return true;
-// }
-
-int stakeIterations = 0;
-
 int prevAux = 0;
 bool stakeHandoff() {
     driver.RunStakeHandoff();
@@ -124,7 +82,7 @@ void driverLoop() {
             break;
         case 1:  // Update elevator
             if (y_left >= 0.7) {
-                autoDrill();
+                driver.DriveStake();
             } else {
                 success = updateElevator(y_right, x_left);
             }

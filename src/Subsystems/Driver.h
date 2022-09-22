@@ -38,14 +38,20 @@ class Driver {
     void Setup();
 
     /**
-     * Advances the subsystem by one tick
+     * Set the stake to handoff to.
      */
-    void Run();
+    void SetStake(StakeNumber stake);
 
-    bool SetStake(StakeNumber stake);
-
+    /**
+     * Runs the stake handoff to the stored stake.
+     *
+     * @return True if we reached the stake.
+     */
     bool RunStakeHandoff();
 
+    /**
+     * Initializes the stake handoff to the currently stored stake. Call this right before running RunStakeHandoff in a loop.
+     */
     void InitializeStakeHandoff();
 
     /**
@@ -66,10 +72,37 @@ class Driver {
      */
     void UpdateSensors();
 
+    /**
+     * Sets the power of the Driver actuator in percent power.
+     *
+     * @param power The percent power to run the driver at
+     */
     void SetDriverPower(double power);
+
+    /**
+     * Sets the power of the elevator in percent power.
+     *
+     * @param power The percent power to run the elevator at
+     */
     void SetElevatorPower(double power);
+
+    /**
+     * Sets the power of the Driver actuator in voltage.
+     *
+     * @param voltage The voltage to run the driver at
+     */
     void SetDriverVoltage(double voltage);
+
+    /**
+     * Sets the power of the elevator in voltage.
+     *
+     * @param voltage The voltage to run the driver at.
+     */
     void SetElevatorVoltage(double voltage);
+
+    /**
+     * Automatic driving of the stake
+     */
     void DriveStake();
 
     double GetBatteryVoltage() { return mVoltageSensor.CalculateFilteredVoltage(); }

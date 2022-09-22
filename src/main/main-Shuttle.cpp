@@ -10,7 +10,7 @@
 constexpr double kRPMScale = 5700;
 constexpr double kTakeup = 0.25;  // Required takeup in meters.
 
-lattice::RC controller(Serial1, 19, 2);  // TODO: Use correct wiring when ATVR is fixed
+lattice::RC controller(Serial3, lattice::RCPorts::kShuttleRXPort, lattice::RCPorts::kShuttlePowerPort);
 lattice::Shuttle &shuttle = lattice::Shuttle::GetInstance();
 
 // Horizontal: Drive Left/Right
@@ -69,7 +69,6 @@ void shuttleLoop() {
         shuttle.SetFrontLimitSwitch(lattice::Shuttle::FrontLimitSwitch::kRight);
     }
 
-    // Set stake number with Switch A, assume there's 3 for now
     mode curr_mode = mode::TakeupDrive;
     switch (aux1) {
         case 0:  // Manual Mode
@@ -79,16 +78,16 @@ void shuttleLoop() {
         case 1:  // Transition Mode
             // Up - Switch from autonomous constant takeup to autonomous stake transition
             if (curr_mode == mode::TakeupDrive) {
-                if (shuttle.ConstantTakeupDrive(abs(y_left) >= 0.9)) {
+                if (shuttle.ConstantTakeupDrive(abs(y_left) >= 0.7)) {
                     curr_mode = mode::StakeTransition;
                 }
             } else {
-                if (shuttle.StakeTransition(abs(y_left) <= 0.1)) {
+                if (shuttle.StakeTransition(abs(y_left) <= -0.7)) {
                     curr_mode = mode::TakeupDrive;
                 }
             }
             break;
-        case 2:  // Emergency Stop
+        case 2:  // Stop moving
             shuttle.StopMotionMotors();
             break;
     }
