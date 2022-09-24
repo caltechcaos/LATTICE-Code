@@ -47,7 +47,7 @@ void Driver::SetDriverVoltage(double voltage) {
     mActuator.SetVoltage(voltage, GetBatteryVoltage());
 }
 void Driver::SetElevatorVoltage(double voltage) {
-    mElevator.SetVoltage(BoundPower(voltage), GetBatteryVoltage());
+    mElevator.SetVoltage(voltage, GetBatteryVoltage() / 2.0);
 }
 
 void Driver::SetStake(StakeNumber stake) {
@@ -56,7 +56,7 @@ void Driver::SetStake(StakeNumber stake) {
 
 void Driver::DriveStake() {
     SetDriverVoltage(DriverConstants::kDriverVoltage);
-    SetElevatorVoltage(ElevatorConstants::kElevatorVoltage);
+    SetElevatorVoltage(-ElevatorConstants::kElevatorVoltage);
 }
 
 void Driver::InitializeStakeHandoff() {

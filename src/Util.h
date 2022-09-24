@@ -52,7 +52,7 @@ constexpr double kV = 0;
 constexpr double kA = 0;
 constexpr double kG = 0;
 
-constexpr double kElevatorVoltage = 2.5;  // lattice::GetElevatorFeedforward(lattice::ElevatorConstants::kS, lattice::ElevatorConstants::kV, lattice::ElevatorConstants::kA, lattice::ElevatorConstants::kG, 0, f_desired);
+constexpr double kElevatorVoltage = 0.8;  // lattice::GetElevatorFeedforward(lattice::ElevatorConstants::kS, lattice::ElevatorConstants::kV, lattice::ElevatorConstants::kA, lattice::ElevatorConstants::kG, 0, f_desired);
 }  // namespace ElevatorConstants
 
 namespace HandoffConstants {
