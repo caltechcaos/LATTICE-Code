@@ -23,13 +23,13 @@ void run() {
         char input = (uint8_t)Serial.read();
 
         if (input == 'a') {
-            Speed = 600;
+            Speed = 300;
         } else if (input == 'b') {
-            Speed = -600;
+            Speed = -300;
         } else if (input == 'c') {
-            Speed = 100;
+            Speed = 150;
         } else if (input == 'd') {
-            Speed = -100;
+            Speed = -2400;
         } else if (input == 'f') {
             Speed = 0;
         }
