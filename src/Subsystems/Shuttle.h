@@ -6,6 +6,7 @@
 #include "MotionMotor.h"
 #include "PIDF.h"
 #include "Util.h"
+#include "Voltage.h"
 
 namespace lattice {
 /**
@@ -204,13 +205,18 @@ class Shuttle {
     static constexpr double kLengthArm = 0.25;
 
     // // TODO Fix these numbers to an actual constants file
-    // MotionMotor mOuterRightMotionMotor{ShuttleConstants::kOuterRightMotionMotorEnablePin, ShuttleConstants::kOuterRightMotionMotorSignalPin, ShuttleConstants::kOuterRightMotionMotorRPMPin, ShuttleConstants::kOuterRightMotionMotorThermalPin};
-    // MotionMotor mOuterLeftMotionMotor{ShuttleConstants::kOuterLeftMotionMotorEnablePin, ShuttleConstants::kOuterLeftMotionMotorSignalPin, ShuttleConstants::kOuterLeftMotionMotorRPMPin, ShuttleConstants::kOuterLeftMotionMotorThermalPin};
-    // MotionMotor mInnerRightMotionMotor{ShuttleConstants::kInnerRightMotionMotorEnablePin, ShuttleConstants::kInnerRightMotionMotorSignalPin, ShuttleConstants::kInnerRightMotionMotorRPMPin, ShuttleConstants::kInnerRightMotionMotorThermalPin};
-    // MotionMotor mInnerLeftMotionMotor{ShuttleConstants::kInnerLeftMotionMotorEnablePin, ShuttleConstants::kInnerLeftMotionMotorSignalPin, ShuttleConstants::kInnerLeftMotionMotorRPMPin, ShuttleConstants::kInnerLeftMotionMotorThermalPin};
+    MotionMotor mOuterRightMotionMotor{ShuttleConstants::kOuterRightMotionMotorEnablePin, ShuttleConstants::kOuterRightMotionMotorSignalPin, ShuttleConstants::kOuterRightMotionMotorRPMPin, ShuttleConstants::kOuterRightMotionMotorThermalPin};
+    MotionMotor mOuterLeftMotionMotor{ShuttleConstants::kOuterLeftMotionMotorEnablePin, ShuttleConstants::kOuterLeftMotionMotorSignalPin, ShuttleConstants::kOuterLeftMotionMotorRPMPin, ShuttleConstants::kOuterLeftMotionMotorThermalPin};
+    MotionMotor mInnerRightMotionMotor{ShuttleConstants::kInnerRightMotionMotorEnablePin, ShuttleConstants::kInnerRightMotionMotorSignalPin, ShuttleConstants::kInnerRightMotionMotorRPMPin, ShuttleConstants::kInnerRightMotionMotorThermalPin};
+    MotionMotor mInnerLeftMotionMotor{ShuttleConstants::kInnerLeftMotionMotorEnablePin, ShuttleConstants::kInnerLeftMotionMotorSignalPin, ShuttleConstants::kInnerLeftMotionMotorRPMPin, ShuttleConstants::kInnerLeftMotionMotorThermalPin};
 
     HytorcSimple mRightTensionMotor{ShuttleConstants::kRightHytorcMotorPin, ShuttleConstants::kRightHytorcForwardEncoderPin, ShuttleConstants::kRightHytorcBackwardEncoderPin};
     HytorcSimple mLeftTensionMotor{ShuttleConstants::kLeftHytorcMotorPin, ShuttleConstants::kLeftHytorcForwardEncoderPin, ShuttleConstants::kLeftHytorcBackwardEncoderPin};
+
+    Brake mRightBrake{ShuttleConstants::kRightArmBrakePin};
+    Brake mLeftBrake{ShuttleConstants::kLeftArmBrakePin};
+
+    Voltage mBatterySensor{kBatteryVoltagePin};
 
     LimitSwitch mRightArmBottomLimitSwitch{ShuttleConstants::kRightArmBottomLimitSwitchPin};
     LimitSwitch mLeftArmBottomLimitSwitch{ShuttleConstants::kLeftArmBottomLimitSwitchPin};

@@ -97,7 +97,7 @@ constexpr double kDriverVoltage = 18;  // lattice::GetSimpleFeedforward(kS, kV, 
 
 namespace ShuttleConstants {
 // This have to be analogPin and cannot exceed 5V
-constexpr int kVoltagePin = A0;
+constexpr int kBatteryVoltagePin = A0;
 constexpr double kMaxInputVoltage = 18.0;  // temp (dependson fully charge bat and resistor)
 constexpr double kMultiplier = 1;          // temp (depends on how much of the origional voltage is inputed)(I.E. 1/3)
 

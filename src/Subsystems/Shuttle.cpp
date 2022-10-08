@@ -9,10 +9,10 @@ using namespace lattice;
 Shuttle::Shuttle() {
 }
 void Shuttle::Setup() {
-    // mOuterLeftMotionMotor.Setup();
-    // mOuterRightMotionMotor.Setup();
-    // mInnerLeftMotionMotor.Setup();
-    // mInnerRightMotionMotor.Setup();
+    mOuterLeftMotionMotor.Setup();
+    mOuterRightMotionMotor.Setup();
+    mInnerLeftMotionMotor.Setup();
+    mInnerRightMotionMotor.Setup();
 
     mLeftTensionMotor.Setup();
     mRightTensionMotor.Setup();
@@ -23,6 +23,8 @@ void Shuttle::Setup() {
     mRightArmBottomLimitSwitch.Setup();
 
     mCenterSwitch.Setup();
+
+    mBatterySensor.Setup();
 }
 void Shuttle::SetTakeup(double takeup) {
     mTargetTakeup = takeup;
@@ -97,22 +99,24 @@ void Shuttle::UpdateSensors() {
 }
 
 void Shuttle::EngageMotorBreak() {
-    // TODO
+    mRightBrake.Set(true);
+    mLeftBrake.Set(true);
 }
 
 void Shuttle::DisengageMotorBreak() {
-    // TODO
+    mRightBrake.Set(false);
+    mLeftBrake.Set(false);
 }
 
 void Shuttle::SetMotionMotors(double outerLeft, double innerLeft, double innerRight, double outerRight) {
-    // mOuterLeftMotionMotor.EnableMotor();
-    // mOuterRightMotionMotor.EnableMotor();
-    // mInnerLeftMotionMotor.EnableMotor();
-    // mInnerRightMotionMotor.EnableMotor();
-    // mOuterLeftMotionMotor.SetVelocity(outerLeft);
-    // mOuterRightMotionMotor.SetVelocity(outerRight);
-    // mInnerLeftMotionMotor.SetVelocity(innerLeft);
-    // mInnerRightMotionMotor.SetVelocity(innerRight);
+    mOuterLeftMotionMotor.EnableMotor();
+    mOuterRightMotionMotor.EnableMotor();
+    mInnerLeftMotionMotor.EnableMotor();
+    mInnerRightMotionMotor.EnableMotor();
+    mOuterLeftMotionMotor.SetVelocity(outerLeft);
+    mOuterRightMotionMotor.SetVelocity(outerRight);
+    mInnerLeftMotionMotor.SetVelocity(innerLeft);
+    mInnerRightMotionMotor.SetVelocity(innerRight);
 }
 
 double Shuttle::BoundPID(double input, double minimum, double target, double pos) {
@@ -134,6 +138,9 @@ void Shuttle::SetTensionArmPowers(double leftArmPower, double rightArmPower) {
     double leftPassive, leftDrive, rightDrive, rightPassive = 0.0;
     if ((mLeftArmBottomLimitSwitch.Get() && leftArmPower < 0) || (mLeftArmTopLimitSwitch.Get() && leftArmPower > 0)) {
         mLeftTensionMotor.SetPercentOutput(0.0);
+        if (mLeftArmBottomLimitSwitch.Get()) {
+            mLeftTensionMotor.ResetEncoderPosition();
+        }
         if (abs(leftArmPower) > 0) {
             // TODO Log an error that we hit the limit switch prematurely
         }
@@ -149,6 +156,9 @@ void Shuttle::SetTensionArmPowers(double leftArmPower, double rightArmPower) {
     }
     if ((mRightArmBottomLimitSwitch.Get() && rightArmPower < 0) || (mRightArmTopLimitSwitch.Get() && rightArmPower > 0)) {
         mRightTensionMotor.SetPercentOutput(0.0);
+        if (mRightArmBottomLimitSwitch.Get()) {
+            mRightTensionMotor.ResetEncoderPosition();
+        }
         if (rightArmPower > 0) {
             // TODO Log an error that we hit the limit switch prematurely
         }
@@ -195,10 +205,10 @@ void Shuttle::ResetTensionArms() {
     }
 }
 void Shuttle::StopMotionMotors() {
-    // mOuterLeftMotionMotor.DisableMotor();
-    // mOuterRightMotionMotor.DisableMotor();
-    // mInnerLeftMotionMotor.DisableMotor();
-    // mInnerRightMotionMotor.DisableMotor();
+    mOuterLeftMotionMotor.DisableMotor();
+    mOuterRightMotionMotor.DisableMotor();
+    mInnerLeftMotionMotor.DisableMotor();
+    mInnerRightMotionMotor.DisableMotor();
 }
 
 void Shuttle::StartArmTransition(ArmTransitionPositions pos) {
@@ -217,8 +227,7 @@ void Shuttle::StartArmTransition(ArmTransitionPositions pos) {
 }
 
 double Shuttle::GetBatteryVoltage() {
-    // TODO Use battery voltage sensor
-    return 18.0;
+    return mBatterySensor.CalculateFilteredVoltage();
 }
 
 bool Shuttle::StakeTransition(bool offRail) {
