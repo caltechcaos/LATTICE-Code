@@ -3,7 +3,7 @@
 #include "MotionMotor.h"
 #include "Util.h"
 
-lattice::MotionMotor testMotor{50, 2, 0, 1};
+lattice::MotionMotor testMotor{24, 5, A5, 1};
 double RPMCommand = 0;
 int direction = 1;
 void setup() {

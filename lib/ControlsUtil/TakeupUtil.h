@@ -1,6 +1,12 @@
 #pragma once
 
 namespace lattice {
+static constexpr double kArmLength = 0.25;
+static constexpr double kLeaderPulleyX = 0.2;
+static constexpr double kLeaderPulleyY = 0.015;
+static constexpr double kArmX = 0.3542;
+static constexpr double kArmY = 0.11;
+static constexpr double kRPulley = 0.02;
 /**
  * Calculates the angle needed to maintain a specified takeup for two arms holding the same angle.
  *
@@ -10,7 +16,7 @@ namespace lattice {
  * @param dpdp The horizontal distance between the passive pulley and the drive pulley
  * @return The angle each arm needs to be to get the specified takeup (in radians)
  */
-double DoubleArmTakeupAngles(double mintakeup, double Larm, double dap, double dpdp);
+double DoubleArmTakeupAngles(double takeup, double armLength = kArmLength, double leaderPulleyX = kLeaderPulleyX, double leaderPulleyY = kLeaderPulleyY, double armX = kArmX, double armY = kArmY, double rPulley = kRPulley);
 
 /**
  * Calculates the angle a single arm needs to be at to maintain a specified takeup.
@@ -21,7 +27,9 @@ double DoubleArmTakeupAngles(double mintakeup, double Larm, double dap, double d
  * @param dpdp The horizontal distance between the passive pulley and the drive pulley
  * @return The angle one arm needs to be to get the specified takeup (in radians)
  */
-double SingleArmTakeupAngle(double mintakeup, double Larm, double dap, double dpdp);
+double SingleArmTakeupAngle(double takeup, double armLength = kArmLength, double leaderPulleyX = kLeaderPulleyX, double leaderPulleyY = kLeaderPulleyY, double armX = kArmX, double armY = kArmY, double rPulley = kRPulley);
+
+double SingleSideTakeup(double armAngle, double armLength = kArmLength, double leaderPulleyX = kLeaderPulleyX, double leaderPulleyY = kLeaderPulleyY, double armX = kArmX, double armY = kArmY, double rPulley = kRPulley);
 
 /**
  * Calculates the takeup resulting from two arm angles
@@ -33,7 +41,7 @@ double SingleArmTakeupAngle(double mintakeup, double Larm, double dap, double dp
  * @param dpdp The horizontal distance between the passive pulley and the drive pulley
  * @return The takeup resulting from the angles
  */
-double GetTakeup(double leftArmAngle, double rightArmAngle, double Larm, double dap, double dpdp);
+double GetTakeup(double leftArmAngle, double rightArmAngle, double armLength = kArmLength, double leaderPulleyX = kLeaderPulleyX, double leaderPulleyY = kLeaderPulleyY, double armX = kArmX, double armY = kArmY, double rPulley = kRPulley);
 
 /**
  * Calculates the corresponding angle to maintain a takeup given one arm angle
@@ -44,14 +52,5 @@ double GetTakeup(double leftArmAngle, double rightArmAngle, double Larm, double 
  * @param otherAngle The angle of the other arm in degrees
  * @return The angle (in degrees) the other arm needs to be at to maintain the specified takeup
  */
-double GetCorrespondingAngle(double mintakeup, double Larm, double dap, double dpdp, double otherAngle);
-
-/**
- * Calculates the relative rates the arms need to move to maintain a specific takeup
- *
- * @param doubleArmAngle The arm angles needed for both arms to maintain a previously specified takeup
- * @param singleArmAngle The arm angle needed for a single arm to maintain a previously specified takeup
- * @return The rate at which the arms need to move to minimize a loss in takeup
- */
-double GetRelativeArmRates(double doubleArmAngle, double singleArmAngle);
+double GetCorrespondingAngle(double otherAngle, double takeup, double armLength = kArmLength, double leaderPulleyX = kLeaderPulleyX, double leaderPulleyY = kLeaderPulleyY, double armX = kArmX, double armY = kArmY, double rPulley = kRPulley);
 }  // namespace lattice

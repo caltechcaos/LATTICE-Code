@@ -34,14 +34,14 @@ constexpr int kRightMotorBackwardPin = 13;
 }  // namespace CliffordConstants
 
 namespace ElevatorConstants {
-constexpr int kMotorPin = 53;
+constexpr int kMotorPin = 4;
 constexpr int kEncoderFwdPin = 6;
 constexpr int kEncoderBckPin = 7;
 
 constexpr int kTopLimitSwitchPin = 10;
 constexpr int kBottomLimitSwitchPin = 5;
 
-constexpr int kCurrentPin = 4;
+constexpr int kCurrentPin = 53;
 
 constexpr double kP = 0;
 constexpr double kI = 0;
@@ -77,7 +77,7 @@ constexpr int kMicrosteps = 16;
 
 namespace DriverConstants {
 constexpr int kVoltageSensorPin = A0;
-constexpr int kHytorcMotorPin = 23;
+constexpr int kHytorcMotorPin = 52;
 constexpr int kHytorcEncoderForward = 10;
 constexpr int kHytorcEncoderBackward = 11;
 constexpr int kHytorcThermistorPin = 12;

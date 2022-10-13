@@ -216,7 +216,7 @@ class Shuttle {
     Brake mRightBrake{ShuttleConstants::kRightArmBrakePin};
     Brake mLeftBrake{ShuttleConstants::kLeftArmBrakePin};
 
-    Voltage mBatterySensor{kBatteryVoltagePin};
+    Voltage mBatterySensor{ShuttleConstants::kBatteryVoltagePin};
 
     LimitSwitch mRightArmBottomLimitSwitch{ShuttleConstants::kRightArmBottomLimitSwitchPin};
     LimitSwitch mLeftArmBottomLimitSwitch{ShuttleConstants::kLeftArmBottomLimitSwitchPin};
