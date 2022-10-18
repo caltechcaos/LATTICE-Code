@@ -101,44 +101,47 @@ constexpr int kBatteryVoltagePin = A0;
 constexpr double kMaxInputVoltage = 18.0;  // temp (dependson fully charge bat and resistor)
 constexpr double kMultiplier = 1;          // temp (depends on how much of the origional voltage is inputed)(I.E. 1/3)
 
-constexpr int kOuterLeftMotionMotorEnablePin = 44;
-constexpr int kOuterRightMotionMotorEnablePin = 45;
-constexpr int kInnerLeftMotionMotorEnablePin = 46;
-constexpr int kInnerRightMotionMotorEnablePin = 47;
+constexpr int kOuterRightMotionMotorEnablePin = 30;
+constexpr int kInnerRightMotionMotorEnablePin = 28;
 
-constexpr int kOuterLeftMotionMotorSignalPin = 1;
-constexpr int kOuterRightMotionMotorSignalPin = 2;
-constexpr int kInnerLeftMotionMotorSignalPin = 3;
-constexpr int kInnerRightMotionMotorSignalPin = 4;
+constexpr int kOuterLeftMotionMotorEnablePin = 26;
+constexpr int kInnerLeftMotionMotorEnablePin = 24;
 
-constexpr int kOuterLeftMotionMotorRPMPin = 5;
-constexpr int kOuterRightMotionMotorRPMPin = 6;
-constexpr int kInnerLeftMotionMotorRPMPin = 7;
-constexpr int kInnerRightMotionMotorRPMPin = 8;
+constexpr int kOuterLeftMotionMotorSignalPin = 5;
+constexpr int kInnerLeftMotionMotorSignalPin = 4;
+
+constexpr int kOuterRightMotionMotorSignalPin = 3;
+constexpr int kInnerRightMotionMotorSignalPin = 2;
+
+constexpr int kOuterLeftMotionMotorRPMPin = A8;
+constexpr int kOuterRightMotionMotorRPMPin = A6;
+constexpr int kInnerLeftMotionMotorRPMPin = A7;
+constexpr int kInnerRightMotionMotorRPMPin = A5;
 
 constexpr int kOuterLeftMotionMotorThermalPin = 9;
 constexpr int kOuterRightMotionMotorThermalPin = 10;
 constexpr int kInnerLeftMotionMotorThermalPin = 11;
 constexpr int kInnerRightMotionMotorThermalPin = 12;
 
-constexpr int kLeftHytorcMotorPin = 31;
-constexpr int kRightHytorcMotorPin = 32;
+constexpr int kLeftHytorcMotorPin = 7;
+constexpr int kRightHytorcMotorPin = 8;
 
-constexpr int kLeftHytorcForwardEncoderPin = 22;
-constexpr int kRightHytorcForwardEncoderPin = 24;
-constexpr int kLeftHytorcBackwardEncoderPin = 23;
-constexpr int kRightHytorcBackwardEncoderPin = 25;
+constexpr int kLeftHytorcForwardEncoderPin = 37;
+constexpr int kLeftHytorcBackwardEncoderPin = 38;
 
-constexpr int kLeftArmBottomLimitSwitchPin = 52;
-constexpr int kLeftArmTopLimitSwitchPin = 52;
-constexpr int kRightArmBottomLimitSwitchPin = 53;
-constexpr int kRightArmTopLimitSwitchPin = 53;
+constexpr int kRightHytorcForwardEncoderPin = 39;
+
+constexpr int kRightHytorcBackwardEncoderPin = 40;
+
+constexpr int kLeftArmBottomLimitSwitchPin = 41;
+// constexpr int kLeftArmTopLimitSwitchPin = 52;
+constexpr int kRightArmBottomLimitSwitchPin = 42;
+// constexpr int kRightArmTopLimitSwitchPin = 53;
 constexpr int kCenterHallSwitchPin = 55;
 
-constexpr int kLeftArmBrakePin = A4;
-constexpr int kRightArmBrakePin = A4;
+constexpr int kArmBrakePin = 32;
 
-constexpr double kTensionRPM = 500;
+constexpr double kTensionRPM = 700;
 
 constexpr double kP = 1.0;
 constexpr double kI = 0;

@@ -109,7 +109,7 @@ int RC::GetAux1() {
             return 1;
         }
     } else {
-        return 1;
+        return 0;
     }
 }
 int RC::GetAux2() {

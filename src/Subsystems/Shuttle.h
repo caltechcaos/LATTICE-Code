@@ -164,14 +164,14 @@ class Shuttle {
      *
      * @return the left tension arm position in degrees
      */
-    double GetLeftTensionArmPos() { return mLeftTensionMotor.GetPosition() * 360.0 / 5000; };  // TODO Account for gearing here officially
+    double GetLeftTensionArmPos() { return mLeftTensionMotor.GetPosition() * 360.0 / 5049.0; };  // TODO Account for gearing here officially
 
     /**
      * Get the right tension arm position in degrees
      *
      * @return the right tension arm position in degrees
      */
-    double GetRightTensionArmPos() { return -mRightTensionMotor.GetPosition() * 360.0 / 5000; };
+    double GetRightTensionArmPos() { return -mRightTensionMotor.GetPosition() * 360.0 / 5049.0; };
 
     void ResetArmPositions() {
         mLeftTensionMotor.ResetEncoderPosition();
@@ -213,15 +213,14 @@ class Shuttle {
     HytorcSimple mRightTensionMotor{ShuttleConstants::kRightHytorcMotorPin, ShuttleConstants::kRightHytorcForwardEncoderPin, ShuttleConstants::kRightHytorcBackwardEncoderPin};
     HytorcSimple mLeftTensionMotor{ShuttleConstants::kLeftHytorcMotorPin, ShuttleConstants::kLeftHytorcForwardEncoderPin, ShuttleConstants::kLeftHytorcBackwardEncoderPin};
 
-    Brake mRightBrake{ShuttleConstants::kRightArmBrakePin};
-    Brake mLeftBrake{ShuttleConstants::kLeftArmBrakePin};
+    Brake mArmBrake{ShuttleConstants::kArmBrakePin};
 
     Voltage mBatterySensor{ShuttleConstants::kBatteryVoltagePin};
 
     LimitSwitch mRightArmBottomLimitSwitch{ShuttleConstants::kRightArmBottomLimitSwitchPin};
     LimitSwitch mLeftArmBottomLimitSwitch{ShuttleConstants::kLeftArmBottomLimitSwitchPin};
-    LimitSwitch mRightArmTopLimitSwitch{ShuttleConstants::kRightArmTopLimitSwitchPin};
-    LimitSwitch mLeftArmTopLimitSwitch{ShuttleConstants::kLeftArmTopLimitSwitchPin};
+    // LimitSwitch mRightArmTopLimitSwitch{ShuttleConstants::kRightArmTopLimitSwitchPin};
+    // LimitSwitch mLeftArmTopLimitSwitch{ShuttleConstants::kLeftArmTopLimitSwitchPin};
     HallEffect mCenterSwitch{ShuttleConstants::kCenterHallSwitchPin};
 
     PIDF mLeftArmController{ShuttleConstants::kP, ShuttleConstants::kI, ShuttleConstants::kD, [](double setpoint) { return copysign(ShuttleConstants::kS, setpoint); }, ShuttleConstants::kError, ShuttleConstants::kVError};

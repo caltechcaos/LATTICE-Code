@@ -17,10 +17,10 @@ void Shuttle::Setup() {
     mLeftTensionMotor.Setup();
     mRightTensionMotor.Setup();
 
-    mLeftArmTopLimitSwitch.Setup();
-    mRightArmTopLimitSwitch.Setup();
     mLeftArmBottomLimitSwitch.Setup();
     mRightArmBottomLimitSwitch.Setup();
+
+    mArmBrake.Setup();
 
     mCenterSwitch.Setup();
 
@@ -92,20 +92,16 @@ bool Shuttle::ArmTransition(ArmTransitionPositions pos) {
     return false;
 }
 void Shuttle::UpdateSensors() {
-    mLeftArmTopLimitSwitch.Update();
-    mRightArmTopLimitSwitch.Update();
     mLeftArmBottomLimitSwitch.Update();
     mRightArmBottomLimitSwitch.Update();
 }
 
 void Shuttle::EngageMotorBreak() {
-    mRightBrake.Set(true);
-    mLeftBrake.Set(true);
+    mArmBrake.Set(true);
 }
 
 void Shuttle::DisengageMotorBreak() {
-    mRightBrake.Set(false);
-    mLeftBrake.Set(false);
+    mArmBrake.Set(false);
 }
 
 void Shuttle::SetMotionMotors(double outerLeft, double innerLeft, double innerRight, double outerRight) {
@@ -136,7 +132,7 @@ double Shuttle::BoundPID(double input, double minimum, double target, double pos
 void Shuttle::SetTensionArmPowers(double leftArmPower, double rightArmPower) {
     auto batt = GetBatteryVoltage();
     double leftPassive, leftDrive, rightDrive, rightPassive = 0.0;
-    if ((mLeftArmBottomLimitSwitch.Get() && leftArmPower < 0) || (mLeftArmTopLimitSwitch.Get() && leftArmPower > 0)) {
+    if ((mLeftArmBottomLimitSwitch.Get() && leftArmPower < 0)) {
         mLeftTensionMotor.SetPercentOutput(0.0);
         if (mLeftArmBottomLimitSwitch.Get()) {
             mLeftTensionMotor.ResetEncoderPosition();
@@ -145,16 +141,14 @@ void Shuttle::SetTensionArmPowers(double leftArmPower, double rightArmPower) {
             // TODO Log an error that we hit the limit switch prematurely
         }
     } else {
-        mLeftTensionMotor.SetVoltage(leftArmPower, batt);  // TODO Make this voltage with the battery
+        mLeftTensionMotor.SetVoltage(-leftArmPower, batt);  // TODO Make this voltage with the battery
         if (leftArmPower > 0) {
             leftPassive = ShuttleConstants::kTensionRPM;
-            leftDrive = -ShuttleConstants::kTensionRPM;
         } else if (leftArmPower < 0) {
             leftPassive = -ShuttleConstants::kTensionRPM;
-            leftDrive = ShuttleConstants::kTensionRPM;
         }
     }
-    if ((mRightArmBottomLimitSwitch.Get() && rightArmPower < 0) || (mRightArmTopLimitSwitch.Get() && rightArmPower > 0)) {
+    if ((mRightArmBottomLimitSwitch.Get() && rightArmPower < 0)) {
         mRightTensionMotor.SetPercentOutput(0.0);
         if (mRightArmBottomLimitSwitch.Get()) {
             mRightTensionMotor.ResetEncoderPosition();
@@ -165,14 +159,12 @@ void Shuttle::SetTensionArmPowers(double leftArmPower, double rightArmPower) {
     } else {
         mRightTensionMotor.SetVoltage(rightArmPower, batt);  // TODO Make this voltage with the battery
         if (rightArmPower > 0) {
-            rightPassive = ShuttleConstants::kTensionRPM;
-            rightDrive = -ShuttleConstants::kTensionRPM;
-        } else if (rightArmPower < 0) {
             rightPassive = -ShuttleConstants::kTensionRPM;
-            rightDrive = ShuttleConstants::kTensionRPM;
+        } else if (rightArmPower < 0) {
+            rightPassive = ShuttleConstants::kTensionRPM;
         }
     }
-    SetMotionMotors(leftPassive, leftDrive, rightDrive, rightPassive);
+    SetMotionMotors(leftPassive, 0, 0, rightPassive);
 }
 
 bool Shuttle::SetTensionArmPositions(double leftArmAngle, double rightArmAngle) {
@@ -186,23 +178,13 @@ bool Shuttle::SetTensionArmPositions(double leftArmAngle, double rightArmAngle) 
         SetTensionArmPowers(0, 0);
         SetMotionMotors(0, 0, 0, 0);
     } else {
-        SetTensionArmPowers(-leftArm, rightArm);
+        SetTensionArmPowers(leftArm, rightArm);
     }
 
     return atTarget;
 }
 void Shuttle::ResetTensionArms() {
-    if (!mLeftArmBottomLimitSwitch.Get()) {
-        mLeftTensionMotor.SetPercentOutput(-kPercentPowerReset);
-    } else {
-        mLeftTensionMotor.SetPercentOutput(0.0);
-    }
-
-    if (!mRightArmBottomLimitSwitch.Get()) {
-        mRightTensionMotor.SetPercentOutput(-kPercentPowerReset);
-    } else {
-        mRightTensionMotor.SetPercentOutput(0.0);
-    }
+    SetTensionArmPowers(-kPercentPowerReset * GetBatteryVoltage(), -kPercentPowerReset * GetBatteryVoltage());
 }
 void Shuttle::StopMotionMotors() {
     mOuterLeftMotionMotor.DisableMotor();

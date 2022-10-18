@@ -9,7 +9,7 @@
 
 constexpr double kRPMScale = 5700;
 constexpr double kTakeup = 0.25;  // Required takeup in meters.
-
+constexpr double kMaxVoltage = 9;
 lattice::RC controller(Serial3, lattice::RCPorts::kShuttleRXPort, lattice::RCPorts::kShuttlePowerPort);
 lattice::Shuttle &shuttle = lattice::Shuttle::GetInstance();
 
@@ -26,16 +26,18 @@ void engageBreaks(double tensionBreak) {
     }
 }
 
-void adjustTension(double tensionAdjust, int tensionReset, double tensionBreak) {
+void adjustTension(double left, int tensionReset, double right) {
     switch (tensionReset) {
         case 0:  // Manual Adjust
-            shuttle.SetTensionArmPowers(tensionAdjust, tensionAdjust);
+            shuttle.DisengageMotorBreak();
+            shuttle.SetTensionArmPowers(left, right);
             break;
         case 1:  // Reset
-            engageBreaks(tensionBreak);
+            shuttle.EngageMotorBreak();
+            shuttle.SetTensionArmPowers(0.0, 0.0);
             break;
         case 2:
-            shuttle.ResetTensionArms();
+            shuttle.SetTensionArmPowers(0.0, 0.0);
             break;
     }
 }
@@ -55,9 +57,10 @@ void shuttleLoop() {
         return;
     };
 
-    double y_left = -1 * controller.GetThrottle();   // tensionBreak
-    double y_right = -1 * controller.GetElevator();  // tensionAdjust
-    double x_right = -1 * controller.GetAileron();   // x
+    double y_left = controller.GetThrottle();   // tensionBreak
+    double y_right = controller.GetElevator();  // tensionAdjust
+    double x_right = -controller.GetAileron();  // x
+    double x_left = controller.GetRudder();     // x
 
     int gearPosition = controller.GetGear();  // tensionReset
     int aux1 = controller.GetAux1();          // shuttleAutoDrive
@@ -72,26 +75,21 @@ void shuttleLoop() {
     mode curr_mode = mode::TakeupDrive;
     switch (aux1) {
         case 0:  // Manual Mode
-            updateShuttle(x_right);
-            adjustTension(y_right, gearPosition, y_left);
+            shuttle.StopMotionMotors();
+            shuttle.SetTensionArmPowers(0, 0);
             break;
+
         case 1:  // Transition Mode
-            // Up - Switch from autonomous constant takeup to autonomous stake transition
-            if (curr_mode == mode::TakeupDrive) {
-                if (shuttle.ConstantTakeupDrive(abs(y_left) >= 0.7)) {
-                    curr_mode = mode::StakeTransition;
-                }
-            } else {
-                if (shuttle.StakeTransition(abs(y_left) <= -0.7)) {
-                    curr_mode = mode::TakeupDrive;
-                }
-            }
+            Serial.println("Motion");
+            updateShuttle(y_left);
             break;
         case 2:  // Stop moving
-            shuttle.StopMotionMotors();
+            Serial.println("ARMS");
+            adjustTension(x_left * kMaxVoltage, gearPosition, x_right * kMaxVoltage);
             break;
     }
-
+    Serial.print(shuttle.GetBatteryVoltage());
+    Serial.print(", ");
     Serial.print(shuttle.GetLeftTensionArmPos());
     Serial.print(", ");
     Serial.println(shuttle.GetRightTensionArmPos());
