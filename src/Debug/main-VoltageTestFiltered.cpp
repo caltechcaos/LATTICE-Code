@@ -3,7 +3,7 @@
 #include "Util.h"
 #include "Voltage.h"
 
-lattice::Voltage ShuttleVoltage(lattice::ShuttleConstants::kVoltagePin);
+lattice::Voltage ShuttleVoltage(A0);
 
 void setup() {
     lattice::GenericSetup();
