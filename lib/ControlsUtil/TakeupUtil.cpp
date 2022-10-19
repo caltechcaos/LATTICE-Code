@@ -6,7 +6,7 @@
 
 static double Pi = 3.14159265358979324;
 static double kMaxAngle = 109.0;
-static double kMinAngle = 29.2575;
+static double kMinAngle = 30.0;
 
 double lattice::DoubleArmTakeupAngles(double takeup, double armLength, double leaderPulleyX, double leaderPulleyY, double armX, double armY, double rPulley) {
     double smallestError = 100000.0;
