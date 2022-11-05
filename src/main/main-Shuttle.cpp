@@ -14,8 +14,18 @@ lattice::RC controller(Serial3, lattice::RCPorts::kShuttleRXPort, lattice::RCPor
 lattice::Shuttle &shuttle = lattice::Shuttle::GetInstance();
 
 // Horizontal: Drive Left/Right
-void updateShuttle(double x) {
-    shuttle.SetMotion(x * kRPMScale);
+void updateShuttle(double hold, double regular, int gearPosition) {
+    switch (gearPosition) {
+        case 0:  // Manual Adjust
+            shuttle.SetMotion(hold * kRPMScale);
+            break;
+        case 1:  // Reset
+            shuttle.SetMotion(regular * kRPMScale);
+            break;
+        case 2:
+            shuttle.SetMotion(0.0);
+            break;
+    }
 }
 
 void engageBreaks(double tensionBreak) {
@@ -81,8 +91,7 @@ void shuttleLoop() {
 
         case 1:  // Transition Mode
             Serial.println("Motion");
-            // TODO: SWITCH BACK TO LEFT JOYSTICK
-            updateShuttle(y_right);
+            updateShuttle(y_left, y_right, gearPosition);
             break;
         case 2:  // Stop moving
             Serial.println("ARMS");
