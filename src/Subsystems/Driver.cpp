@@ -63,11 +63,11 @@ void Driver::InitializeStakeHandoff() {
     mPowerScaler = 1.0;
     mStakeLimitSwitchContact = false;
     if (mStakeState == StakeNumber::kOne) {
-        mHandoffDir = -1;
+        mHandoffDir = 1;
     } else if (mStakeState == StakeNumber::kTwo) {
         mHandoffDir = 1;
     } else if (mStakeState == StakeNumber::kThree) {
-        mHandoffDir = 1;
+        mHandoffDir = -1;
     } else {
         // TODO Log unknown stake/
     }
@@ -88,9 +88,16 @@ bool Driver::RunStakeHandoff() {
     return false;
 }
 
+void Driver::SetHandoffPower(int dir) {
+    mHandoff.setSpeed(dir * kHandoffSpeed);
+    mHandoff.runSpeed();
+}
+
 bool Driver::RunHandoff(LimitSwitch& targetLimitSwitch) {
     if (targetLimitSwitch.Get()) {
         mHandoff.setSpeed(0.0);
+        mHandoff.runSpeed();
+        mHandoff.stop();
         if (mStakeLimitSwitchContact) {
             return true;
         } else {
@@ -111,6 +118,8 @@ bool Driver::RunHandoff(LimitSwitch& targetLimitSwitch) {
 
 void Driver::EStop() {
     mElevator.SetBrake(true);
+    mHandoff.setSpeed(0.0);
+    mHandoff.runSpeed();
     mHandoff.stop();
     mActuator.SetPercentOutput(0.0);
 }

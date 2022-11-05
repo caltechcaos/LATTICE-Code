@@ -9,7 +9,8 @@ using namespace lattice::HandoffConstants;
 auto& driver = lattice::Driver::driver();
 int steps;
 bool enable = false;
-
+bool manual = false;
+int dir = 1;
 Scheduler ts;
 
 void run() {
@@ -18,17 +19,26 @@ void run() {
         char input = (uint8_t)Serial.read();
 
         if (input == 'a') {
+            manual = false;
             driver.SetStake(lattice::Driver::StakeNumber::kOne);
             driver.InitializeStakeHandoff();
             Serial.println("1");
         } else if (input == 'b') {
+            manual = false;
             driver.SetStake(lattice::Driver::StakeNumber::kTwo);
             driver.InitializeStakeHandoff();
             Serial.println("2");
         } else if (input == 'c') {
+            manual = false;
             driver.SetStake(lattice::Driver::StakeNumber::kThree);
             driver.InitializeStakeHandoff();
             Serial.println("3");
+        } else if (input == 'g') {
+            manual = true;
+            dir = 1;
+        } else if (input == 'h') {
+            manual = true;
+            dir = -1;
         } else if (input == 'e') {
             enable = true;
         } else if (input == 'f') {
@@ -37,7 +47,12 @@ void run() {
     }
 
     if (enable) {
-        Serial.println(driver.RunStakeHandoff());
+        if (manual) {
+            driver.SetHandoffPower(dir);
+        } else {
+            Serial.println(driver.RunStakeHandoff());
+        }
+
     } else {
         driver.EStop();
         Serial.println("00000");

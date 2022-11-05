@@ -2,7 +2,7 @@
 
 #include "LimitSwitch.h"
 
-lattice::LimitSwitch limitswitch{46};
+lattice::LimitSwitch limitswitch{52};
 void setup() {
     Serial.begin(115200);
     limitswitch.Setup();

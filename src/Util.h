@@ -27,7 +27,7 @@ double remap(double x, double in_min, double in_max, double out_min, double out_
 void GenericSetup(std::string name = "");
 
 namespace CliffordConstants {
-constexpr int kLeftMotorForwardPin = 2;
+constexpr int kLeftMotorForwardPin = 1;
 constexpr int kLeftMotorBackwardPin = 3;
 constexpr int kRightMotorForwardPin = 12;
 constexpr int kRightMotorBackwardPin = 13;
@@ -56,21 +56,13 @@ constexpr double kElevatorVoltage = 0.8;  // lattice::GetElevatorFeedforward(lat
 }  // namespace ElevatorConstants
 
 namespace HandoffConstants {
-constexpr int kLimitSwitch1Pin = 41;
-constexpr int kLimitSwitch2Pin = 42;
-constexpr int kLimitSwitch3Pin = 43;
+constexpr int kLimitSwitch1Pin = 24;
+constexpr int kLimitSwitch2Pin = 22;
+constexpr int kLimitSwitch3Pin = 26;
 
 // hand off mech stepper motor
-constexpr int kStepPin1 = 8;
-constexpr int kStepPin2 = 9;
-constexpr int kStepPin3 = 10;
-constexpr int kStepPin4 = 11;
-// constexpr int kDrivePin = 3;
-constexpr int kStepsPerRev = 200;
-constexpr int kRPM = 120;
-constexpr int kMotorAccel = 2000;
-constexpr int kMotorDecel = 1000;
-constexpr int kMicrosteps = 16;
+constexpr int kStepDirPin = 4;
+constexpr int kStepPulPin = 2;
 // constexpr int kSleepPin = 13;
 
 }  // namespace HandoffConstants

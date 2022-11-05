@@ -72,6 +72,8 @@ class Driver {
      */
     void UpdateSensors();
 
+    void SetHandoffPower(int dir);
+
     /**
      * Sets the power of the Driver actuator in percent power.
      *
@@ -114,7 +116,7 @@ class Driver {
    private:
     ElevatorMotor mElevator{ElevatorConstants::kMotorPin, ElevatorConstants::kEncoderFwdPin, ElevatorConstants::kEncoderBckPin};
     HytorcSimple mActuator{DriverConstants::kHytorcMotorPin, DriverConstants::kHytorcEncoderForward, DriverConstants::kHytorcEncoderBackward};
-    AccelStepper mHandoff{4, HandoffConstants::kStepPin1, HandoffConstants::kStepPin2, HandoffConstants::kStepPin3, HandoffConstants::kStepPin4};
+    AccelStepper mHandoff{1, HandoffConstants::kStepDirPin, HandoffConstants::kStepPulPin};
 
     // RCInput rcInput;
     Logger& mLogger;

@@ -13,7 +13,7 @@ using namespace lattice;
 
 int stepsPerRevolution = 200;
 // AccelStepper stepper = AccelStepper(MotorInterfaceType, 8, 9, 10, 11);
-AccelStepper myStepper(1, 7, 6);
+AccelStepper myStepper(1, 4, 2);  // Dir, Pul
 
 // lattice::StepperHandOff Handoff(4, HandoffConstants::kStepPin1, HandoffConstants::kStepPin2, HandoffConstants::kStepPin3, HandoffConstants::kStepPin4);
 int Speed;
