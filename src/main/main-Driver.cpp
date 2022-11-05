@@ -90,7 +90,7 @@ void driverLoop() {
             updateClifford(0, 0);
             break;
         case 2:  // Stake Handoff
-            if (y_right >= 0.9) {
+            if (y_left >= 0.9) {
                 success = stakeHandoff();
             }
             updateElevator(0, 0);

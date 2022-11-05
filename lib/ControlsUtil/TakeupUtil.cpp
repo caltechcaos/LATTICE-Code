@@ -6,7 +6,8 @@
 
 static double Pi = 3.14159265358979324;
 static double kMaxAngle = 109.0;
-static double kMinAngle = 29.2575;
+static double kMinAngle = 30.0;
+static double kMinError = 0.01;
 
 double lattice::DoubleArmTakeupAngles(double takeup, double armLength, double leaderPulleyX, double leaderPulleyY, double armX, double armY, double rPulley) {
     double smallestError = 100000.0;
@@ -39,9 +40,8 @@ double lattice::GetCorrespondingAngle(double otherAngle, double takeup, double a
     double targetAngle = 0.0;
     for (double i = 0.0; i <= kMaxAngle; i += 0.1) {
         double error = abs(takeup - GetTakeup(i, otherAngle, armLength, leaderPulleyX, leaderPulleyY, armX, armY, rPulley));
-        if (error < smallestError) {
-            targetAngle = i;
-            smallestError = error;
+        if (error < kMinError) {
+            return i;
         }
     }
     return targetAngle;

@@ -115,7 +115,7 @@ constexpr int kOuterRightMotionMotorThermalPin = 10;
 constexpr int kInnerLeftMotionMotorThermalPin = 11;
 constexpr int kInnerRightMotionMotorThermalPin = 12;
 
-constexpr int kLeftHytorcMotorPin = 7;
+constexpr int kLeftHytorcMotorPin = 6;
 constexpr int kRightHytorcMotorPin = 8;
 
 constexpr int kLeftHytorcForwardEncoderPin = 37;
@@ -135,12 +135,13 @@ constexpr int kArmBrakePin = 32;
 
 constexpr double kTensionRPM = 700;
 
-constexpr double kP = 1.0;
+constexpr double kP = 0.5;
 constexpr double kI = 0;
 constexpr double kD = 0.5;
-constexpr double kS = 1.8;
-constexpr double kError = 0.5;
-constexpr double kVError = 1.5;
+constexpr double kS = 2.16;
+constexpr double kError = 0.75;
+constexpr double kVError = 100;
+constexpr double kMaxVoltage = 10.0;
 }  // namespace ShuttleConstants
 
 namespace RCPorts {

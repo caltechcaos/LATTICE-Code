@@ -3,7 +3,7 @@
 #include "HytorcSimple.h"
 #include "Util.h"
 
-lattice::HytorcSimple testMotor{9, 5, 6};
+lattice::HytorcSimple testMotor{7, 37, 38};
 void setup() {
     lattice::GenericSetup();
     testMotor.Setup();

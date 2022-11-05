@@ -28,8 +28,8 @@ void Shuttle::Setup() {
 }
 void Shuttle::SetTakeup(double takeup) {
     mTargetTakeup = takeup;
-    mOneArmTakeupAngle = SingleArmTakeupAngle(mTargetTakeup, kLengthArm, kDistancePassivePulleyArmPulley, kDistancePassivePulleyDrivePulley);
-    mTwoArmTakeupAngle = DoubleArmTakeupAngles(mTargetTakeup, kLengthArm, kDistancePassivePulleyArmPulley, kDistancePassivePulleyDrivePulley);
+    mOneArmTakeupAngle = SingleArmTakeupAngle(mTargetTakeup);
+    mTwoArmTakeupAngle = DoubleArmTakeupAngles(mTargetTakeup);
 
     // If we want to enforce a maximum difference in the change in angle per step of the arm transition:
     mArmTransitionIntervals = (int)ceil((mOneArmTakeupAngle - mTwoArmTakeupAngle) / kMaxDegreeIncrement);
@@ -62,7 +62,7 @@ bool Shuttle::ArmTransition(ArmTransitionPositions pos) {
         }
 
         mArmTransitionMainAngle += mArmTransitionIncrement;
-        mArmTransitionOtherAngle = GetCorrespondingAngle(mTargetTakeup, kLengthArm, kDistancePassivePulleyArmPulley, kDistancePassivePulleyDrivePulley, mArmTransitionMainAngle);
+        mArmTransitionOtherAngle = GetCorrespondingAngle(mArmTransitionMainAngle, mTargetTakeup);
         if (isnan(mArmTransitionOtherAngle)) {
             mArmTransitionOtherAngle = 0.0;
         }
@@ -128,6 +128,13 @@ double Shuttle::BoundPID(double input, double minimum, double target, double pos
         return copysign(minimum, error);
     }
 }
+static double boundInput(double input, double max) {
+    if (abs(input) > max) {
+        return copysign(max, input);
+    } else {
+        return input;
+    }
+}
 
 void Shuttle::SetTensionArmPowers(double leftArmPower, double rightArmPower) {
     auto batt = GetBatteryVoltage();
@@ -141,6 +148,7 @@ void Shuttle::SetTensionArmPowers(double leftArmPower, double rightArmPower) {
             // TODO Log an error that we hit the limit switch prematurely
         }
     } else {
+        leftArmPower = boundInput(leftArmPower, ShuttleConstants::kMaxInputVoltage);
         mLeftTensionMotor.SetVoltage(-leftArmPower, batt);  // TODO Make this voltage with the battery
         if (leftArmPower > 0) {
             leftPassive = ShuttleConstants::kTensionRPM;
@@ -157,6 +165,7 @@ void Shuttle::SetTensionArmPowers(double leftArmPower, double rightArmPower) {
             // TODO Log an error that we hit the limit switch prematurely
         }
     } else {
+        rightArmPower = boundInput(rightArmPower, ShuttleConstants::kMaxInputVoltage);
         mRightTensionMotor.SetVoltage(rightArmPower, batt);  // TODO Make this voltage with the battery
         if (rightArmPower > 0) {
             rightPassive = -ShuttleConstants::kTensionRPM;
@@ -209,7 +218,8 @@ void Shuttle::StartArmTransition(ArmTransitionPositions pos) {
 }
 
 double Shuttle::GetBatteryVoltage() {
-    return mBatterySensor.CalculateFilteredVoltage();
+    return 19.2;
+    // return mBatterySensor.CalculateFilteredVoltage();
 }
 
 bool Shuttle::StakeTransition(bool offRail) {

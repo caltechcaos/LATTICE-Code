@@ -14,7 +14,7 @@ int count = 15;
 double interval = kFinalSetpoint / count;
 constexpr double kS = 2.16;
 
-lattice::HytorcSimple mMotor{32, 24, 25};
+lattice::HytorcSimple mMotor{6, 38, 37};
 lattice::PIDF mController{kP, kI, kD, [](double s) { return copysign(kS, s); }, 0.75, 100};
 
 constexpr int period = 20;
@@ -39,7 +39,7 @@ double bound(double input, double minimum, double target, double pos) {
 }
 void run() {
     if (pidMode) {
-        power = bound(mController.Run(-mMotor.GetPosition() * 360.0 / 5000.0), kS, kSetpoint, -mMotor.GetPosition() * 360.0 / 5000.0);
+        power = bound(mController.Run(mMotor.GetPosition() * 360.0 / 5049.0), kS, kSetpoint, mMotor.GetPosition() * 360.0 / 5049.0);
         if (mController.AtTarget()) {
             double setpointError = mController.GetSetpoint() - kFinalSetpoint;
             if (abs(setpointError) < 0.1) {
@@ -70,12 +70,12 @@ void run() {
         }
     }
 
-    mMotor.SetVoltage(power, kVolts);
+    mMotor.SetVoltage(-power, kVolts);
     Serial.print(power);
     Serial.print(", ");
     Serial.print(mController.GetSetpoint());
     Serial.print(", ");
-    Serial.println(-mMotor.GetPosition() * 360.0 / 5000.0);
+    Serial.println(-mMotor.GetPosition());
 }
 Task mainLoop(period, TASK_FOREVER, &run);
 

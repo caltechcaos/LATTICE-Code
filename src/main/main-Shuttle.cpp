@@ -81,7 +81,8 @@ void shuttleLoop() {
 
         case 1:  // Transition Mode
             Serial.println("Motion");
-            updateShuttle(y_left);
+            // TODO: SWITCH BACK TO LEFT JOYSTICK
+            updateShuttle(y_right);
             break;
         case 2:  // Stop moving
             Serial.println("ARMS");
