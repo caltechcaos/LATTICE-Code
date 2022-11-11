@@ -27,21 +27,16 @@ double remap(double x, double in_min, double in_max, double out_min, double out_
 void GenericSetup(std::string name = "");
 
 namespace CliffordConstants {
-constexpr int kLeftMotorForwardPin = 1;
+constexpr int kLeftMotorForwardPin = 2;
 constexpr int kLeftMotorBackwardPin = 3;
 constexpr int kRightMotorForwardPin = 12;
 constexpr int kRightMotorBackwardPin = 13;
 }  // namespace CliffordConstants
 
 namespace ElevatorConstants {
-constexpr int kMotorPin = 4;
-constexpr int kEncoderFwdPin = 6;
-constexpr int kEncoderBckPin = 7;
-
-constexpr int kTopLimitSwitchPin = 10;
+constexpr int kMotorPin = 51;
+constexpr int kTopLimitSwitchPin = 54;
 constexpr int kBottomLimitSwitchPin = 5;
-
-constexpr int kCurrentPin = 53;
 
 constexpr double kP = 0;
 constexpr double kI = 0;
@@ -56,24 +51,22 @@ constexpr double kElevatorVoltage = 0.8;  // lattice::GetElevatorFeedforward(lat
 }  // namespace ElevatorConstants
 
 namespace HandoffConstants {
-constexpr int kLimitSwitch1Pin = 24;
-constexpr int kLimitSwitch2Pin = 22;
-constexpr int kLimitSwitch3Pin = 26;
+constexpr int kLimitSwitch1Pin = 26;
+constexpr int kLimitSwitch2Pin = 24;
+constexpr int kLimitSwitch3Pin = 28;
 
 // hand off mech stepper motor
-constexpr int kStepDirPin = 4;
-constexpr int kStepPulPin = 2;
+constexpr int kStepDirPin = 7;
+constexpr int kStepPulPin = 6;
 // constexpr int kSleepPin = 13;
 
 }  // namespace HandoffConstants
 
 namespace DriverConstants {
 constexpr int kVoltageSensorPin = A0;
-constexpr int kHytorcMotorPin = 52;
+constexpr int kHytorcMotorPin = 50;
 constexpr int kHytorcEncoderForward = 10;
 constexpr int kHytorcEncoderBackward = 11;
-constexpr int kHytorcThermistorPin = 12;
-constexpr int kHytorcCurrentPin = 13;
 
 constexpr double kP = 0;
 constexpr double kI = 0;

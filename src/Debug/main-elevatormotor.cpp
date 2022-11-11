@@ -3,7 +3,7 @@
 #include "ElevatorMotor.h"
 #include "RC.h"
 #include "Util.h"
-lattice::ElevatorMotor testMotor{48, 2, 3};
+lattice::ElevatorMotor testMotor{3};
 #include <Arduino.h>
 #include <TaskScheduler.h>
 
@@ -16,11 +16,11 @@ void testFunc() {
         char input = (uint8_t)Serial.read();
 
         if (input == 'a') {
-            power = 0.8;
+            power = -0.8;
         } else if (input == 'b') {
-            power = 1;
+            power = -1;
         } else if (input == 'c') {
-            power = 2;
+            power = -2;
         } else if (input == 'd') {
             power = -.8;
         } else if (input == 'f') {
@@ -29,7 +29,7 @@ void testFunc() {
     }
     Serial.println(power);
 
-    testMotor.SetVoltage(power, 22);
+    testMotor.SetVoltage(power, 12);
 }
 
 constexpr int period = 20;

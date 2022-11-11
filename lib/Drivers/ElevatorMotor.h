@@ -10,7 +10,7 @@ class ElevatorMotor {
      * @param kEncoderFwdPin The pin the encoder's forward wire is plugged into
      * @param kEncoderBckPin The pin the encoder's reverse wire is plugged into
      */
-    ElevatorMotor(const int kElevatorPin, const int kEncoderFwdPin, const int kEncoderBckPin, bool invert = false);
+    ElevatorMotor(const int kElevatorPin, bool invert = false);
 
     /**
      * Sets up for control of the elevator motor. Must be called before using it
@@ -51,7 +51,6 @@ class ElevatorMotor {
     void SetVoltage(double desiredVoltage, double batteryVoltage);
 
    private:
-    CTREEncoder encoder;
     Servo motor;
     const int kPin;
     bool brake;

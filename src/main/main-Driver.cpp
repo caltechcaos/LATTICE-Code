@@ -90,8 +90,15 @@ void driverLoop() {
             updateClifford(0, 0);
             break;
         case 2:  // Stake Handoff
-            if (y_left >= 0.9) {
+            if (abs(y_right) >= 0.2) {
+                int sign = y_right > 0 ? 1 : -1;
+                Serial.print("RUNNING: ");
+                Serial.println(sign);
+                driver.SetHandoffPower(sign);
+            } else if (y_left >= 0.9) {
                 success = stakeHandoff();
+            } else {
+                driver.StopHandoff();
             }
             updateElevator(0, 0);
             updateClifford(0, 0);

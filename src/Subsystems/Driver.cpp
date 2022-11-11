@@ -93,6 +93,12 @@ void Driver::SetHandoffPower(int dir) {
     mHandoff.runSpeed();
 }
 
+void Driver::StopHandoff() {
+    mHandoff.setSpeed(0.0);
+    mHandoff.runSpeed();
+    mHandoff.stop();
+}
+
 bool Driver::RunHandoff(LimitSwitch& targetLimitSwitch) {
     if (targetLimitSwitch.Get()) {
         mHandoff.setSpeed(0.0);

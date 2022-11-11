@@ -73,6 +73,7 @@ class Driver {
     void UpdateSensors();
 
     void SetHandoffPower(int dir);
+    void StopHandoff();
 
     /**
      * Sets the power of the Driver actuator in percent power.
@@ -114,7 +115,7 @@ class Driver {
     void operator=(Driver const&) = delete;
 
    private:
-    ElevatorMotor mElevator{ElevatorConstants::kMotorPin, ElevatorConstants::kEncoderFwdPin, ElevatorConstants::kEncoderBckPin};
+    ElevatorMotor mElevator{ElevatorConstants::kMotorPin};
     HytorcSimple mActuator{DriverConstants::kHytorcMotorPin, DriverConstants::kHytorcEncoderForward, DriverConstants::kHytorcEncoderBackward};
     AccelStepper mHandoff{1, HandoffConstants::kStepDirPin, HandoffConstants::kStepPulPin};
 
@@ -127,10 +128,6 @@ class Driver {
 
     LimitSwitch mElevatorZero{ElevatorConstants::kTopLimitSwitchPin};    // top
     LimitSwitch mElevatorEnd{ElevatorConstants::kBottomLimitSwitchPin};  // bottom
-
-    Thermistor mActuatorTemp{DriverConstants::kHytorcThermistorPin};
-    CurrentSensor mActuatorCurrent{DriverConstants::kHytorcCurrentPin};
-    CurrentSensor mElevatorCurrent{ElevatorConstants::kCurrentPin};
     Voltage mVoltageSensor{DriverConstants::kVoltageSensorPin};
 
     PIDF mElevatorController{ElevatorConstants::kP, ElevatorConstants::kI, ElevatorConstants::kD,
