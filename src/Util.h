@@ -57,7 +57,7 @@ constexpr int kLimitSwitch3Pin = 28;
 
 // hand off mech stepper motor
 constexpr int kStepDirPin = 7;
-constexpr int kStepPulPin = 6;
+constexpr int kStepPulPin = 8;
 // constexpr int kSleepPin = 13;
 
 }  // namespace HandoffConstants
