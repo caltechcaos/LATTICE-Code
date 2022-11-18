@@ -47,7 +47,7 @@ constexpr double kV = 0;
 constexpr double kA = 0;
 constexpr double kG = 0;
 
-constexpr double kElevatorVoltage = 0.8;  // lattice::GetElevatorFeedforward(lattice::ElevatorConstants::kS, lattice::ElevatorConstants::kV, lattice::ElevatorConstants::kA, lattice::ElevatorConstants::kG, 0, f_desired);
+constexpr double kElevatorVoltage = 1.25;  // lattice::GetElevatorFeedforward(lattice::ElevatorConstants::kS, lattice::ElevatorConstants::kV, lattice::ElevatorConstants::kA, lattice::ElevatorConstants::kG, 0, f_desired);
 }  // namespace ElevatorConstants
 
 namespace HandoffConstants {
@@ -56,8 +56,8 @@ constexpr int kLimitSwitch2Pin = 24;
 constexpr int kLimitSwitch3Pin = 28;
 
 // hand off mech stepper motor
-constexpr int kStepDirPin = 7;
-constexpr int kStepPulPin = 8;
+constexpr int kStepDirPin = 8;
+constexpr int kStepPulPin = 7;
 // constexpr int kSleepPin = 13;
 
 }  // namespace HandoffConstants

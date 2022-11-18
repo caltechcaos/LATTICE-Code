@@ -79,6 +79,7 @@ void driverLoop() {
         case 0:  // Move clifford
             success = updateClifford(y_right, -x_right);
             updateElevator(0, 0);
+            driver.StopHandoff();
             break;
         case 1:  // Update elevator
             if (y_left >= 0.7) {
@@ -87,6 +88,7 @@ void driverLoop() {
                 success = updateElevator(y_right, x_left);
             }
 
+            driver.StopHandoff();
             updateClifford(0, 0);
             break;
         case 2:  // Stake Handoff
