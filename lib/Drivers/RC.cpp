@@ -115,12 +115,14 @@ int RC::GetAux1() {
 int RC::GetAux2() {
     if (mBinded) {
         double rawPercent = (double)(mSatellite.getAux2() - kMinThrottle) / (kMaxThrottle - kMinThrottle);
+        Serial.println(rawPercent);
         if (rawPercent < 0.3) {
             return 1;
         } else {
             return 0;
         }
     } else {
-        return 0.0;
+        // By default return 1 which is ESTOP
+        return 1;
     }
 }

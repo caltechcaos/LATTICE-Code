@@ -1,5 +1,6 @@
 #include <Arduino.h>
 #include <TaskScheduler.h>
+#include <watchdog.h>
 
 #include <cstdlib>
 
@@ -63,9 +64,12 @@ void shuttleLoop() {
     // Killswitch
     if (controller.GetAux2() == 1) {
         Serial.println("Killing Shuttle...");
-        shuttle.EStop();
+        shuttle.RunEStop();
         return;
-    };
+    } else {
+        // Only power the robot if not estopped.
+        shuttle.PowerRobot();
+    }
 
     double y_left = controller.GetThrottle();   // tensionBreak
     double y_right = controller.GetElevator();  // tensionAdjust
@@ -103,6 +107,7 @@ void shuttleLoop() {
     Serial.print(shuttle.GetLeftTensionArmPos());
     Serial.print(", ");
     Serial.println(shuttle.GetRightTensionArmPos());
+    watchdogReset();  // Kick the dog
 }
 
 Scheduler ts;
@@ -116,6 +121,8 @@ void setup() {
     controller.Setup();
     shuttle.Setup();
     shuttle.SetTakeup(kTakeup);
+    watchdogSetup();
+    watchdogEnable(1000);  // Watchdog with 1s timeout
 
     ts.init();
     ts.addTask(mainLoop);

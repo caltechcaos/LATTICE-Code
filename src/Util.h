@@ -126,6 +126,8 @@ constexpr int kCenterHallSwitchPin = 55;
 
 constexpr int kArmBrakePin = 32;
 
+constexpr int kEStopPin = 53;
+
 constexpr double kTensionRPM = 700;
 
 constexpr double kP = 0.5;

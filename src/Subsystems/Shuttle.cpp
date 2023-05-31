@@ -25,7 +25,14 @@ void Shuttle::Setup() {
     mCenterSwitch.Setup();
 
     mBatterySensor.Setup();
+
+    mEStop.Setup();
 }
+
+void Shuttle::PowerRobot() {
+    mEStop.Enable();
+}
+
 void Shuttle::SetTakeup(double takeup) {
     mTargetTakeup = takeup;
     mOneArmTakeupAngle = SingleArmTakeupAngle(mTargetTakeup);
@@ -300,7 +307,8 @@ bool Shuttle::ConstantTakeupDrive(bool hitFront) {
     }
     return false;
 }
-void Shuttle::EStop() {
+void Shuttle::RunEStop() {
+    mEStop.Disable();
     StopMotionMotors();
 
     mLeftTensionMotor.SetPercentOutput(0);

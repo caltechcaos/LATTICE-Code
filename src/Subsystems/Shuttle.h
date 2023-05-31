@@ -1,5 +1,6 @@
 #pragma once
 #include "Brake.h"
+#include "EStop.h"
 #include "HallEffect.h"
 #include "HytorcSimple.h"
 #include "LimitSwitch.h"
@@ -149,7 +150,9 @@ class Shuttle {
     /**
      * Emergency stop that freezes all the actuators.
      */
-    void EStop();
+    void RunEStop();
+
+    void PowerRobot();
 
     /**
      * Sets the tensioning arm to target angles. Note that ArmTransition should be used for any final, autonomous code
@@ -204,6 +207,7 @@ class Shuttle {
     static constexpr double kDistancePassivePulleyDrivePulley = 0.1542;
     static constexpr double kLengthArm = 0.25;
 
+    EStop mEStop{ShuttleConstants::kEStopPin};
     // // TODO Fix these numbers to an actual constants file
     MotionMotor mOuterRightMotionMotor{ShuttleConstants::kOuterRightMotionMotorEnablePin, ShuttleConstants::kOuterRightMotionMotorSignalPin, ShuttleConstants::kOuterRightMotionMotorRPMPin, ShuttleConstants::kOuterRightMotionMotorThermalPin};
     MotionMotor mOuterLeftMotionMotor{ShuttleConstants::kOuterLeftMotionMotorEnablePin, ShuttleConstants::kOuterLeftMotionMotorSignalPin, ShuttleConstants::kOuterLeftMotionMotorRPMPin, ShuttleConstants::kOuterLeftMotionMotorThermalPin};
